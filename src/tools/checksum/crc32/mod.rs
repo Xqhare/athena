@@ -10,7 +10,21 @@ pub fn crc32(data: &Vec<u8>) -> u32 {
     })
 }
 
-fn generate_crc32_lookuptable() -> [u32; 256] {
+/// Returns the crc32 checksum for the given data
+///
+/// Implements the CRC32 ISO-HDLC algorithm
+///
+/// Uses the provided lookup table
+pub fn crc32_with_table(data: &Vec<u8>, table: [u32; 256]) -> u32 {
+    !data.iter().fold(!0, |acc, octet| {
+        (acc >> 8) ^ table[((acc & 0xff) ^ *octet as u32) as usize]
+    })
+}
+
+/// Returns the crc32 lookup table
+/// 
+/// Implements the CRC32 ISO-HDLC algorithm
+pub fn generate_crc32_lookuptable() -> [u32; 256] {
     let mut crc32_table = [0u32; 256];
 
     (0..256).for_each(|n| {
