@@ -1,7 +1,21 @@
 
 /// Returns the crc32 checksum for the given data
 ///
+/// Use this for ease of use
+///
 /// Implements the CRC32 ISO-HDLC algorithm
+///
+/// # Arguments
+/// * `data` - The data to calculate the checksum for
+///
+/// # Example
+/// ```
+/// # use athena::tools::checksum::crc32::crc32;
+///
+/// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
+/// let crc = crc32(&data);
+/// assert_eq!(crc, 0x414fa339);
+/// ```
 pub fn crc32(data: &Vec<u8>) -> u32 {
     let crc32_table = generate_crc32_lookuptable();
 
@@ -12,10 +26,26 @@ pub fn crc32(data: &Vec<u8>) -> u32 {
 
 /// Returns the crc32 checksum for the given data
 ///
+/// Use this for performance
+///
 /// Implements the CRC32 ISO-HDLC algorithm
 ///
 /// Uses the provided lookup table
-pub fn crc32_with_table(data: &Vec<u8>, table: [u32; 256]) -> u32 {
+///
+/// # Arguments
+/// * `data` - The data to calculate the checksum for
+/// * `table` - The lookup table to use
+///
+/// # Example
+/// ```
+/// # use athena::tools::checksum::crc32::{crc32_with_table, generate_crc32_lookuptable};
+///
+/// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
+/// let table = generate_crc32_lookuptable();
+/// let crc = crc32_with_table(&data, &table);
+/// assert_eq!(crc, 0x414fa339);
+/// ```
+pub fn crc32_with_table(data: &Vec<u8>, table: &[u32; 256]) -> u32 {
     !data.iter().fold(!0, |acc, octet| {
         (acc >> 8) ^ table[((acc & 0xff) ^ *octet as u32) as usize]
     })
