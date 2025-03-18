@@ -1,4 +1,4 @@
-type Crc32Table = [u32; 256];
+pub type Crc32Table = [u32; 256];
 
 /// Returns the crc32 checksum for the given data
 ///
