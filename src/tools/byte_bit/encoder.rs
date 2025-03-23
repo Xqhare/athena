@@ -19,6 +19,14 @@ pub fn byte_bit_encoder(bits: &[u8; 8]) -> u8 {
 }
 
 #[test]
+fn very_simple() {
+    let tmp = byte_bit_encoder([1, 0, 0, 0, 0, 0, 0, 0].as_slice().try_into().unwrap());
+    assert_ne!(tmp, 128);
+    assert_eq!(tmp, 1);
+    assert_eq!(tmp, 0b00000001);
+}
+
+#[test]
 fn byte_bit_encoder_basics() {
     let byte0: Vec<u8> = vec![0, 1, 0, 1, 0, 1, 0, 1];
     let byte1: Vec<u8> = vec![1, 1, 1, 1, 1, 1, 1, 1];
