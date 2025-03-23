@@ -6,8 +6,8 @@
 /// # Example
 /// ```
 /// # use athena::tools::byte_bit::byte_bit_encoder;
-/// let bits = [0, 0, 0, 0, 1, 1, 1, 1];
-/// let byte = byte_bit_encoder(bits);
+/// let bits: [u8; 8] = [0, 0, 0, 0, 1, 1, 1, 1];
+/// let byte = byte_bit_encoder(&bits);
 /// assert_eq!(byte, 0b11110000);
 /// ```
 pub fn byte_bit_encoder(bits: &[u8; 8]) -> u8 {
