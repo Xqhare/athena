@@ -1,3 +1,3 @@
 pub mod checksum;
-pub mod bitreader;
+pub mod byte_bit;
 pub mod leb128;
