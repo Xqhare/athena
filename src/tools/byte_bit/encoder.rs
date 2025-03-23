@@ -56,7 +56,7 @@ fn byte_bit_encoder_basics() {
 
 // now this is what I would call 100% test coverage!
 #[test]
-fn byte_bit_decoder_all_u8() {
+fn byte_bit_encoder_all_u8() {
     let all_u8_as_vec = vec![
         vec![0, 0, 0, 0, 0, 0, 0, 0],
         vec![0, 0, 0, 0, 0, 0, 0, 1],

@@ -68,7 +68,7 @@ fn byte_bit_writer_basics() {
 
 // now this is what I would call 100% test coverage!
 #[test]
-fn byte_bit_decoder_all_u8() {
+fn byte_bit_writer_all_u8() {
     let all_u8_as_vec: Vec<[u8; 8]> = vec![
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 1],
