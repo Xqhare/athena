@@ -20,7 +20,7 @@ pub type Crc32Table = [u32; 256];
 /// assert_eq!(crc, 0x414fa339);
 /// assert_eq!(data.len(), 43);
 /// ```
-pub fn crc32(data: &Vec<u8>) -> u32 {
+pub fn crc32(data: &[u8]) -> u32 {
     let crc32_table = generate_crc32_lookuptable();
 
     !data.iter().fold(!0, |acc, octet| {
@@ -52,7 +52,7 @@ pub fn crc32(data: &Vec<u8>) -> u32 {
 /// assert_eq!(crc, 0x414fa339);
 /// assert_eq!(data.len(), 43);
 /// ```
-pub fn crc32_with_table(data: &Vec<u8>, table: &Crc32Table) -> u32 {
+pub fn crc32_with_table(data: &[u8], table: &Crc32Table) -> u32 {
     !data.iter().fold(!0, |acc, octet| {
         (acc >> 8) ^ table[((acc & 0xff) ^ *octet as u32) as usize]
     })
