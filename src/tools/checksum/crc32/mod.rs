@@ -2,6 +2,8 @@ pub type Crc32Table = [u32; 256];
 
 /// Returns the crc32 checksum for the given data
 ///
+/// The given data will not be mutated in any way
+///
 /// Use this for ease of use
 ///
 /// Implements the CRC32 ISO-HDLC algorithm
@@ -16,6 +18,7 @@ pub type Crc32Table = [u32; 256];
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let crc = crc32(&data);
 /// assert_eq!(crc, 0x414fa339);
+/// assert_eq!(data.len(), 43);
 /// ```
 pub fn crc32(data: &Vec<u8>) -> u32 {
     let crc32_table = generate_crc32_lookuptable();
@@ -26,6 +29,8 @@ pub fn crc32(data: &Vec<u8>) -> u32 {
 }
 
 /// Returns the crc32 checksum for the given data
+///
+/// The given data will not be mutated in any way
 ///
 /// Use this for performance
 ///
@@ -45,6 +50,7 @@ pub fn crc32(data: &Vec<u8>) -> u32 {
 /// let table = generate_crc32_lookuptable();
 /// let crc = crc32_with_table(&data, &table);
 /// assert_eq!(crc, 0x414fa339);
+/// assert_eq!(data.len(), 43);
 /// ```
 pub fn crc32_with_table(data: &Vec<u8>, table: &Crc32Table) -> u32 {
     !data.iter().fold(!0, |acc, octet| {
@@ -75,6 +81,8 @@ fn crc32_quicktest() {
     let string = "The quick brown fox jumps over the lazy dog";
     let crc32 = crc32(&string.as_bytes().to_vec());
     assert_eq!(crc32, 0x414fa339);
+    assert_ne!(string.len(), 0);
+    assert_eq!(string.len(), 43);
 }
 
 #[test]
@@ -102,4 +110,6 @@ lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor inc
 lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
     let crc = crc32(&long_str.as_bytes().to_vec());
     assert_eq!(crc, 0xdb74b106);
+    assert_ne!(long_str.len(), 0);
+    assert_ne!(long_str.len(), 1);
 }
