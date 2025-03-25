@@ -39,11 +39,41 @@ fn writer_reader_all_u16() {
     }
 }
 
-#[ignore = "Checks all u32, Takes a long time"]
+#[ignore = "Crashes the system"]
 #[test]
-fn writer_reader_all_u32() {
+fn writer_reader_all_low_u32() {
     let mut buffer = Vec::with_capacity(4);
-    for n in 0..=u32::MAX {
+    for n in 0..=(u32::MAX / 3) {
+        buffer.clear();
+        let tt = n.to_le_bytes();
+        let tmp = vec![byte_bit_decoder(tt[0]), byte_bit_decoder(tt[1]), byte_bit_decoder(tt[2]), byte_bit_decoder(tt[3])];
+        let ok = byte_bit_writer(&mut buffer, tmp.clone());
+        assert!(ok.is_ok());
+        let read = byte_bit_reader(buffer.as_slice()).unwrap();
+        assert_eq!(read, tmp);
+    }
+}
+
+#[ignore = "Crashes the system"]
+#[test]
+fn writer_reader_all_mid_u32() {
+    let mut buffer = Vec::with_capacity(4);
+    for n in (u32::MAX / 3) as u64..=((u32::MAX as u64 * 2) / 3) {
+        buffer.clear();
+        let tt = n.to_le_bytes();
+        let tmp = vec![byte_bit_decoder(tt[0]), byte_bit_decoder(tt[1]), byte_bit_decoder(tt[2]), byte_bit_decoder(tt[3])];
+        let ok = byte_bit_writer(&mut buffer, tmp.clone());
+        assert!(ok.is_ok());
+        let read = byte_bit_reader(buffer.as_slice()).unwrap();
+        assert_eq!(read, tmp);
+    }
+}
+
+#[ignore = "Crashes the system"]
+#[test]
+fn writer_reader_all_high_u32() {
+    let mut buffer = Vec::with_capacity(4);
+    for n in ((u32::MAX as u64 * 2) / 3)..=u32::MAX as u64 {
         buffer.clear();
         let tt = n.to_le_bytes();
         let tmp = vec![byte_bit_decoder(tt[0]), byte_bit_decoder(tt[1]), byte_bit_decoder(tt[2]), byte_bit_decoder(tt[3])];
