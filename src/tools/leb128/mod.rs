@@ -8,12 +8,12 @@ fn low_bits_of_byte(b: u8) -> u8 {
 }
 
 #[inline]
-fn low_bits_of_u64(b: u64) -> u8 {
-    let byte = b & (u8::MAX as u64);
+fn low_bits_of_usize(b: usize) -> u8 {
+    let byte = b & (u8::MAX as usize);
     low_bits_of_byte(byte as u8)
 }
 
-/// Reads a LEB128 encoded unsigned integer
+/// Deserializes a unsigned integer from a LEB128 encoded byte array
 /// 
 /// Returns the value and the number of bytes read
 /// Does not mutate the buffer
@@ -32,8 +32,8 @@ fn low_bits_of_u64(b: u64) -> u8 {
 /// assert_eq!(num_of_bytes, 2);
 /// assert_ne!(u8max.len(), 0);
 /// ```
-pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u64, u8), AthenaError> {
-    let mut result: u64 = 0;
+pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(usize, u8), AthenaError> {
+    let mut result: usize = 0;
     let mut shift = 0;
     let mut num_of_bytes: u8 = 0;
     loop {
@@ -42,7 +42,7 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u64, u8), AthenaError
         }
         let byte = data[num_of_bytes as usize];
         num_of_bytes += 1;
-        let low_bits = low_bits_of_byte(byte) as u64;
+        let low_bits = low_bits_of_byte(byte) as usize;
         result |= low_bits << shift;
         if byte & CONTINUATION_BIT == 0 {
             return Ok((result, num_of_bytes));
@@ -51,7 +51,7 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u64, u8), AthenaError
     }
 }
 
-/// Serializes a LEB128 encoded unsigned integer
+/// Serializes a unsigned integer to a LEB128 encoded byte array
 ///
 /// Does not mutate the input
 ///
@@ -66,14 +66,14 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u64, u8), AthenaError
 /// assert_eq!(serialized, vec![0b11111111, 0b00000001]);
 /// assert_eq!(value, 255);
 /// ```
-pub fn serialize_leb128_unsigned(value: u64) -> Vec<u8> {
+pub fn serialize_leb128_unsigned(value: usize) -> Vec<u8> {
     let mut val = value;
     let val_len = {
-        if val <= u8::MAX as u64 {
+        if val <= u8::MAX as usize {
             2
-        } else if val <= u16::MAX as u64 {
+        } else if val <= u16::MAX as usize {
             3
-        } else if val <= u32::MAX as u64 {
+        } else if val <= u32::MAX as usize {
             5
         } else {
             10
@@ -81,7 +81,7 @@ pub fn serialize_leb128_unsigned(value: u64) -> Vec<u8> {
     };
     let mut out = Vec::with_capacity(val_len);
     loop {
-        let mut byte = low_bits_of_u64(val);
+        let mut byte = low_bits_of_usize(val);
         val >>= 7;
         if val != 0 {
             byte |= CONTINUATION_BIT;
@@ -107,9 +107,9 @@ fn deser_err() {
 fn serde_all_the_numbers_u24() {
     let wtf_compiler: u32 = 16_777_215; // u24::MAX
     for i in 0..=wtf_compiler {
-        let serialized = serialize_leb128_unsigned(i.into());
+        let serialized = serialize_leb128_unsigned(i.try_into().unwrap());
         let (result, len) = deserialize_leb128_unsigned(&serialized).unwrap();
-        assert_eq!(result, i.into());
+        assert_eq!(result, i.try_into().unwrap());
         assert!(len <= 4);
         /* if i % 1000 == 0 {
             println!("{}", i);
@@ -124,9 +124,9 @@ fn serde_all_the_numbers_u24() {
 #[test]
 fn serde_all_the_numbers_low_u32() {
     for i in 0..=u32::MAX / 3 {
-        let serialized = serialize_leb128_unsigned(i.into());
+        let serialized = serialize_leb128_unsigned(i.try_into().unwrap());
         let (result, _) = deserialize_leb128_unsigned(&serialized).unwrap();
-        assert_eq!(result, i.into());
+        assert_eq!(result, i.try_into().unwrap());
         assert_ne!(serialized.len(), 0);
     }
 }
@@ -136,9 +136,9 @@ fn serde_all_the_numbers_low_u32() {
 fn serde_all_the_numbers_mid_u32() {
     let upper_bound: u64 = (u32::MAX as u64 * 2) / 3;
     for i in (u32::MAX / 3) as u64..=upper_bound {
-        let serialized = serialize_leb128_unsigned(i.into());
+        let serialized = serialize_leb128_unsigned(i.try_into().unwrap());
         let (result, _) = deserialize_leb128_unsigned(&serialized).unwrap();
-        assert_eq!(result, i.into());
+        assert_eq!(result, i.try_into().unwrap());
         assert_ne!(serialized.len(), 0);
     }
 }
@@ -148,9 +148,9 @@ fn serde_all_the_numbers_mid_u32() {
 fn serde_all_the_numbers_high_u32() {
     let upper_bound: u64 = (u32::MAX as u64 * 2) / 3;
     for i in upper_bound..=u32::MAX  as u64 {
-        let serialized = serialize_leb128_unsigned(i.into());
+        let serialized = serialize_leb128_unsigned(i.try_into().unwrap());
         let (result, _) = deserialize_leb128_unsigned(&serialized).unwrap();
-        assert_eq!(result, i.into());
+        assert_eq!(result, i.try_into().unwrap());
         assert_ne!(serialized.len(), 0);
     }
 }
@@ -172,7 +172,7 @@ fn serialize_leb_unsigned() {
         let ser_check: Vec<u8> = serialized.clone().into();
         let deserialized = deserialize_leb128_unsigned(&serialized).unwrap();
         assert_eq!(all_u[i], ser_check);
-        assert_eq!(d, &deserialized.0);
+        assert_eq!(*d, *&deserialized.0 as usize);
         assert_ne!(serialized.len(), 0);
     }
 }
@@ -191,7 +191,7 @@ fn deserialize_leb_unsigned() {
         data.clear();
         data.extend(u.iter().cloned());
         let (result, num_of_bytes) = deserialize_leb128_unsigned(&data).unwrap();
-        assert_eq!(result, all_u_res[i].0);
+        assert_eq!(result, all_u_res[i].0 as usize);
         assert_eq!(num_of_bytes, all_u_res[i].1);
         count += 1;
     }
@@ -207,7 +207,7 @@ fn deserialize_leb_unsigned() {
         data.clear();
         data.extend(u.iter().cloned());
         let (result, num_of_bytes) = deserialize_leb128_unsigned(&data).unwrap();
-        assert_eq!(result, new_u_res[i].0);
+        assert_eq!(result, new_u_res[i].0 as usize);
         assert_eq!(num_of_bytes, new_u_res[i].1);
         count += 1;
     }
