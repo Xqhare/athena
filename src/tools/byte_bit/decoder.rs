@@ -12,8 +12,8 @@
 /// ```
 pub fn byte_bit_decoder(byte: u8) -> [u8; 8] {
     let mut out: [u8; 8] = [0; 8];
-    for i in 0..8 {
-        out[i] = u8::from((byte >> i) & 1);
+    for (i, out_slice) in out.iter_mut().enumerate() {
+        *out_slice = (byte >> i) & 1;
     }
     out
 }

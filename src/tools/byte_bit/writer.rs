@@ -1,4 +1,4 @@
-use std::io::Result;
+use crate::error::AthenaError;
 
 use super::byte_bit_encoder;
 
@@ -14,12 +14,20 @@ use super::byte_bit_encoder;
 /// byte_bit_writer(&mut writer, bytes).unwrap();
 /// assert_eq!(writer, vec![0b11110000, 0b00001111]);
 /// ```
-pub fn byte_bit_writer<W: std::io::Write>(writer: &mut W, bytes: Vec<[u8; 8]>) -> Result<()> {
+pub fn byte_bit_writer<W: std::io::Write>(writer: &mut W, bytes: Vec<[u8; 8]>) -> Result<(), AthenaError> {
     for byte in bytes {
-        println!("byte: {:?} = {}", byte, byte_bit_encoder(&byte));
-        writer.write(&[byte_bit_encoder(&byte)])?;
+        writer.write_all(&[byte_bit_encoder(&byte)]).map_err(AthenaError::IoError)?;
     }
     Ok(())
+}
+
+#[test]
+fn writer_err() {
+    // buffer too small for bytes
+    let mut writer: &mut [u8] = &mut [0u8; 0];
+    let bytes = vec![[0, 0, 0, 0, 1, 1, 1, 1], [1, 1, 1, 1, 0, 0, 0, 0]];
+    let result = byte_bit_writer(&mut writer, bytes);
+    assert!(result.is_err());
 }
 
 #[test]

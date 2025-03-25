@@ -12,8 +12,8 @@
 /// ```
 pub fn byte_bit_encoder(bits: &[u8; 8]) -> u8 {
     let mut byte: u8 = 0;
-    for i in 0..8 {
-        byte |= bits[i] << i;
+    for (i, bits) in bits.iter().enumerate() {
+        byte |= bits << i;
     }
     byte
 }
