@@ -38,7 +38,7 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u64, u8), AthenaError
     let mut num_of_bytes: u8 = 0;
     loop {
         if num_of_bytes as usize >= data.len() {
-            return Err(AthenaError::InsufficientBuffer);
+            return Err(AthenaError::ContinuationBitInLastByte);
         }
         let byte = data[num_of_bytes as usize];
         num_of_bytes += 1;
@@ -91,6 +91,14 @@ pub fn serialize_leb128_unsigned(value: u64) -> Vec<u8> {
             return out;
         }
     }
+}
+
+#[test]
+fn deser_err() {
+    // continuation bit set in last byte
+    let serialized = vec![0b10000000];
+    let err = deserialize_leb128_unsigned(&serialized);
+    assert!(err.is_err());
 }
 
 // Still takes 2.6 sec! -> optimized in refactor of api, now 1.3/1.4 sec

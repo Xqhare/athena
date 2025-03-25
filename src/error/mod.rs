@@ -5,4 +5,5 @@ pub enum AthenaError {
     InvalidOutput,
     InsufficientBuffer,
     IoError(std::io::Error),
+    ContinuationBitInLastByte,
 }
