@@ -112,7 +112,7 @@ fn serde_all_the_numbers_u24() {
 // 420 sec last time in non release mode, 78 sec in release mode
 // rughly 10mil numbers per sec for non release
 // rughly 55mil numbers per sec for release
-#[ignore = "Takes a long time; 150s"]
+#[ignore = "Takes a long time; 150s, < 30 in release"]
 #[test]
 fn serde_all_the_numbers_low_u32() {
     for i in 0..=u32::MAX / 3 {
@@ -123,7 +123,7 @@ fn serde_all_the_numbers_low_u32() {
     }
 }
 
-#[ignore = "Takes a long time; 150s"]
+#[ignore = "Takes a long time; 150s, < 30 in release"]
 #[test]
 fn serde_all_the_numbers_mid_u32() {
     let upper_bound: u64 = (u32::MAX as u64 * 2) / 3;
@@ -135,7 +135,7 @@ fn serde_all_the_numbers_mid_u32() {
     }
 }
 
-#[ignore = "Takes a long time; 150s"]
+#[ignore = "Takes a long time; 150s, < 30 in release"]
 #[test]
 fn serde_all_the_numbers_high_u32() {
     let upper_bound: u64 = (u32::MAX as u64 * 2) / 3;
