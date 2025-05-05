@@ -3,7 +3,11 @@ My rusty toolbox of useful tools.
 
 ## Features
 - [Utilities](#utilities)
-- [Tools](#tools)
+    - [Compression](#compression)
+        - [LZW](#lzw)
+        - [Delta encoding](#delta-encoding)
+        - [Run-length encoding](#run-length-encoding)
+    - [Tools](#tools)
     - [Checksums](#checksums)
         - [CRC-32](#crc-32)
     - [Bitreader](#bitreader)
@@ -11,9 +15,27 @@ My rusty toolbox of useful tools.
 ## Naming
 Athena is named after the Greek goddess of wisdom, warfare and handicraft.
 
+## TODO
+
+- [x] LEB128 signed integers
+- [ ] Run-length encoding with custom pattern length
+- [ ] Delta encoding writer (using LEB128)
+
 ---
 
 ## Utilities
+
+### Compression
+You can call the functions in the `compression` module one by one, or use `Delta` and `RunLength` in one loop.
+
+#### LZW
+A simple implementation of the Lempel-Ziv-Welch algorithm.
+
+#### Delta encoding
+A simple implementation of delta encoding.
+
+#### Run-length encoding
+A simple implementation of run-length encoding.
 
 ## Tools
 
