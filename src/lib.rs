@@ -21,3 +21,7 @@ pub mod byte_bit {
     pub use crate::tools::byte_bit::decoder::byte_bit_decoder;
     pub use crate::tools::byte_bit::encoder::byte_bit_encoder;
 }
+pub mod traits {
+    pub use crate::utils::traits::signed::Signed;
+    pub use crate::utils::traits::unsigned::Unsigned;
+}
