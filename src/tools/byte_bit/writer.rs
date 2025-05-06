@@ -1,6 +1,6 @@
 use crate::error::AthenaError;
 
-use super::byte_bit_encoder;
+use super::encoder::byte_bit_encoder;
 
 /// Writes bits to a io::Writer
 ///
@@ -8,7 +8,7 @@ use super::byte_bit_encoder;
 /// 
 /// # Example
 /// ```
-/// # use athena::tools::byte_bit::byte_bit_writer;
+/// # use athena::byte_bit::byte_bit_writer;
 /// let bytes = vec![[0, 0, 0, 0, 1, 1, 1, 1], [1, 1, 1, 1, 0, 0, 0, 0]];
 /// let mut writer = Vec::new();
 /// byte_bit_writer(&mut writer, bytes).unwrap();

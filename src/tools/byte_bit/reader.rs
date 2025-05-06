@@ -1,6 +1,6 @@
 use crate::error::AthenaError;
 
-use super::byte_bit_decoder;
+use super::decoder::byte_bit_decoder;
 
 /// Reads the bits from a io::Reader
 ///
@@ -8,7 +8,7 @@ use super::byte_bit_decoder;
 ///
 /// # Example
 /// ```
-/// # use athena::tools::byte_bit::byte_bit_reader;
+/// # use athena::byte_bit::byte_bit_reader;
 /// let bytes = vec![0b11110000, 0b00001111];
 /// let bits = byte_bit_reader(bytes.as_slice()).unwrap();
 /// let expected: Vec<[u8; 8]> = vec![[0, 0, 0, 0, 1, 1, 1, 1], [1, 1, 1, 1, 0, 0, 0, 0]];

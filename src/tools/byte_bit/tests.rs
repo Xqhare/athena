@@ -1,7 +1,5 @@
 #![allow(unused_imports)]
-use crate::tools::byte_bit::{byte_bit_decoder, byte_bit_encoder, byte_bit_reader};
-
-use super::byte_bit_writer;
+use crate::byte_bit::{byte_bit_decoder, byte_bit_encoder, byte_bit_reader, byte_bit_writer};
 
 #[test]
 fn encode_decode_all_u8() {

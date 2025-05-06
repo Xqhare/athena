@@ -5,7 +5,7 @@
 ///
 /// # Example
 /// ```
-/// # use athena::tools::byte_bit::byte_bit_encoder;
+/// # use athena::byte_bit::byte_bit_encoder;
 /// let bits: [u8; 8] = [0, 0, 0, 0, 1, 1, 1, 1];
 /// let byte = byte_bit_encoder(&bits);
 /// assert_eq!(byte, 0b11110000);
