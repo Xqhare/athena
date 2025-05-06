@@ -1,5 +1,5 @@
 #![allow(unused_imports)]
-use super::*;
+use crate::encoding_and_decoding::{run_length_encoder, run_length_decoder};
 
 #[test]
 fn serde_simple() {
@@ -37,7 +37,7 @@ fn serde_advanced() {
 fn serde_real_data() {
     let data0 = std::fs::read_to_string("README.md").unwrap();
     let data1 = std::fs::read_to_string("LICENSE").unwrap();
-    let data2 = std::fs::read_to_string("src/utils/compression/run_length/mod.rs").unwrap();
+    let data2 = std::fs::read_to_string("src/tools/run_length/mod.rs").unwrap();
     let compressed0 = run_length_encoder(&data0.as_bytes().to_vec());
     let compressed1 = run_length_encoder(&data1.as_bytes().to_vec());
     let compressed2 = run_length_encoder(&data2.as_bytes().to_vec());

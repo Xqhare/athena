@@ -11,7 +11,7 @@ mod tests;
 ///
 /// # Example
 /// ```
-/// # use athena::utils::compression::run_length::run_length_encoder;
+/// # use athena::encoding_and_decoding::run_length_encoder;
 /// 
 /// let data = "AAAABBBCCDEEEEFFGGGGHHIJKLLMMNNNPQQRRSTUUVVVVWWXYYZ".as_bytes().to_vec();
 /// let compressed = run_length_encoder(&data);
@@ -52,7 +52,7 @@ pub fn run_length_encoder(data: &[u8]) -> Vec<(usize, u8)> {
 ///
 /// # Example
 /// ```
-/// # use athena::utils::compression::run_length::run_length_decoder;
+/// # use athena::encoding_and_decoding::run_length_decoder;
 /// 
 /// let data = vec![(4, 97), (1, 98), (2, 99), (3, 100)];
 /// let decompressed = run_length_decoder(&data);
