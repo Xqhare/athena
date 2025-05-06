@@ -27,7 +27,7 @@ fn low_bits_of_usize(b: usize) -> u8 {
 ///
 /// # Example
 /// ```
-/// # use athena::tools::leb128::deserialize_leb128_unsigned;
+/// # use athena::encoding_and_decoding::deserialize_leb128_unsigned;
 /// # use std::collections::VecDeque;
 /// 
 /// let u8max: Vec<u8> = vec![0b11111111, 0b00000001]; // 255 in binary LEB128
@@ -64,7 +64,7 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(usize, u8), AthenaErr
 ///
 /// # Example
 /// ```
-/// # use athena::tools::leb128::serialize_leb128_unsigned;
+/// # use athena::encoding_and_decoding::serialize_leb128_unsigned;
 /// let value = 255;
 /// let serialized = serialize_leb128_unsigned(value);
 /// assert_eq!(serialized, vec![0b11111111, 0b00000001]);
@@ -107,7 +107,7 @@ pub fn serialize_leb128_unsigned(value: usize) -> Vec<u8> {
 ///
 /// # Example
 /// ```
-/// # use athena::tools::leb128::deserialize_leb128_signed;
+/// # use athena::encoding_and_decoding::deserialize_leb128_signed;
 /// # use std::collections::VecDeque;
 /// 
 /// let i8min: Vec<u8> = vec![0b10000000, 0b01111111]; // -128 in binary LEB128
@@ -160,7 +160,7 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i64, u8), AthenaError> 
 ///
 /// # Example
 /// ```
-/// # use athena::tools::leb128::serialize_leb128_signed;
+/// # use athena::encoding_and_decoding::serialize_leb128_signed;
 /// let value = -1;
 /// let serialized = serialize_leb128_signed(value);
 /// assert_eq!(serialized, vec![0b01111111]);
