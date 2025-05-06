@@ -13,7 +13,7 @@ pub type Crc32Table = [u32; 256];
 ///
 /// # Example
 /// ```
-/// # use athena::tools::checksum::crc32::crc32;
+/// # use athena::checksum::crc32;
 ///
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let crc = crc32(&data);
@@ -44,7 +44,7 @@ pub fn crc32(data: &[u8]) -> u32 {
 ///
 /// # Example
 /// ```
-/// # use athena::tools::checksum::crc32::{crc32_with_table, generate_crc32_lookuptable};
+/// # use athena::checksum::{crc32_with_table, generate_crc32_lookuptable};
 ///
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let table = generate_crc32_lookuptable();
