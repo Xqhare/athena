@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+mod tests;
+
 /// Compresses the given data using the LZW algorithm
 /// 
 /// # Arguments
@@ -10,7 +12,7 @@ use std::collections::HashMap;
 ///
 /// # Example
 /// ```
-/// # use athena::utils::compression::lzw::compress_lzw;
+/// # use athena::compression::compress_lzw;
 /// 
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let compressed = compress_lzw(&data);
@@ -51,7 +53,7 @@ pub fn compress_lzw(data: &[u8]) -> Vec<u32> {
 /// 
 /// # Example
 /// ```
-/// # use athena::utils::compression::lzw::{decompress_lzw, compress_lzw};
+/// # use athena::compression::{decompress_lzw, compress_lzw};
 /// 
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let compressed = compress_lzw(&data);
