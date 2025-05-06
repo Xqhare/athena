@@ -1,3 +1,5 @@
+use crate::utils::traits::unsigned::Unsigned;
+
 mod tests;
 
 /// Returns the run length encoded version of the given data
@@ -18,8 +20,8 @@ mod tests;
 /// assert_eq!(compressed.len(), 25);
 /// assert_eq!(data.len(), 51);
 /// ```
-pub fn run_length_encoder(data: &[u8]) -> Vec<(usize, u8)> {
-    let mut out: Vec<(usize, u8)> = Vec::with_capacity(data.len());
+pub fn run_length_encoder<D: Unsigned>(data: &[D]) -> Vec<(usize, D)> {
+    let mut out: Vec<(usize, D)> = Vec::with_capacity(data.len());
     let mut last = data[0];
     let mut count: usize = 1;
     for entry in data.iter().skip(1) {
@@ -54,13 +56,13 @@ pub fn run_length_encoder(data: &[u8]) -> Vec<(usize, u8)> {
 /// ```
 /// # use athena::encoding_and_decoding::run_length_decoder;
 /// 
-/// let data = vec![(4, 97), (1, 98), (2, 99), (3, 100)];
+/// let data: Vec<(usize, u8)> = vec![(4, 97), (1, 98), (2, 99), (3, 100)];
 /// let decompressed = run_length_decoder(&data);
 /// assert_eq!(decompressed.len(), 10);
 /// assert_eq!(data.len(), 4);
 /// ```
-pub fn run_length_decoder(data: &[(usize, u8)]) -> Vec<u8> {
-    let mut out: Vec<u8> = Vec::with_capacity(data.len());
+pub fn run_length_decoder<D: Unsigned>(data: &[(usize, D)]) -> Vec<D> {
+    let mut out: Vec<D> = Vec::with_capacity(data.len());
     for (count, value) in data {
         if *count == 0 {
             out.push(*value);

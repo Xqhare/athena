@@ -53,3 +53,14 @@ fn serde_real_data() {
     assert!(compressed1.len() < data1.len());
     assert!(compressed2.len() < data2.len());
 }
+
+#[test]
+fn large_numbers() {
+    let mut tmp: Vec<u32> = Vec::new();
+    for i in 0..100_000 {
+        tmp.push(i % 256);
+    }
+    let compressed = run_length_encoder(&tmp);
+    let decompressed = run_length_decoder(&compressed);
+    assert_eq!(decompressed.len(), 100000);
+}
