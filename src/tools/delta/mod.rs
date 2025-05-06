@@ -8,7 +8,7 @@ mod tests;
 ///
 /// # Example
 /// ```
-/// # use athena::utils::compression::delta::delta_encoder;
+/// # use athena::encoding_and_decoding::delta_encoder;
 /// 
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let compressed = delta_encoder(&data);
@@ -36,7 +36,7 @@ pub fn delta_encoder(data: &[u8]) -> Vec<i16> {
 ///
 /// # Example
 /// ```
-/// # use athena::utils::compression::delta::delta_decoder;
+/// # use athena::encoding_and_decoding::delta_decoder;
 /// 
 /// let data = vec![1, -1, -1, -1, -1];
 /// let decompressed = delta_decoder(&data);
