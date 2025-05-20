@@ -19,7 +19,7 @@ use std::{
 /// ```rust
 /// use std::collections::BTreeMap;
 ///
-/// use nabu::{XffValue, Object};
+/// use athena::{XffValue, Object};
 ///
 /// let key_values = vec![
 ///     ("key0".to_string(), XffValue::from("hi mom!")),
@@ -55,7 +55,7 @@ use std::{
 /// ```rust
 /// use std::collections::BTreeMap;
 ///
-/// use nabu::{XffValue, Object};
+/// use athena::{XffValue, Object};
 ///
 /// let key_values = vec![
 ///     ("keyA".to_string(), XffValue::from("hi mom!")),
@@ -112,7 +112,7 @@ impl Object {
     /// ```rust
     /// use std::collections::BTreeMap;
     ///
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let xff_obj_value = Object::from(vec![
     ///     ("keyA".to_string(), XffValue::from("hi mom!")),
@@ -132,7 +132,7 @@ impl Object {
     /// ```rust
     /// use std::collections::HashMap;
     ///
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let xff_obj_value = Object::from(vec![
     ///     ("keyA".to_string(), XffValue::from("hi mom!")),
@@ -153,7 +153,7 @@ impl Object {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let mut xff_obj_value = Object::from(vec![
     ///     ("keyA".to_string(), XffValue::from("hi mom!")),
@@ -174,7 +174,7 @@ impl Object {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let mut xff_obj_value = Object::from(vec![
     ///     ("keyA".to_string(), XffValue::from("hi mom!")),
@@ -195,7 +195,7 @@ impl Object {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let mut xff_obj_value = Object::new();
     ///
@@ -212,7 +212,7 @@ impl Object {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let mut xff_obj_value = Object::new();
     ///
@@ -234,7 +234,7 @@ impl Object {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let xff_obj_value = Object::from(vec![
     ///     ("keyA".to_string(), XffValue::from("hi mom!")),
@@ -253,7 +253,7 @@ impl Object {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let xff_obj_value = Object::from(vec![
     ///     ("keyA".to_string(), XffValue::from("hi mom!")),
@@ -270,7 +270,7 @@ impl Object {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let xff_obj_value = Object::from(vec![
     ///     ("keyA".to_string(), XffValue::from("hi mom!")),
@@ -288,7 +288,7 @@ impl Object {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let xff_obj_value = Object::from(vec![
     ///     ("keyA".to_string(), XffValue::from("hi mom!")),

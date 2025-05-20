@@ -12,6 +12,8 @@ pub mod data;
 pub mod num;
 pub mod object;
 
+mod tests;
+
 #[derive(Debug, Clone, PartialEq)]
 /// An enum for the different types of XFF values.
 ///
@@ -28,7 +30,7 @@ pub mod object;
 /// All variants have also `into_` functions implemented to retrieve the wrapped data inside.
 /// E.g. `into_string()`, `into_array()`, etc.
 ///
-/// For more information please refer to the readme, or the documentation of the functiuon or type.
+/// For more information please refer to the readme, or the documentation of the function or type.
 ///
 /// Deprecated and kept for compatibility with v0:
 ///
@@ -37,7 +39,7 @@ pub mod object;
 ///
 /// # Example
 /// ```rust
-/// use nabu::{XffValue, Number, Array, Object, Data};
+/// use athena::{XffValue, Number, Array, Object, Data};
 ///
 /// let string_val = XffValue::from("hello mom!");
 /// let num_val = XffValue::from(42.69);
@@ -112,7 +114,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Number, Data};
+    /// use athena::{XffValue, Number, Data};
     ///
     /// let string_value = XffValue::from("hello mom!");
     /// let num_value = XffValue::from(42.69);
@@ -135,7 +137,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Number};
+    /// use athena::{XffValue, Number};
     ///
     /// let num_value = XffValue::from(42.69);
     /// let string_value = XffValue::from("hello mom!");
@@ -155,7 +157,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let vec_value = XffValue::from(vec![XffValue::from("hello mom!"), XffValue::from(42.69)]);
     /// let num_value = XffValue::from(42.69);
@@ -176,7 +178,7 @@ impl XffValue {
     /// # Example
     /// ```rust
     /// use std::collections::BTreeMap;
-    /// use nabu::{XffValue, Number};
+    /// use athena::{XffValue, Number};
     ///
     /// let map = BTreeMap::from([
     ///     ("key0".to_string(), XffValue::from("value0")),
@@ -202,7 +204,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Data};
+    /// use athena::{XffValue, Data};
     ///
     /// let data_value = XffValue::from(vec![1, 2, 3]);
     /// let num_value = XffValue::from(42.69);
@@ -222,7 +224,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let bool_value_true = XffValue::from(true);
     /// let bool_value_false = XffValue::from(false);
@@ -244,7 +246,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let null_value = XffValue::Null;
     /// let num_value = XffValue::from(42.69);
@@ -264,7 +266,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let string_value = XffValue::from("hello mom!");
     /// let num_value = XffValue::from(42.69);
@@ -281,7 +283,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let number_value = XffValue::from(42.69);
     /// let string_value = XffValue::from("hello mom!");
@@ -298,7 +300,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let array_value = XffValue::from(vec![XffValue::from("hello mom!"), XffValue::from(42.69)]);
     /// let string_value = XffValue::from("hello mom!");
@@ -315,7 +317,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Object};
+    /// use athena::{XffValue, Object};
     ///
     /// let object_value = XffValue::from(Object::from(vec![("key0".to_string(), XffValue::from("hello mom!")), ("key1".to_string(), XffValue::from(vec![1, 2, 3]))]));
     /// let string_value = XffValue::from("hello mom!");
@@ -332,7 +334,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::{XffValue, Data};
+    /// use athena::{XffValue, Data};
     ///
     /// let data_value = XffValue::from(Data::from(vec![1, 2, 3]));
     /// let string_value = XffValue::from("hello mom!");
@@ -349,7 +351,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let boolean_value = XffValue::from(true);
     /// let string_value = XffValue::from("hello mom!");
@@ -366,7 +368,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let boolean_value_true = XffValue::from(true);
     /// let boolean_value_false = XffValue::from(false);
@@ -385,7 +387,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let boolean_value_true = XffValue::from(true);
     /// let boolean_value_false = XffValue::from(false);
@@ -404,7 +406,7 @@ impl XffValue {
     ///
     /// # Example
     /// ```rust
-    /// use nabu::XffValue;
+    /// use athena::XffValue;
     ///
     /// let null_value = XffValue::Null;
     /// let string_value = XffValue::from("hello mom!");
