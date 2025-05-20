@@ -26,6 +26,4 @@ pub mod traits {
     pub use crate::utils::traits::signed::Signed;
     pub use crate::utils::traits::unsigned::Unsigned;
 }
-pub mod xff_value {
-    pub use crate::value::*;
-}
+pub use crate::value::*;
