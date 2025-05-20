@@ -3,6 +3,7 @@
 pub enum AthenaError {
     InvalidInput,
     InvalidOutput,
+    InvalidData,
     InsufficientBuffer,
     IoError(std::io::Error),
     ContinuationBitInLastByte,
