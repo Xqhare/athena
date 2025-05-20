@@ -25,16 +25,28 @@ fn low_bits_of_usize(b: usize) -> u8 {
 /// # Arguments
 /// * `data` - The buffer to read from
 ///
-/// # Example
+/// # Returns
+/// * `(usize, u8)` - The value and the number of bytes read
+///
+/// # Errors
+/// * `AthenaError::ContinuationBitInLastByte` - If the last byte has a continuation bit
+///
+/// # Examples
 /// ```
 /// # use athena::encoding_and_decoding::deserialize_leb128_unsigned;
-/// # use std::collections::VecDeque;
 /// 
 /// let u8max: Vec<u8> = vec![0b11111111, 0b00000001]; // 255 in binary LEB128
 /// let (result, num_of_bytes) = deserialize_leb128_unsigned(&u8max).unwrap();
 /// assert_eq!(result, 255);
 /// assert_eq!(num_of_bytes, 2);
-/// assert_ne!(u8max.len(), 0);
+/// assert_eq!(u8max.len(), 2);
+/// ```
+///
+/// ```
+/// # use athena::encoding_and_decoding::deserialize_leb128_unsigned;
+/// let malformed_data: Vec<u8> = vec![0b11111111, 0b10000001]; // Continuation bit in last byte
+/// let result = deserialize_leb128_unsigned(&malformed_data);
+/// assert!(result.is_err());
 /// ```
 pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(usize, u8), AthenaError> {
     let mut result: usize = 0;
