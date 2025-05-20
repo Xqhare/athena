@@ -1,3 +1,4 @@
+mod value;
 mod error;
 mod utils;
 mod tools;
@@ -16,12 +17,15 @@ pub mod encoding_and_decoding {
     pub use crate::tools::run_length::*;
 }
 pub mod byte_bit {
-    pub use crate::tools::byte_bit::reader::byte_bit_reader;
-    pub use crate::tools::byte_bit::writer::byte_bit_writer;
-    pub use crate::tools::byte_bit::decoder::byte_bit_decoder;
-    pub use crate::tools::byte_bit::encoder::byte_bit_encoder;
+    pub use crate::tools::byte_bit::reader::*;
+    pub use crate::tools::byte_bit::writer::*;
+    pub use crate::tools::byte_bit::decoder::*;
+    pub use crate::tools::byte_bit::encoder::*;
 }
 pub mod traits {
     pub use crate::utils::traits::signed::Signed;
     pub use crate::utils::traits::unsigned::Unsigned;
+}
+pub mod xff_value {
+    pub use crate::value::*;
 }
