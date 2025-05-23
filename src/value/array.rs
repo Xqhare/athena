@@ -2,7 +2,7 @@ use std::ops::Index;
 
 use super::XffValue;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 /// An array of XFF values.
 ///
 /// Can be crated with `Array::from()` or `Array::new()`.
@@ -292,6 +292,16 @@ impl Array {
     /// ```
     pub fn iter(&self) -> std::slice::Iter<'_, XffValue> {
         self.values.iter()
+    }
+}
+
+// -----------------------------------------------------------
+//                     Default implementations
+// -----------------------------------------------------------
+
+impl Default for Array {
+    fn default() -> Self {
+        Array::new()
     }
 }
 

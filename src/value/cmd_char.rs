@@ -3,11 +3,12 @@
 //           needed for legacy use
 // ----------------------------------------
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Default)]
 /// Represents all command characters
 ///
 /// Can be converted from `u8` using the `From` trait
 pub enum CommandCharacter {
+    #[default]
     /// Also known as NULL or NONE
     Null,
     /// Start of Heading
