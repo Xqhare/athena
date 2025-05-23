@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 /// A data value, used to store arbitrary data.
 ///
 /// Can be created from a `Vec<u8>` using the `From` trait.

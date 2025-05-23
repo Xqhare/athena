@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Copy, PartialOrd)]
 /// A numeric value.
 ///
 /// `Number::form()` is implemented for all numeric types
@@ -173,7 +173,7 @@ impl From<usize> for Number {
 
 impl From<&usize> for Number {
     fn from(c: &usize) -> Self {
-        Number::Unsigned(c.clone())
+        Number::Unsigned(*c)
     }
 }
 
@@ -209,7 +209,7 @@ impl From<isize> for Number {
 
 impl From<&isize> for Number {
     fn from(c: &isize) -> Self {
-        Number::Integer(c.clone())
+        Number::Integer(*c)
     }
 }
 
@@ -245,7 +245,7 @@ impl From<f64> for Number {
 
 impl From<&f64> for Number {
     fn from(c: &f64) -> Self {
-        Number::from(c.clone())
+        Number::from(*c)
     }
 }
 

@@ -4,7 +4,7 @@ use std::{
     ops::Index,
 };
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 /// An object made up of key-value pairs of XFF values with string key with string keys.
 ///
 /// Can be crated with `Object::from()` or `Object::new()`.
@@ -145,7 +145,6 @@ impl Object {
     pub fn into_hash_map(self) -> HashMap<String, XffValue> {
         self.map
             .into_iter()
-            .map(|(k, v)| (k, v))
             .collect::<HashMap<String, XffValue>>()
     }
 
@@ -301,6 +300,16 @@ impl Object {
     /// ```
     pub fn iter(&self) -> std::collections::btree_map::Iter<'_, String, XffValue> {
         self.map.iter()
+    }
+}
+
+// -----------------------------------------------------------
+//                     Default implementations
+// -----------------------------------------------------------
+
+impl Default for Object {
+    fn default() -> Self {
+        Object::new()
     }
 }
 

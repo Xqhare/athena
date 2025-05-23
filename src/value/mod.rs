@@ -14,7 +14,7 @@ pub mod object;
 
 mod tests;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Default)]
 /// An enum for the different types of XFF values.
 ///
 /// Many From traits are implemented for convenience on `XffValue` directly.
@@ -90,6 +90,7 @@ pub enum XffValue {
     Data(Data),
     /// A boolean value, true or false
     Boolean(bool),
+    #[default]
     /// A null value, a.k.a. `None`, `Nill` or `nothing`
     Null,
     /// Deprecated
@@ -147,7 +148,7 @@ impl XffValue {
     /// ```
     pub fn into_number(&self) -> Option<Number> {
         match self {
-            XffValue::Number(n) => Some(n.clone()),
+            XffValue::Number(n) => Some(*n),
             _ => None,
         }
     }
@@ -416,26 +417,6 @@ impl XffValue {
     /// ```
     pub fn is_null(&self) -> bool {
         matches!(self, XffValue::Null)
-    }
-}
-
-// -----------------------------------------------------------
-//                     Default implementation
-// -----------------------------------------------------------
-
-impl Default for XffValue {
-    fn default() -> Self {
-        XffValue::Null
-    }
-}
-
-// -----------------------------------------------------------
-//                     Into implementations
-// -----------------------------------------------------------
-
-impl Into<Vec<XffValue>> for XffValue {
-    fn into(self) -> Vec<XffValue> {
-        vec![self]
     }
 }
 
