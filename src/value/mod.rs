@@ -420,6 +420,12 @@ impl XffValue {
     }
 }
 
+impl Into<Vec<XffValue>> for XffValue {
+    fn into(self) -> Vec<XffValue> {
+        vec![self]
+    }
+}
+
 // -----------------------------------------------------------
 //                     From implementations
 // -----------------------------------------------------------
