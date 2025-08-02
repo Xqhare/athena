@@ -420,6 +420,11 @@ impl XffValue {
     }
 }
 
+// -----------------------------------------------------------
+//                     Into implementations
+// -----------------------------------------------------------
+
+#[allow(clippy::from_over_into)]
 impl Into<Vec<XffValue>> for XffValue {
     fn into(self) -> Vec<XffValue> {
         vec![self]
