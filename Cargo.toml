@@ -11,6 +11,7 @@ compression = ["encoding_decoding"]
 checksum = []
 byte_bit = []
 traits = []
+bit_flags = []
 
 [package.metadata.docs.rs]
 all-features = true
