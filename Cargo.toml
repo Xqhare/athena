@@ -1,6 +1,6 @@
 [package]
 name = "athena"
-version = "0.6.0"
+version = "0.7.0"
 edition = "2021"
 
 [dependencies]
@@ -11,6 +11,7 @@ compression = ["encoding_decoding"]
 checksum = []
 byte_bit = []
 traits = []
+bit_flags = []
 
 [package.metadata.docs.rs]
 all-features = true
