@@ -39,6 +39,18 @@ A simple implementation of run-length encoding.
 
 ## Tools
 
+### Bit Flags
+
+A simple implementation of bit flags.
+
+Implemented for:
+
+- `u8`
+- `u16`
+- `u32`
+
+Gated behind the `bit_flags` feature.
+
 ### Checksums
 
 #### CRC-32
