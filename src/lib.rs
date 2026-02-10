@@ -2,7 +2,7 @@ mod value;
 mod error;
 #[cfg(any(doc, feature = "compression", feature = "checksum", feature = "traits"))]
 mod utils;
-#[cfg(any(doc, feature = "encoding_decoding", feature = "byte_bit"))]
+//#[cfg(any(doc, feature = "encoding_decoding", feature = "byte_bit"))]
 mod tools;
 
 // Reexports for convenience
@@ -34,3 +34,9 @@ pub mod traits {
     pub use crate::utils::traits::unsigned::Unsigned;
 }
 pub use crate::value::*;
+
+pub mod bit_flags {
+    pub use crate::tools::bit_flags::u8_flag::U8Flag;
+    pub use crate::tools::bit_flags::u16_flag::U16Flag;
+    pub use crate::tools::bit_flags::u32_flag::U32Flag;
+}

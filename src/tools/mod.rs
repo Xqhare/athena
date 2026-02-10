@@ -6,3 +6,5 @@ pub mod run_length;
 pub mod delta;
 #[cfg(any(doc, feature = "byte_bit"))]
 pub mod byte_bit;
+
+pub mod bit_flags;
