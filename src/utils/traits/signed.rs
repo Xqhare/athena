@@ -1,6 +1,6 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, ops::{Add, Div, Mul, Sub}};
 
-pub trait Signed: Copy + Clone + Debug + Eq + Ord + PartialEq + PartialOrd {
+pub trait Signed: Copy + Clone + Debug + Eq + Ord + PartialEq + PartialOrd + Add + Sub + Mul + Div {
 }
 
 impl Signed for i8 {}

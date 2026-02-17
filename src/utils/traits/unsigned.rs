@@ -1,6 +1,6 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, ops::{Add, Div, Mul, Sub}};
 
-pub trait Unsigned: Copy + Clone + Debug + Eq + Ord + PartialEq + PartialOrd {
+pub trait Unsigned: Copy + Clone + Debug + Eq + Ord + PartialEq + PartialOrd + Add + Sub + Mul + Div {
 }
 
 impl Unsigned for u8 {}
