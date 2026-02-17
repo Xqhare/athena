@@ -20,6 +20,7 @@ Athena is named after the Greek goddess of wisdom, warfare and handicraft.
 - [x] LEB128 signed integers
 - [ ] Run-length encoding with custom pattern length
 - [ ] Delta encoding writer (using LEB128)
+- [ ] Refactor `value/num.rs` to use `Signed` and `Unsigned` traits for generic internal operations.
 
 ---
 

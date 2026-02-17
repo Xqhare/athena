@@ -35,9 +35,7 @@ pub mod traits {
 }
 #[cfg(any(doc, feature = "bit_flags"))]
 pub mod bit_flags {
-    pub use crate::tools::bit_flags::u8_flag::U8Flag;
-    pub use crate::tools::bit_flags::u16_flag::U16Flag;
-    pub use crate::tools::bit_flags::u32_flag::U32Flag;
+    pub use crate::tools::bit_flags::{BitFlag, U8Flag, U16Flag, U32Flag};
 }
 
 pub use crate::value::*;
