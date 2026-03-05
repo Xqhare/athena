@@ -96,7 +96,7 @@ fn test_v3_variants() {
     let row_obj = table_val.get_row(0).unwrap();
     assert!(row_obj.is_ordered_object());
     
-    let ordered_data = row_obj.into_ordered_obj().unwrap();
+    let ordered_data = row_obj.into_ordered_object().unwrap();
     assert_eq!(ordered_data[0].0, "name");
     assert_eq!(ordered_data[0].1, XffValue::from("Alice"));
     assert_eq!(ordered_data[1].0, "age");
