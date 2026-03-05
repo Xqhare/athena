@@ -5,12 +5,16 @@ pub use cmd_char::CommandCharacter;
 pub use data::Data;
 pub use num::Number;
 pub use object::Object;
+pub use table::Table;
+pub use uuid::Uuid;
 
 pub mod array;
 pub mod cmd_char;
 pub mod data;
 pub mod num;
 pub mod object;
+pub mod table;
+pub mod uuid;
 
 mod tests;
 
@@ -86,10 +90,26 @@ pub enum XffValue {
     Array(Array),
     /// An object of string keys and XffValue values
     Object(Object),
+    /// A sequence of Key-Value pairs where order is preserved
+    OrderedObject(Vec<(String, XffValue)>),
+    /// A schema-based table
+    Table(Table),
     /// A data value, holding arbitrary bytes
     Data(Data),
     /// A boolean value, true or false
     Boolean(bool),
+    /// Date and Time (milliseconds since epoch)
+    DateTime(u64),
+    /// Duration in milliseconds
+    Duration(u64),
+    /// 128-bit UUID
+    Uuid(Uuid),
+    /// Not a Number
+    NaN,
+    /// Positive Infinity
+    Infinity,
+    /// Negative Infinity
+    NegInfinity,
     #[default]
     /// A null value, a.k.a. `None`, `Nill` or `nothing`
     Null,
@@ -196,6 +216,30 @@ impl XffValue {
     pub fn into_object(&self) -> Option<Object> {
         match self {
             XffValue::Object(o) => Some(o.clone()),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as an ordered object if it is a `XffValue::OrderedObject`
+    pub fn into_ordered_object(&self) -> Option<Vec<(String, XffValue)>> {
+        match self {
+            XffValue::OrderedObject(o) => Some(o.clone()),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a table if it is a `XffValue::Table`
+    pub fn into_table(&self) -> Option<Table> {
+        match self {
+            XffValue::Table(t) => Some(t.clone()),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a UUID if it is a `XffValue::Uuid`
+    pub fn into_uuid(&self) -> Option<Uuid> {
+        match self {
+            XffValue::Uuid(u) => Some(*u),
             _ => None,
         }
     }
@@ -330,6 +374,21 @@ impl XffValue {
         matches!(self, XffValue::Object(_))
     }
 
+    /// Checks if the value is an ordered object
+    pub fn is_ordered_object(&self) -> bool {
+        matches!(self, XffValue::OrderedObject(_))
+    }
+
+    /// Checks if the value is a table
+    pub fn is_table(&self) -> bool {
+        matches!(self, XffValue::Table(_))
+    }
+
+    /// Checks if the value is a UUID
+    pub fn is_uuid(&self) -> bool {
+        matches!(self, XffValue::Uuid(_))
+    }
+
     /// Checks if the value is data, returns `true` if it is.
     /// Returns `false` for all other variants.
     ///
@@ -418,6 +477,21 @@ impl XffValue {
     pub fn is_null(&self) -> bool {
         matches!(self, XffValue::Null)
     }
+
+    /// Checks if the value is NaN
+    pub fn is_nan(&self) -> bool {
+        matches!(self, XffValue::NaN)
+    }
+
+    /// Checks if the value is Infinity
+    pub fn is_infinity(&self) -> bool {
+        matches!(self, XffValue::Infinity)
+    }
+
+    /// Checks if the value is Negative Infinity
+    pub fn is_neg_infinity(&self) -> bool {
+        matches!(self, XffValue::NegInfinity)
+    }
 }
 
 // -----------------------------------------------------------
@@ -438,6 +512,18 @@ impl Into<Vec<XffValue>> for XffValue {
 impl From<Object> for XffValue {
     fn from(c: Object) -> Self {
         XffValue::Object(c)
+    }
+}
+
+impl From<Table> for XffValue {
+    fn from(c: Table) -> Self {
+        XffValue::Table(c)
+    }
+}
+
+impl From<Vec<(String, XffValue)>> for XffValue {
+    fn from(c: Vec<(String, XffValue)>) -> Self {
+        XffValue::OrderedObject(c)
     }
 }
 
@@ -632,8 +718,25 @@ impl std::fmt::Display for XffValue {
             XffValue::Number(n) => write!(f, "{}", n),
             XffValue::Array(a) => write!(f, "{}", a),
             XffValue::Object(o) => write!(f, "{}", o),
+            XffValue::OrderedObject(o) => {
+                write!(f, "{{(ordered) ")?;
+                for (i, (k, v)) in o.iter().enumerate() {
+                    if i != 0 {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "{}: {}", k, v)?;
+                }
+                write!(f, "}}")
+            }
+            XffValue::Table(t) => write!(f, "{}", t),
             XffValue::Data(d) => write!(f, "{}", d),
             XffValue::Boolean(b) => write!(f, "{}", b),
+            XffValue::DateTime(dt) => write!(f, "DT({})", dt),
+            XffValue::Duration(d) => write!(f, "DUR({})", d),
+            XffValue::Uuid(u) => write!(f, "{}", u),
+            XffValue::NaN => write!(f, "NaN"),
+            XffValue::Infinity => write!(f, "Infinity"),
+            XffValue::NegInfinity => write!(f, "-Infinity"),
             XffValue::Null => write!(f, "null"),
 
             // Legacy - v0 only - debug will suffice

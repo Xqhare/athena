@@ -1,4 +1,6 @@
 mod tests;
+pub mod bit_chain;
+pub mod signed_v3;
 
 use crate::error::AthenaError;
 

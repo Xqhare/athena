@@ -18,6 +18,8 @@ pub mod checksum {
 #[cfg(any(doc, feature = "encoding_decoding"))]
 pub mod encoding_and_decoding {
     pub use crate::tools::leb128::*;
+    pub use crate::tools::leb128::bit_chain::*;
+    pub use crate::tools::leb128::signed_v3::*;
     pub use crate::tools::delta::*;
     pub use crate::tools::run_length::*;
 }
@@ -27,6 +29,7 @@ pub mod byte_bit {
     pub use crate::tools::byte_bit::writer::*;
     pub use crate::tools::byte_bit::decoder::*;
     pub use crate::tools::byte_bit::encoder::*;
+    pub use crate::tools::byte_bit::parity::*;
 }
 #[cfg(any(doc, feature = "traits"))]
 pub mod traits {

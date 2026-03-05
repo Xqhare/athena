@@ -57,6 +57,39 @@ fn general() {
 }
 
 #[test]
+fn test_v3_variants() {
+    use crate::value::table::Table;
+    use crate::value::uuid::Uuid;
+
+    let table_val = XffValue::Table(Table::with_columns(vec!["col1".to_string()]));
+    assert!(table_val.is_table());
+    assert!(table_val.into_table().is_some());
+
+    let uuid_val = XffValue::Uuid(Uuid::new([0; 16]));
+    assert!(uuid_val.is_uuid());
+    assert!(uuid_val.into_uuid().is_some());
+
+    let ord_obj_val = XffValue::OrderedObject(vec![("key".to_string(), XffValue::from(1))]);
+    assert!(ord_obj_val.is_ordered_object());
+    assert!(ord_obj_val.into_ordered_object().is_some());
+
+    let nan_val = XffValue::NaN;
+    assert!(nan_val.is_nan());
+    assert_eq!(format!("{}", nan_val), "NaN");
+
+    let inf_val = XffValue::Infinity;
+    assert!(inf_val.is_infinity());
+    assert_eq!(format!("{}", inf_val), "Infinity");
+
+    let ninf_val = XffValue::NegInfinity;
+    assert!(ninf_val.is_neg_infinity());
+    assert_eq!(format!("{}", ninf_val), "-Infinity");
+
+    let dt_val = XffValue::DateTime(123456789);
+    assert_eq!(format!("{}", dt_val), "DT(123456789)");
+}
+
+#[test]
 fn into() {
     let val = XffValue::from(42.69);
     assert_eq!(val.into_data(), None);

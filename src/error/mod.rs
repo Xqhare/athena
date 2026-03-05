@@ -8,6 +8,9 @@ pub enum AthenaError {
     IoError(std::io::Error),
     ContinuationBitInLastByte,
     Overflow,
+    ParityError,
+    InvalidUuidLength,
+    TableSchemaMismatch,
 }
 
 impl std::fmt::Display for AthenaError {
