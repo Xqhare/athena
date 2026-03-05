@@ -1,9 +1,14 @@
-mod value;
 mod error;
+#[cfg(any(
+    doc,
+    feature = "encoding_decoding",
+    feature = "byte_bit",
+    feature = "bit_flags"
+))]
+mod tools;
 #[cfg(any(doc, feature = "compression", feature = "checksum", feature = "traits"))]
 mod utils;
-#[cfg(any(doc, feature = "encoding_decoding", feature = "byte_bit", feature = "bit_flags"))]
-mod tools;
+mod value;
 
 // Reexports for convenience
 
@@ -17,16 +22,19 @@ pub mod checksum {
 }
 #[cfg(any(doc, feature = "encoding_decoding"))]
 pub mod encoding_and_decoding {
-    pub use crate::tools::leb128::*;
     pub use crate::tools::delta::*;
+    pub use crate::tools::leb128::bit_chain::*;
+    pub use crate::tools::leb128::signed_v3::*;
+    pub use crate::tools::leb128::*;
     pub use crate::tools::run_length::*;
 }
 #[cfg(any(doc, feature = "byte_bit"))]
 pub mod byte_bit {
-    pub use crate::tools::byte_bit::reader::*;
-    pub use crate::tools::byte_bit::writer::*;
     pub use crate::tools::byte_bit::decoder::*;
     pub use crate::tools::byte_bit::encoder::*;
+    pub use crate::tools::byte_bit::parity::*;
+    pub use crate::tools::byte_bit::reader::*;
+    pub use crate::tools::byte_bit::writer::*;
 }
 #[cfg(any(doc, feature = "traits"))]
 pub mod traits {

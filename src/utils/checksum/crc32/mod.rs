@@ -59,17 +59,15 @@ pub fn crc32_with_table(data: &[u8], table: &Crc32Table) -> u32 {
 }
 
 /// Returns the crc32 lookup table
-/// 
+///
 /// Implements the CRC32 ISO-HDLC algorithm
 pub fn generate_crc32_lookuptable() -> Crc32Table {
     let mut crc32_table = [0u32; 256];
 
     (0..256).for_each(|n| {
-        crc32_table[n as usize] = (0..8).fold(n as u32, |acc, _| {
-            match acc & 1 == 1 {
-                true => 0xedb88320 ^ (acc >> 1),
-                false => acc >> 1,
-            }
+        crc32_table[n as usize] = (0..8).fold(n as u32, |acc, _| match acc & 1 == 1 {
+            true => 0xedb88320 ^ (acc >> 1),
+            false => acc >> 1,
         });
     });
 

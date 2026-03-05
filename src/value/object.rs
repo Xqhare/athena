@@ -143,9 +143,7 @@ impl Object {
     /// assert_eq!(map.len(), 2);
     /// ```
     pub fn into_hash_map(self) -> HashMap<String, XffValue> {
-        self.map
-            .into_iter()
-            .collect::<HashMap<String, XffValue>>()
+        self.map.into_iter().collect::<HashMap<String, XffValue>>()
     }
 
     /// Returns `true` if the object is empty

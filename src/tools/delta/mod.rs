@@ -3,7 +3,7 @@ use crate::utils::traits::{signed::Signed, unsigned::Unsigned};
 mod tests;
 
 /// Returns the delta compressed version of the given data
-/// 
+///
 /// # Arguments
 /// * `data` - The data to compress
 pub fn delta_encoder<U: Unsigned, S: Signed + From<U>>(data: &[U]) -> Vec<S> {
@@ -24,11 +24,13 @@ pub fn delta_encoder<U: Unsigned, S: Signed + From<U>>(data: &[U]) -> Vec<S> {
 }
 
 /// Returns the delta decompressed version of the given data
-/// 
+///
 /// # Arguments
 /// * `data` - The data to decompress
-pub fn delta_decoder<U: Unsigned + TryFrom<S>, S: Signed>(data: &[S]) -> Vec<U> 
-where <U as TryFrom<S>>::Error: std::fmt::Debug {
+pub fn delta_decoder<U: Unsigned + TryFrom<S>, S: Signed>(data: &[S]) -> Vec<U>
+where
+    <U as TryFrom<S>>::Error: std::fmt::Debug,
+{
     if data.is_empty() {
         return Vec::new();
     }

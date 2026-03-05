@@ -1,4 +1,3 @@
-
 #[derive(Debug)]
 pub enum AthenaError {
     InvalidInput,
@@ -8,6 +7,9 @@ pub enum AthenaError {
     IoError(std::io::Error),
     ContinuationBitInLastByte,
     Overflow,
+    ParityError,
+    InvalidUuidLength,
+    TableSchemaMismatch,
 }
 
 impl std::fmt::Display for AthenaError {
@@ -23,4 +25,3 @@ impl From<std::io::Error> for AthenaError {
         AthenaError::IoError(e)
     }
 }
-

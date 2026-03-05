@@ -1,3 +1,5 @@
+pub mod bit_chain;
+pub mod signed_v3;
 mod tests;
 
 use crate::error::AthenaError;
@@ -18,7 +20,7 @@ fn low_bits_of_usize(b: usize) -> u8 {
 }
 
 /// Deserializes a unsigned integer from a LEB128 encoded byte array
-/// 
+///
 /// Returns the value and the number of bytes read
 /// Does not mutate the buffer
 ///
@@ -34,7 +36,7 @@ fn low_bits_of_usize(b: usize) -> u8 {
 /// # Examples
 /// ```
 /// # use athena::encoding_and_decoding::deserialize_leb128_unsigned;
-/// 
+///
 /// let u8max: Vec<u8> = vec![0b11111111, 0b00000001]; // 255 in binary LEB128
 /// let (result, num_of_bytes) = deserialize_leb128_unsigned(&u8max).unwrap();
 /// assert_eq!(result, 255);
@@ -110,7 +112,7 @@ pub fn serialize_leb128_unsigned(value: usize) -> Vec<u8> {
 }
 
 /// Deserializes a signed integer from a LEB128 encoded byte array
-/// 
+///
 /// Returns the value and the number of bytes read
 /// Does not mutate the buffer
 ///
@@ -121,7 +123,7 @@ pub fn serialize_leb128_unsigned(value: usize) -> Vec<u8> {
 /// ```
 /// # use athena::encoding_and_decoding::deserialize_leb128_signed;
 /// # use std::collections::VecDeque;
-/// 
+///
 /// let i8min: Vec<u8> = vec![0b10000000, 0b01111111]; // -128 in binary LEB128
 /// let (result, num_of_bytes) = deserialize_leb128_signed(&i8min).unwrap();
 /// assert_eq!(result, -128);

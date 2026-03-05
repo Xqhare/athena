@@ -22,7 +22,7 @@ use crate::utils::traits::unsigned::Unsigned;
 /// ```
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub struct BitFlag<T: Unsigned> {
-    flag: T
+    flag: T,
 }
 
 impl<T: Unsigned> BitFlag<T> {
@@ -30,9 +30,7 @@ impl<T: Unsigned> BitFlag<T> {
     ///
     /// All flags are set to `false`
     pub fn new() -> Self {
-        Self {
-            flag: T::zero()
-        }
+        Self { flag: T::zero() }
     }
 
     /// Sets a flag
