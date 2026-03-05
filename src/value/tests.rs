@@ -87,6 +87,20 @@ fn test_v3_variants() {
 
     let dt_val = XffValue::DateTime(123456789);
     assert_eq!(format!("{}", dt_val), "DT(123456789)");
+
+    // Test Table::get_row
+    let mut table = Table::with_columns(vec!["name".to_string(), "age".to_string()]);
+    table.add_row(vec![XffValue::from("Alice"), XffValue::from(30)]).unwrap();
+    let table_val = XffValue::Table(table);
+    
+    let row_obj = table_val.get_row(0).unwrap();
+    assert!(row_obj.is_ordered_object());
+    
+    let ordered_data = row_obj.into_ordered_obj().unwrap();
+    assert_eq!(ordered_data[0].0, "name");
+    assert_eq!(ordered_data[0].1, XffValue::from("Alice"));
+    assert_eq!(ordered_data[1].0, "age");
+    assert_eq!(ordered_data[1].1, XffValue::from(30));
 }
 
 #[test]

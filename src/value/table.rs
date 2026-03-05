@@ -46,6 +46,18 @@ impl Table {
     pub fn row_count(&self) -> usize {
         self.rows.len()
     }
+
+    /// Returns a specific row as an `XffValue::OrderedObject`.
+    /// 
+    /// The object will contain key-value pairs where keys are column names.
+    pub fn get_row(&self, index: usize) -> Option<XffValue> {
+        let row_data = self.rows.get(index)?;
+        let mut ordered_obj = Vec::with_capacity(self.columns.len());
+        for (i, col_name) in self.columns.iter().enumerate() {
+            ordered_obj.push((col_name.clone(), row_data.get(i).cloned().unwrap_or(XffValue::Null)));
+        }
+        Some(XffValue::OrderedObject(ordered_obj))
+    }
 }
 
 impl std::fmt::Display for Table {

@@ -228,10 +228,23 @@ impl XffValue {
         }
     }
 
+    /// Alias for `into_ordered_object`
+    pub fn into_ordered_obj(&self) -> Option<Vec<(String, XffValue)>> {
+        self.into_ordered_object()
+    }
+
     /// Returns the value as a table if it is a `XffValue::Table`
     pub fn into_table(&self) -> Option<Table> {
         match self {
             XffValue::Table(t) => Some(t.clone()),
+            _ => None,
+        }
+    }
+
+    /// If the value is a Table, returns the specific row as an `XffValue::OrderedObject`.
+    pub fn get_row(&self, index: usize) -> Option<XffValue> {
+        match self {
+            XffValue::Table(t) => t.get_row(index),
             _ => None,
         }
     }
