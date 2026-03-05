@@ -1,4 +1,3 @@
-
 #[derive(Debug)]
 pub enum AthenaError {
     InvalidInput,
@@ -26,4 +25,3 @@ impl From<std::io::Error> for AthenaError {
         AthenaError::IoError(e)
     }
 }
-

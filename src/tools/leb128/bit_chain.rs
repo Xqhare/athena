@@ -3,10 +3,10 @@ use crate::error::AthenaError;
 const CONTINUATION_BIT: u8 = 0b10000000;
 
 /// Serializes a version number using the bit-chain encoding.
-/// 
+///
 /// All bits set to '1' are added together to form the version number.
 /// The last version byte is always padded to a full width byte with '0'.
-/// 
+///
 /// # Example
 /// ```
 /// # use athena::encoding_and_decoding::serialize_version_bit_chain;
@@ -27,7 +27,7 @@ pub fn serialize_version_bit_chain(version: usize) -> Vec<u8> {
         let take = std::cmp::min(remaining, 7);
         let mut byte = (1u8 << take) - 1; // Set 'take' number of bits to 1
         remaining -= take;
-        
+
         if remaining > 0 {
             byte |= CONTINUATION_BIT;
         }
@@ -38,7 +38,7 @@ pub fn serialize_version_bit_chain(version: usize) -> Vec<u8> {
 }
 
 /// Deserializes a version number from a bit-chain encoded byte array.
-/// 
+///
 /// Returns the version and the number of bytes read.
 pub fn deserialize_version_bit_chain(data: &[u8]) -> Result<(usize, u8), AthenaError> {
     let mut version = 0;

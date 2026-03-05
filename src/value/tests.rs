@@ -1,24 +1,15 @@
 #![allow(unused_imports)]
-use crate::{XffValue, Number, Array, Object, Data};
+use crate::{Array, Data, Number, Object, XffValue};
 
 #[test]
 fn general() {
     let string_val = XffValue::from("hello mom!");
     let num_val = XffValue::from(42.69);
-    let array_val = XffValue::from(
-        vec![
-            XffValue::from("hi mom!"),
-            XffValue::from(42.69)
-        ]
-    );
-    let object_val = XffValue::from(
-        Object::from(
-           vec![
-               ("keyA".to_string(), XffValue::from("hi mom!")),
-               ("keyB".to_string(), XffValue::from(42.69))
-           ]
-        )
-    );
+    let array_val = XffValue::from(vec![XffValue::from("hi mom!"), XffValue::from(42.69)]);
+    let object_val = XffValue::from(Object::from(vec![
+        ("keyA".to_string(), XffValue::from("hi mom!")),
+        ("keyB".to_string(), XffValue::from(42.69)),
+    ]));
     let data_val = XffValue::from(Data::from(vec![1, 2, 3]));
     let boolean_val = XffValue::from(true);
     let null_val = XffValue::Null;
@@ -49,8 +40,17 @@ fn general() {
 
     assert_eq!(string.unwrap(), "hello mom!");
     assert_eq!(num.unwrap(), Number::from(42.69));
-    assert_eq!(array.unwrap(), Array::from(vec![XffValue::from("hi mom!"), XffValue::from(42.69)]));
-    assert_eq!(object.unwrap(), Object::from(vec![("keyA".to_string(), XffValue::from("hi mom!")), ("keyB".to_string(), XffValue::from(42.69))]));
+    assert_eq!(
+        array.unwrap(),
+        Array::from(vec![XffValue::from("hi mom!"), XffValue::from(42.69)])
+    );
+    assert_eq!(
+        object.unwrap(),
+        Object::from(vec![
+            ("keyA".to_string(), XffValue::from("hi mom!")),
+            ("keyB".to_string(), XffValue::from(42.69))
+        ])
+    );
     assert_eq!(data.unwrap(), Data::from(vec![1, 2, 3]));
     assert_eq!(boolean.unwrap(), true);
     assert_eq!(null, None);
@@ -90,12 +90,14 @@ fn test_v3_variants() {
 
     // Test Table::get_row
     let mut table = Table::with_columns(vec!["name".to_string(), "age".to_string()]);
-    table.add_row(vec![XffValue::from("Alice"), XffValue::from(30)]).unwrap();
+    table
+        .add_row(vec![XffValue::from("Alice"), XffValue::from(30)])
+        .unwrap();
     let table_val = XffValue::Table(table);
-    
+
     let row_obj = table_val.get_row(0).unwrap();
     assert!(row_obj.is_ordered_object());
-    
+
     let ordered_data = row_obj.into_ordered_object().unwrap();
     assert_eq!(ordered_data[0].0, "name");
     assert_eq!(ordered_data[0].1, XffValue::from("Alice"));

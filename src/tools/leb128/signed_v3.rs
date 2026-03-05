@@ -4,7 +4,7 @@ const CONTINUATION_BIT: u8 = 0b10000000;
 const SIGN_BIT_V3: u8 = 0b01000000; // Bit 6 of the first byte
 
 /// Serializes a signed integer using the XFF v3 custom LEB128 encoding.
-/// 
+///
 /// First Byte: [Continuation (1bit)] [Sign (1bit)] [Value (6bits)]
 /// Subsequent Bytes: [Continuation (1bit)] [Value (7bits)]
 pub fn serialize_leb128_signed_v3(value: i64) -> Vec<u8> {
@@ -85,7 +85,24 @@ mod tests {
 
     #[test]
     fn test_signed_v3_serde() {
-        let test_values = vec![0, 1, -1, 63, -63, 64, -64, 127, -127, 128, -128, 1000, -1000, i64::MAX, i64::MIN, i64::MIN + 1];
+        let test_values = vec![
+            0,
+            1,
+            -1,
+            63,
+            -63,
+            64,
+            -64,
+            127,
+            -127,
+            128,
+            -128,
+            1000,
+            -1000,
+            i64::MAX,
+            i64::MIN,
+            i64::MIN + 1,
+        ];
         for v in test_values {
             let serialized = serialize_leb128_signed_v3(v);
             let (deserialized, len) = deserialize_leb128_signed_v3(&serialized).unwrap();

@@ -31,7 +31,8 @@ fn byte_bit_reader_basics() {
     let byte0 = vec![0b10101010, 0b10101010];
     let bits0 = byte_bit_reader(byte0.as_slice());
     assert!(bits0.is_ok());
-    assert_eq!(bits0.unwrap(), vec![vec![0, 1, 0, 1, 0, 1, 0, 1], vec![0, 1, 0, 1, 0, 1, 0, 1]]);
+    assert_eq!(
+        bits0.unwrap(),
+        vec![vec![0, 1, 0, 1, 0, 1, 0, 1], vec![0, 1, 0, 1, 0, 1, 0, 1]]
+    );
 }
-
-

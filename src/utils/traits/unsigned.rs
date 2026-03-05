@@ -1,4 +1,7 @@
-use std::{fmt::Debug, ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Not, Shl, Shr, Sub}};
+use std::{
+    fmt::Debug,
+    ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Not, Shl, Shr, Sub},
+};
 
 pub trait Unsigned:
     Copy
@@ -25,22 +28,42 @@ pub trait Unsigned:
 }
 
 impl Unsigned for u8 {
-    fn zero() -> Self { 0 }
-    fn one() -> Self { 1 }
+    fn zero() -> Self {
+        0
+    }
+    fn one() -> Self {
+        1
+    }
 }
 impl Unsigned for u16 {
-    fn zero() -> Self { 0 }
-    fn one() -> Self { 1 }
+    fn zero() -> Self {
+        0
+    }
+    fn one() -> Self {
+        1
+    }
 }
 impl Unsigned for u32 {
-    fn zero() -> Self { 0 }
-    fn one() -> Self { 1 }
+    fn zero() -> Self {
+        0
+    }
+    fn one() -> Self {
+        1
+    }
 }
 impl Unsigned for u64 {
-    fn zero() -> Self { 0 }
-    fn one() -> Self { 1 }
+    fn zero() -> Self {
+        0
+    }
+    fn one() -> Self {
+        1
+    }
 }
 impl Unsigned for usize {
-    fn zero() -> Self { 0 }
-    fn one() -> Self { 1 }
+    fn zero() -> Self {
+        0
+    }
+    fn one() -> Self {
+        1
+    }
 }

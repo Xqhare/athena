@@ -1,4 +1,3 @@
-
 #[test]
 fn simple_delta_encoding() {
     let data = vec![1u8, 2, 3, 4, 5];
@@ -14,7 +13,10 @@ fn simple_delta_encoding() {
 fn advanced_delta_encoding() {
     let data = vec![1u8, 10, 2, 30, 3, 55, 4, 80, 5, 110];
     let compressed = super::delta_encoder::<u8, i16>(&data);
-    assert_eq!(compressed, vec![1i16, -9, 8, -28, 27, -52, 51, -76, 75, -105]);
+    assert_eq!(
+        compressed,
+        vec![1i16, -9, 8, -28, 27, -52, 51, -76, 75, -105]
+    );
 }
 
 #[test]
@@ -62,11 +64,13 @@ fn advanced_encoding_and_decoding() {
     let compressed = super::delta_encoder::<u8, i16>(&large_num.to_le_bytes().to_vec());
     let decompressed = super::delta_decoder::<u8, i16>(&compressed);
     assert_eq!(decompressed.len(), 8);
-    assert_eq!(u64::from_le_bytes(decompressed.try_into().unwrap()), large_num);
+    assert_eq!(
+        u64::from_le_bytes(decompressed.try_into().unwrap()),
+        large_num
+    );
 
     let file = std::fs::read_to_string("README.md").unwrap();
     let compressed = super::delta_encoder::<u8, i16>(&file.as_bytes().to_vec());
     let decompressed = super::delta_decoder::<u8, i16>(&compressed);
     assert_eq!(String::from_utf8(decompressed).unwrap(), file);
 }
-

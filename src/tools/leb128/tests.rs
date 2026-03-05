@@ -2,7 +2,7 @@
 
 mod unsigned {
     use crate::encoding_and_decoding::{deserialize_leb128_unsigned, serialize_leb128_unsigned};
-    
+
     #[test]
     fn deser_err() {
         // continuation bit set in last byte
@@ -57,7 +57,7 @@ mod unsigned {
     #[test]
     fn serde_all_the_numbers_high_u32() {
         let upper_bound: u64 = (u32::MAX as u64 * 2) / 3;
-        for i in upper_bound..=u32::MAX  as u64 {
+        for i in upper_bound..=u32::MAX as u64 {
             let serialized = serialize_leb128_unsigned(i.try_into().unwrap());
             let (result, _) = deserialize_leb128_unsigned(&serialized).unwrap();
             assert_eq!(result, i.try_into().unwrap());
@@ -67,16 +67,37 @@ mod unsigned {
 
     #[test]
     fn serialize_leb_unsigned() {
-        let data = vec![255, 65535, 4294967295, 18446744073709551615, 16777215, 1099511627775, 281474976710655, 72057594037927935];
+        let data = vec![
+            255,
+            65535,
+            4294967295,
+            18446744073709551615,
+            16777215,
+            1099511627775,
+            281474976710655,
+            72057594037927935,
+        ];
         let u8max = vec![0b11111111, 0b00000001]; // 1
         let u16max = vec![0b11111111, 0b11111111, 0b00000011]; // 2
         let u32max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00001111]; // 4
-        let u64max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00000001]; // 8
+        let u64max = vec![
+            0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111,
+            0b11111111, 0b11111111, 0b00000001,
+        ]; // 8
         let u24max = vec![0b11111111, 0b11111111, 0b11111111, 0b00000111]; // 3
-        let u40max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00011111]; // 5
-        let u48max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00111111]; // 6
-        let u56max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b01111111]; // 7
-        let all_u = vec![u8max, u16max, u32max, u64max, u24max, u40max, u48max, u56max];
+        let u40max = vec![
+            0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00011111,
+        ]; // 5
+        let u48max = vec![
+            0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00111111,
+        ]; // 6
+        let u56max = vec![
+            0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111,
+            0b01111111,
+        ]; // 7
+        let all_u = vec![
+            u8max, u16max, u32max, u64max, u24max, u40max, u48max, u56max,
+        ];
         for (i, d) in data.iter().enumerate() {
             let serialized = serialize_leb128_unsigned(*d);
             let ser_check: Vec<u8> = serialized.clone().into();
@@ -93,9 +114,17 @@ mod unsigned {
         let u8max = vec![0b11111111, 0b00000001]; // 1
         let u16max = vec![0b11111111, 0b11111111, 0b00000011]; // 2
         let u32max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00001111]; // 4
-        let u64max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00000001]; // 8
+        let u64max = vec![
+            0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111,
+            0b11111111, 0b11111111, 0b00000001,
+        ]; // 8
         let all_u = vec![u8max, u16max, u32max, u64max];
-        let all_u_res: Vec<(u64, u8)> = vec![(255, 2), (65535, 3), (4_294_967_295, 5), (18_446_744_073_709_551_615, 10)];
+        let all_u_res: Vec<(u64, u8)> = vec![
+            (255, 2),
+            (65535, 3),
+            (4_294_967_295, 5),
+            (18_446_744_073_709_551_615, 10),
+        ];
         let mut count = 0;
         for (i, u) in all_u.iter().enumerate() {
             data.clear();
@@ -107,11 +136,23 @@ mod unsigned {
         }
         assert_eq!(count, 4);
         let u24max = vec![0b11111111, 0b11111111, 0b11111111, 0b00000111]; // 3
-        let u40max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00011111]; // 5
-        let u48max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00111111]; // 6
-        let u56max = vec![0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b01111111]; // 7
+        let u40max = vec![
+            0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00011111,
+        ]; // 5
+        let u48max = vec![
+            0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b00111111,
+        ]; // 6
+        let u56max = vec![
+            0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111, 0b11111111,
+            0b01111111,
+        ]; // 7
         let new_u = vec![u24max, u40max, u48max, u56max];
-        let new_u_res: Vec<(u64, u8)> = vec![(16777215, 4), (1099511627775, 6), (281474976710655, 7), (72057594037927935, 8)];
+        let new_u_res: Vec<(u64, u8)> = vec![
+            (16777215, 4),
+            (1099511627775, 6),
+            (281474976710655, 7),
+            (72057594037927935, 8),
+        ];
         count = 0;
         for (i, u) in new_u.iter().enumerate() {
             data.clear();
@@ -126,7 +167,10 @@ mod unsigned {
 }
 
 mod signed {
-    use crate::{error::AthenaError, tools::leb128::{deserialize_leb128_signed, serialize_leb128_signed}};
+    use crate::{
+        error::AthenaError,
+        tools::leb128::{deserialize_leb128_signed, serialize_leb128_signed},
+    };
 
     #[test]
     fn serialize_leb_signed() {
@@ -136,7 +180,12 @@ mod signed {
         let i64min = vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7F];
 
         let all_i = vec![i8min, i16min, i32min, i64min];
-        let all_i_res: Vec<(i64, u8)> = vec![(-128, 2), (-32768, 3), (-2_147_483_648, 5), (-9_223_372_036_854_775_808, 10)];
+        let all_i_res: Vec<(i64, u8)> = vec![
+            (-128, 2),
+            (-32768, 3),
+            (-2_147_483_648, 5),
+            (-9_223_372_036_854_775_808, 10),
+        ];
         let mut count = 0;
         for (i, int) in all_i.iter().enumerate() {
             let result = serialize_leb128_signed(all_i_res[i].0);
@@ -154,7 +203,12 @@ mod signed {
         let i64min = vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7F];
 
         let all_i = vec![i8min, i16min, i32min, i64min];
-        let all_i_res: Vec<(i64, u8)> = vec![(-128, 2), (-32768, 3), (-2_147_483_648, 5), (-9_223_372_036_854_775_808, 10)];
+        let all_i_res: Vec<(i64, u8)> = vec![
+            (-128, 2),
+            (-32768, 3),
+            (-2_147_483_648, 5),
+            (-9_223_372_036_854_775_808, 10),
+        ];
         let mut count = 0;
         for (i, int) in all_i.iter().enumerate() {
             let (result, num_of_bytes) = deserialize_leb128_signed(int).unwrap();
@@ -171,7 +225,9 @@ mod signed {
         let err = deserialize_leb128_signed(&data);
         assert!(err.is_err());
 
-        let data2 = vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7F];
+        let data2 = vec![
+            0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7F,
+        ];
         let err = deserialize_leb128_signed(&data2);
         assert!(err.is_err());
     }

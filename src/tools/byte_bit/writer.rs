@@ -5,7 +5,7 @@ use super::encoder::byte_bit_encoder;
 /// Writes bits to a io::Writer
 ///
 /// The bits will be in the order of least significant bit to most significant bit
-/// 
+///
 /// # Example
 /// ```
 /// # use athena::byte_bit::byte_bit_writer;
@@ -14,9 +14,14 @@ use super::encoder::byte_bit_encoder;
 /// byte_bit_writer(&mut writer, bytes).unwrap();
 /// assert_eq!(writer, vec![0b11110000, 0b00001111]);
 /// ```
-pub fn byte_bit_writer<W: std::io::Write>(writer: &mut W, bytes: Vec<[u8; 8]>) -> Result<(), AthenaError> {
+pub fn byte_bit_writer<W: std::io::Write>(
+    writer: &mut W,
+    bytes: Vec<[u8; 8]>,
+) -> Result<(), AthenaError> {
     for byte in bytes {
-        writer.write_all(&[byte_bit_encoder(&byte)]).map_err(AthenaError::IoError)?;
+        writer
+            .write_all(&[byte_bit_encoder(&byte)])
+            .map_err(AthenaError::IoError)?;
     }
     Ok(())
 }
@@ -346,4 +351,3 @@ fn byte_bit_writer_all_u8() {
         assert_eq!(writer, vec![i, i]);
     }
 }
-

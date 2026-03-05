@@ -1,5 +1,5 @@
 #![allow(unused_imports)]
-use crate::encoding_and_decoding::{run_length_encoder, run_length_decoder};
+use crate::encoding_and_decoding::{run_length_decoder, run_length_encoder};
 
 #[test]
 fn serde_simple() {
@@ -9,14 +9,23 @@ fn serde_simple() {
     let compressed_some_double = run_length_encoder(&data_some_double.as_bytes().to_vec());
     let decompressed_no_double = run_length_decoder(&compressed_no_double);
     let decompressed_some_double = run_length_decoder(&compressed_some_double);
-    assert_eq!(String::from_utf8(decompressed_no_double).unwrap(), data_no_double);
-    assert_eq!(String::from_utf8(decompressed_some_double).unwrap(), data_some_double);
+    assert_eq!(
+        String::from_utf8(decompressed_no_double).unwrap(),
+        data_no_double
+    );
+    assert_eq!(
+        String::from_utf8(decompressed_some_double).unwrap(),
+        data_some_double
+    );
 }
 
 #[test]
 fn serde_advanced() {
     let data0 = {
-        let abc = vec!['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        let abc = vec![
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+            'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        ];
         let mut s = String::new();
         for i in 0..1000 {
             for _ in 0..3 {

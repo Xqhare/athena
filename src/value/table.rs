@@ -2,7 +2,7 @@ use super::XffValue;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd, Default)]
 /// A schema-based table.
-/// 
+///
 /// Tables consist of a list of column names and a list of rows.
 /// Each row must have the same number of elements as there are columns.
 pub struct Table {
@@ -27,11 +27,15 @@ impl Table {
     }
 
     /// Adds a row to the table.
-    /// 
+    ///
     /// Returns an error if the row length does not match the column count.
     pub fn add_row(&mut self, row: Vec<XffValue>) -> Result<(), String> {
         if row.len() != self.columns.len() {
-            return Err(format!("Row length {} does not match column count {}", row.len(), self.columns.len()));
+            return Err(format!(
+                "Row length {} does not match column count {}",
+                row.len(),
+                self.columns.len()
+            ));
         }
         self.rows.push(row);
         Ok(())
@@ -48,13 +52,16 @@ impl Table {
     }
 
     /// Returns a specific row as an `XffValue::OrderedObject`.
-    /// 
+    ///
     /// The object will contain key-value pairs where keys are column names.
     pub fn get_row(&self, index: usize) -> Option<XffValue> {
         let row_data = self.rows.get(index)?;
         let mut ordered_obj = Vec::with_capacity(self.columns.len());
         for (i, col_name) in self.columns.iter().enumerate() {
-            ordered_obj.push((col_name.clone(), row_data.get(i).cloned().unwrap_or(XffValue::Null)));
+            ordered_obj.push((
+                col_name.clone(),
+                row_data.get(i).cloned().unwrap_or(XffValue::Null),
+            ));
         }
         Some(XffValue::OrderedObject(ordered_obj))
     }
@@ -62,6 +69,11 @@ impl Table {
 
 impl std::fmt::Display for Table {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "Table(cols: {:?}, rows: {})", self.columns, self.rows.len())
+        write!(
+            f,
+            "Table(cols: {:?}, rows: {})",
+            self.columns,
+            self.rows.len()
+        )
     }
 }

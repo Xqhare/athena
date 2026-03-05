@@ -1,6 +1,6 @@
 pub mod decoder;
 pub mod encoder;
-pub mod reader;
-pub mod writer;
 pub mod parity;
+pub mod reader;
 mod tests;
+pub mod writer;

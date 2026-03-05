@@ -3,18 +3,18 @@ use crate::utils::traits::unsigned::Unsigned;
 mod tests;
 
 /// Returns the run length encoded version of the given data
-/// Returned data is in binary, returned count includes 1 
-/// 
+/// Returned data is in binary, returned count includes 1
+///
 /// # Arguments
 /// * `data` - The data to compress
-/// 
+///
 /// # Returns
 /// * `Vec<(usize, u8)>` - The run length encoded data in format (count, value)
 ///
 /// # Example
 /// ```
 /// # use athena::encoding_and_decoding::run_length_encoder;
-/// 
+///
 /// let data = "AAAABBBCCDEEEEFFGGGGHHIJKLLMMNNNPQQRRSTUUVVVVWWXYYZ".as_bytes().to_vec();
 /// let compressed = run_length_encoder(&data);
 /// assert_eq!(compressed.len(), 25);
@@ -45,7 +45,7 @@ pub fn run_length_encoder<D: Unsigned>(data: &[D]) -> Vec<(usize, D)> {
 /// * `data` - The data to decompress
 ///     * `count` - The number of times to repeat the value
 ///     * `value` - The value to repeat
-/// 
+///
 /// # Returns
 /// * `Vec<u8>` - The decompressed data
 ///
@@ -55,7 +55,7 @@ pub fn run_length_encoder<D: Unsigned>(data: &[D]) -> Vec<(usize, D)> {
 /// # Example
 /// ```
 /// # use athena::encoding_and_decoding::run_length_decoder;
-/// 
+///
 /// let data: Vec<(usize, u8)> = vec![(4, 97), (1, 98), (2, 99), (3, 100)];
 /// let decompressed = run_length_decoder(&data);
 /// assert_eq!(decompressed.len(), 10);

@@ -1,21 +1,24 @@
 use std::collections::HashMap;
 
-use crate::{encoding_and_decoding::{deserialize_leb128_unsigned, serialize_leb128_unsigned}, error::AthenaError};
+use crate::{
+    encoding_and_decoding::{deserialize_leb128_unsigned, serialize_leb128_unsigned},
+    error::AthenaError,
+};
 
 mod tests;
 
 /// Compresses the given data using the LZW algorithm and encodes it using LEB128
-/// 
+///
 /// # Arguments
 /// * `data` - The data to compress
-/// 
+///
 /// # Returns
 /// * `Vec<u8>` - The compressed data
 ///
 /// # Example
 /// ```
 /// # use athena::compression::compress_lzw_encode_leb128;
-/// 
+///
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let compressed = compress_lzw_encode_leb128(&data);
 /// assert_eq!(compressed.len(), 43);
@@ -32,17 +35,17 @@ pub fn compress_lzw_encode_leb128(data: &[u8]) -> Vec<u8> {
 }
 
 /// Decodes the given data using LEB128 and decompresses it using the LZW algorithm
-/// 
+///
 /// # Arguments
 /// * `data` - The data to decompress
-/// 
+///
 /// # Returns
 /// * `Vec<u8>` - The decompressed data
-/// 
+///
 /// # Example
 /// ```
 /// # use athena::compression::{decompress_lzw_decode_leb128, compress_lzw_encode_leb128};
-/// 
+///
 /// let data = "The quick brown fox jumps over the lazy dog";
 /// let compressed = compress_lzw_encode_leb128(&data.as_bytes().to_vec());
 /// let decompressed = decompress_lzw_decode_leb128(&compressed).unwrap();
@@ -63,17 +66,17 @@ pub fn decompress_lzw_decode_leb128(data: &[u8]) -> Result<Vec<u8>, AthenaError>
 }
 
 /// Compresses the given data using the LZW algorithm
-/// 
+///
 /// # Arguments
 /// * `data` - The data to compress
-/// 
+///
 /// # Returns
 /// * `Vec<u32>` - The compressed data
 ///
 /// # Example
 /// ```
 /// # use athena::compression::compress_lzw;
-/// 
+///
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let compressed = compress_lzw(&data);
 /// assert_eq!(compressed.len(), 42);
@@ -104,17 +107,17 @@ pub fn compress_lzw(data: &[u8]) -> Vec<u32> {
 }
 
 /// Decompresses the given data using the LZW algorithm
-/// 
+///
 /// # Arguments
 /// * `data` - The data to decompress
-/// 
+///
 /// # Returns
 /// * `Vec<u8>` - The decompressed data
-/// 
+///
 /// # Example
 /// ```
 /// # use athena::compression::{decompress_lzw, compress_lzw};
-/// 
+///
 /// let data = "The quick brown fox jumps over the lazy dog".as_bytes().to_vec();
 /// let compressed = compress_lzw(&data);
 /// let decompressed = decompress_lzw(&compressed);
