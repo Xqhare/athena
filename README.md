@@ -8,6 +8,9 @@ My rusty toolbox of useful tools.
         - [Delta encoding](#delta-encoding)
         - [Run-length encoding](#run-length-encoding)
     - [Tools](#tools)
+        - [LEB128](#leb128)
+        - [Bit Flags](#bit-flags)
+        - [Parity](#parity)
     - [Checksums](#checksums)
         - [CRC-32](#crc-32)
     - [Bitreader](#bitreader)
@@ -40,24 +43,46 @@ A simple implementation of run-length encoding.
 
 ## Tools
 
+### LEB128
+Gated behind the `encoding_decoding` feature.
+Provides standard LEB128 and XFF v3 specific variations.
+
+```rust
+use athena::encoding_and_decoding::{serialize_leb128_unsigned, deserialize_leb128_unsigned};
+
+let bytes = serialize_leb128_unsigned(255);
+let (val, len) = deserialize_leb128_unsigned(&bytes).unwrap();
+assert_eq!(val, 255);
+```
+
 ### Bit Flags
-
-A simple implementation of bit flags.
-
-Implemented for:
-
-- `u8`
-- `u16`
-- `u32`
-
 Gated behind the `bit_flags` feature.
+A simple implementation of bit flags for `u8`, `u16`, and `u32`.
+
+### Parity
+Gated behind the `byte_bit` feature.
+Provides utilities for even parity.
+
+```rust
+use athena::byte_bit::{ensure_even_parity, is_even_parity};
+
+let marker = 0x01; // 0000 0001 (1 set bit - odd)
+let parity_marker = ensure_even_parity(marker); // 1000 0001 (2 set bits - even)
+assert!(is_even_parity(parity_marker));
+```
 
 ### Checksums
 
 #### CRC-32
-A implementation of CRC-32, a checksum algorithm that is used to detect errors in data.
+Gated behind the `checksum` feature.
+A implementation of CRC-32 (ISO-HDLC) used to detect errors in data.
 
-It should be in accordance with ISO 3309.
+```rust
+use athena::checksum::crc32;
+
+let data = b"Hello World";
+let checksum = crc32(data);
+```
 
 ### Bitreader
 A simple function to read bits from a single byte.
