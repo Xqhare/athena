@@ -69,9 +69,47 @@ impl Metadata {
         self.map.get("license")?.into_string()
     }
 
-    /// Sets an arbitrary metadata key-value pair
+    /// Sets an arbitrary metadata key-value pair.
+    /// 
+    /// To adhere to the XFF v3 standard, metadata should be flat.
+    /// Use `is_flat_value()` to check if a value is suitable for metadata.
     pub fn set_custom<S: Into<String>, V: Into<XffValue>>(&mut self, key: S, value: V) {
         self.map.insert(key, value);
+    }
+
+    /// Checks if the metadata adheres to the XFF v3 "flat object" requirement.
+    /// 
+    /// A flat metadata object contains only primitive or specialized types,
+    /// and no nested parent types (Array, Object, Table, etc.).
+    pub fn is_strict_v3_compliant(&self) -> bool {
+        self.map.iter().all(|(_, v)| Self::is_flat_value(v))
+    }
+
+    /// Helper to check if a value is a "flat" type allowed in strict v3 metadata.
+    pub fn is_flat_value(value: &XffValue) -> bool {
+        match value {
+            XffValue::String(_) |
+            XffValue::Number(_) |
+            XffValue::Boolean(_) |
+            XffValue::DateTime(_) |
+            XffValue::Duration(_) |
+            XffValue::Uuid(_) |
+            XffValue::NaN |
+            XffValue::Infinity |
+            XffValue::NegInfinity |
+            XffValue::Null => true,
+            
+            // Parent types are not flat
+            XffValue::Array(_) |
+            XffValue::Object(_) |
+            XffValue::OrderedObject(_) |
+            XffValue::Table(_) |
+            XffValue::Metadata(_) => false,
+
+            // Legacy types are not considered flat for v3
+            XffValue::CommandCharacter(_) |
+            XffValue::ArrayCmdChar(_) => false,
+        }
     }
 
     /// Gets an arbitrary metadata value
