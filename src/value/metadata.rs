@@ -77,15 +77,28 @@ impl Metadata {
         self.map.insert(key, value);
     }
 
-    /// Checks if the metadata adheres to the XFF v3 "flat object" requirement.
+    /// Checks if the metadata adheres to the XFF v3 "no nested parents" requirement.
     /// 
-    /// A flat metadata object contains only primitive or specialized types,
-    /// and no nested parent types (Array, Object, Table, etc.).
+    /// Metadata can contain primitives or a single level of parent types (Array, Object, Table),
+    /// but those parent types cannot contain further nested parents.
     pub fn is_strict_v3_compliant(&self) -> bool {
-        self.map.iter().all(|(_, v)| Self::is_flat_value(v))
+        self.map.iter().all(|(_, v)| {
+            if Self::is_flat_value(v) {
+                true
+            } else {
+                // If it's a parent, it must not contain any other parents
+                match v {
+                    XffValue::Array(a) => a.values.iter().all(Self::is_flat_value),
+                    XffValue::Object(o) => o.map.values().all(Self::is_flat_value),
+                    XffValue::OrderedObject(o) => o.iter().all(|(_, val)| Self::is_flat_value(val)),
+                    XffValue::Table(t) => t.rows.iter().flatten().all(Self::is_flat_value),
+                    _ => false, // Metadata variant inside metadata is forbidden
+                }
+            }
+        })
     }
 
-    /// Helper to check if a value is a "flat" type allowed in strict v3 metadata.
+    /// Helper to check if a value is a "flat" (primitive/specialized) type.
     pub fn is_flat_value(value: &XffValue) -> bool {
         match value {
             XffValue::String(_) |
@@ -99,16 +112,8 @@ impl Metadata {
             XffValue::NegInfinity |
             XffValue::Null => true,
             
-            // Parent types are not flat
-            XffValue::Array(_) |
-            XffValue::Object(_) |
-            XffValue::OrderedObject(_) |
-            XffValue::Table(_) |
-            XffValue::Metadata(_) => false,
-
-            // Legacy types are not considered flat for v3
-            XffValue::CommandCharacter(_) |
-            XffValue::ArrayCmdChar(_) => false,
+            // Parent types and legacy types are not "flat"
+            _ => false,
         }
     }
 
