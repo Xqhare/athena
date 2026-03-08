@@ -1,0 +1,109 @@
+use super::{Object, XffValue};
+
+#[derive(Debug, Clone, PartialEq, PartialOrd, Default)]
+/// A metadata object for XFF files.
+/// 
+/// Provides high-level context about the file, such as creator, source, and license.
+pub struct Metadata {
+    /// The underlying data storage
+    pub map: Object,
+}
+
+impl Metadata {
+    /// Creates a new, empty Metadata object
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Sets the creator of the file
+    pub fn set_creator(&mut self, creator: String) {
+        self.map.insert("creator", XffValue::String(creator));
+    }
+
+    /// Gets the creator of the file
+    pub fn get_creator(&self) -> Option<String> {
+        self.map.get("creator")?.into_string()
+    }
+
+    /// Sets the creation timestamp (milliseconds since epoch)
+    pub fn set_created_at(&mut self, timestamp: u64) {
+        self.map.insert("created_at", XffValue::DateTime(timestamp));
+    }
+
+    /// Gets the creation timestamp
+    pub fn get_created_at(&self) -> Option<u64> {
+        if let Some(XffValue::DateTime(dt)) = self.map.get("created_at") {
+            Some(*dt)
+        } else {
+            None
+        }
+    }
+
+    /// Sets the source of the data
+    pub fn set_source(&mut self, source: String) {
+        self.map.insert("source", XffValue::String(source));
+    }
+
+    /// Gets the source of the data
+    pub fn get_source(&self) -> Option<String> {
+        self.map.get("source")?.into_string()
+    }
+
+    /// Sets a human-readable summary
+    pub fn set_description(&mut self, description: String) {
+        self.map.insert("description", XffValue::String(description));
+    }
+
+    /// Gets the description
+    pub fn get_description(&self) -> Option<String> {
+        self.map.get("description")?.into_string()
+    }
+
+    /// Sets the license
+    pub fn set_license(&mut self, license: String) {
+        self.map.insert("license", XffValue::String(license));
+    }
+
+    /// Gets the license
+    pub fn get_license(&self) -> Option<String> {
+        self.map.get("license")?.into_string()
+    }
+
+    /// Sets an arbitrary metadata key-value pair
+    pub fn set_custom<S: Into<String>, V: Into<XffValue>>(&mut self, key: S, value: V) {
+        self.map.insert(key, value);
+    }
+
+    /// Gets an arbitrary metadata value
+    pub fn get_custom(&self, key: &str) -> Option<&XffValue> {
+        self.map.get(key)
+    }
+
+    /// Returns the number of metadata entries
+    pub fn len(&self) -> usize {
+        self.map.len()
+    }
+
+    /// Returns true if there are no metadata entries
+    pub fn is_empty(&self) -> bool {
+        self.map.is_empty()
+    }
+}
+
+impl From<Object> for Metadata {
+    fn from(map: Object) -> Self {
+        Self { map }
+    }
+}
+
+impl From<Metadata> for Object {
+    fn from(meta: Metadata) -> Self {
+        meta.map
+    }
+}
+
+impl std::fmt::Display for Metadata {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "Metadata({})", self.map)
+    }
+}

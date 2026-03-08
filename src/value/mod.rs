@@ -3,6 +3,7 @@ use std::collections::{BTreeMap, HashMap};
 pub use array::Array;
 pub use cmd_char::CommandCharacter;
 pub use data::Data;
+pub use metadata::Metadata;
 pub use num::Number;
 pub use object::Object;
 pub use table::Table;
@@ -11,6 +12,7 @@ pub use uuid::Uuid;
 pub mod array;
 pub mod cmd_char;
 pub mod data;
+pub mod metadata;
 pub mod num;
 pub mod object;
 pub mod table;
@@ -43,7 +45,7 @@ mod tests;
 ///
 /// # Example
 /// ```rust
-/// use athena::{XffValue, Number, Array, Object, Data};
+/// use athena::{XffValue, Number, Array, Object, Data, Metadata};
 ///
 /// let string_val = XffValue::from("hello mom!");
 /// let num_val = XffValue::from(42.69);
@@ -64,6 +66,9 @@ mod tests;
 /// let data_val = XffValue::from(Data::from(vec![1, 2, 3]));
 /// let boolean_val = XffValue::from(true);
 /// let null_val = XffValue::Null;
+/// let mut meta = Metadata::new();
+/// meta.set_creator("Xqhare".to_string());
+/// let meta_val = XffValue::from(meta);
 ///
 /// assert!(string_val.is_string());
 /// assert!(num_val.is_number());
@@ -72,6 +77,7 @@ mod tests;
 /// assert!(data_val.is_data());
 /// assert!(boolean_val.is_boolean());
 /// assert!(null_val.is_null());
+/// assert!(meta_val.is_metadata());
 ///
 /// let string: String = string_val.into_string().unwrap();
 /// let num: Number = num_val.into_number().unwrap();
@@ -80,6 +86,7 @@ mod tests;
 /// let data: Data = data_val.into_data().unwrap();
 /// let boolean: bool = boolean_val.into_boolean().unwrap();
 /// let null: Option<()> = null_val.into_null();
+/// let metadata: Metadata = meta_val.into_metadata().unwrap();
 /// ```
 pub enum XffValue {
     /// A string value
@@ -94,6 +101,8 @@ pub enum XffValue {
     OrderedObject(Vec<(String, XffValue)>),
     /// A schema-based table
     Table(Table),
+    /// A metadata object
+    Metadata(Metadata),
     /// A data value, holding arbitrary bytes
     Data(Data),
     /// A boolean value, true or false
@@ -236,6 +245,14 @@ impl XffValue {
         }
     }
 
+    /// Returns the value as a metadata object if it is a `XffValue::Metadata`
+    pub fn into_metadata(&self) -> Option<Metadata> {
+        match self {
+            XffValue::Metadata(m) => Some(m.clone()),
+            _ => None,
+        }
+    }
+
     /// If the value is a Table, returns the specific row as an `XffValue::OrderedObject`.
     pub fn get_row(&self, index: usize) -> Option<XffValue> {
         match self {
@@ -290,6 +307,46 @@ impl XffValue {
     pub fn into_boolean(&self) -> Option<bool> {
         match self {
             XffValue::Boolean(b) => Some(*b),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to a metadata object if it is a `XffValue::Metadata`
+    pub fn as_metadata(&self) -> Option<&Metadata> {
+        match self {
+            XffValue::Metadata(m) => Some(m),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to a string
+    pub fn as_string(&self) -> Option<&String> {
+        match self {
+            XffValue::String(s) => Some(s),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to an array
+    pub fn as_array(&self) -> Option<&Array> {
+        match self {
+            XffValue::Array(a) => Some(a),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to an object
+    pub fn as_object(&self) -> Option<&Object> {
+        match self {
+            XffValue::Object(o) => Some(o),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to a table
+    pub fn as_table(&self) -> Option<&Table> {
+        match self {
+            XffValue::Table(t) => Some(t),
             _ => None,
         }
     }
@@ -390,6 +447,16 @@ impl XffValue {
     /// Checks if the value is a table
     pub fn is_table(&self) -> bool {
         matches!(self, XffValue::Table(_))
+    }
+
+    /// Checks if the value is a metadata object
+    pub fn is_metadata(&self) -> bool {
+        matches!(self, XffValue::Metadata(_))
+    }
+
+    /// Checks if the value has metadata attached (for Table, Object, or Metadata types)
+    pub fn has_metadata(&self) -> bool {
+        matches!(self, XffValue::Metadata(_))
     }
 
     /// Checks if the value is a UUID
@@ -526,6 +593,12 @@ impl From<Object> for XffValue {
 impl From<Table> for XffValue {
     fn from(c: Table) -> Self {
         XffValue::Table(c)
+    }
+}
+
+impl From<Metadata> for XffValue {
+    fn from(c: Metadata) -> Self {
+        XffValue::Metadata(c)
     }
 }
 
@@ -737,6 +810,7 @@ impl std::fmt::Display for XffValue {
                 write!(f, "}}")
             }
             XffValue::Table(t) => write!(f, "{}", t),
+            XffValue::Metadata(m) => write!(f, "{}", m),
             XffValue::Data(d) => write!(f, "{}", d),
             XffValue::Boolean(b) => write!(f, "{}", b),
             XffValue::DateTime(dt) => write!(f, "DT({})", dt),
