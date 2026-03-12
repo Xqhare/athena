@@ -24,6 +24,8 @@ Athena is named after the Greek goddess of wisdom, warfare and handicraft.
 - [ ] Run-length encoding with custom pattern length
 - [ ] Delta encoding writer (using LEB128)
 - [ ] Refactor `value/num.rs` to use `Signed` and `Unsigned` traits for generic internal operations.
+- [ ] Use AthenaResult more
+- [ ] Rework Doc
 
 ---
 

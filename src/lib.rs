@@ -1,3 +1,13 @@
+#[cfg(any(
+    doc,
+    feature = "encoding_decoding",
+    feature = "byte_bit",
+    feature = "bit_flags",
+    feature = "compression",
+    feature = "checksum",
+    feature = "traits",
+    feature = "process"
+))]
 mod error;
 #[cfg(any(
     doc,
@@ -6,7 +16,13 @@ mod error;
     feature = "bit_flags"
 ))]
 mod tools;
-#[cfg(any(doc, feature = "compression", feature = "checksum", feature = "traits", feature = "process"))]
+#[cfg(any(
+    doc,
+    feature = "compression",
+    feature = "checksum",
+    feature = "traits",
+    feature = "process"
+))]
 mod utils;
 mod value;
 
