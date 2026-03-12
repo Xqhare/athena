@@ -61,8 +61,11 @@ impl<T: Unsigned> BitFlag<T> {
     }
 }
 
+/// An 8-bit bit flag
 pub type U8Flag = BitFlag<u8>;
+/// A 16-bit bit flag
 pub type U16Flag = BitFlag<u16>;
+/// A 32-bit bit flag
 pub type U32Flag = BitFlag<u32>;
 
 #[cfg(test)]

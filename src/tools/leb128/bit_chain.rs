@@ -40,6 +40,15 @@ pub fn serialize_version_bit_chain(version: usize) -> Vec<u8> {
 /// Deserializes a version number from a bit-chain encoded byte array.
 ///
 /// Returns the version and the number of bytes read.
+///
+/// # Example
+/// ```
+/// # use athena::encoding_and_decoding::{serialize_version_bit_chain, deserialize_version_bit_chain};
+/// let serialized = serialize_version_bit_chain(8);
+/// let (version, bytes_read) = deserialize_version_bit_chain(&serialized).unwrap();
+/// assert_eq!(version, 8);
+/// assert_eq!(bytes_read, 2);
+/// ```
 pub fn deserialize_version_bit_chain(data: &[u8]) -> Result<(usize, u8), AthenaError> {
     let mut version = 0;
     let mut num_of_bytes = 0;

@@ -3,6 +3,7 @@ use std::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Not, Shl, Shr, Sub},
 };
 
+/// A trait representing unsigned numeric types
 pub trait Unsigned:
     Copy
     + Clone
@@ -23,7 +24,9 @@ pub trait Unsigned:
     + Shl<usize, Output = Self>
     + Shr<usize, Output = Self>
 {
+    /// Returns the zero value for this type
     fn zero() -> Self;
+    /// Returns the one (unit) value for this type
     fn one() -> Self;
 }
 

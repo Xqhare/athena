@@ -1,53 +1,53 @@
-# athena
-My rusty toolbox of useful tools.
+# Athena: Rust Utility Toolbox
+
+Athena is a collection of low-level utilities and tools developed by Xqhare. It focuses on efficiency, minimal dependencies, and providing building blocks for other projects in the ecosystem (especially those using the XFF file format).
 
 ## Features
-- [Utilities](#utilities)
-    - [Compression](#compression)
-        - [LZW](#lzw)
-        - [Delta encoding](#delta-encoding)
-        - [Run-length encoding](#run-length-encoding)
-    - [Tools](#tools)
-        - [LEB128](#leb128)
-        - [Bit Flags](#bit-flags)
-        - [Parity](#parity)
-    - [Checksums](#checksums)
-        - [CRC-32](#crc-32)
-    - [Bitreader](#bitreader)
 
-## Naming
-Athena is named after the Greek goddess of wisdom, warfare and handicraft.
+- **Data & Values:** Dynamic type system (`XffValue`) for XFF v2/v3, including `Table`, `Uuid`, and metadata handling.
+- **Compression:** LZW, Delta, and Run-Length Encoding (RLE) implementations.
+- **Encoding:** LEB128 (unsigned, signed v2, signed v3) and Bit-Chain encoding.
+- **Bit Manipulation:** Bit-level reader/writer, bit flags (`u8`, `u16`, `u32`), and Even Parity utilities.
+- **Checksums:** CRC-32 (ISO 3309) implementation.
+- **Minimal Dependencies:** Built primarily using the Rust standard library.
 
-## TODO
+## Installation
 
-- [x] LEB128 signed integers
-- [ ] Run-length encoding with custom pattern length
-- [ ] Delta encoding writer (using LEB128)
-- [ ] Refactor `value/num.rs` to use `Signed` and `Unsigned` traits for generic internal operations.
-- [ ] Use AthenaResult more
-- [ ] Rework Doc
+Add Athena to your `Cargo.toml`:
 
----
+```toml
+[dependencies]
+athena = { git = "https://github.com/Xqhare/athena" }
+```
 
-## Utilities
+### Feature Flags
 
-### Compression
-You can call the functions in the `compression` module one by one, or use `Delta` and `RunLength` in one loop.
+Athena uses feature gates to keep the footprint small:
 
-#### LZW
-A simple implementation of the Lempel-Ziv-Welch algorithm.
+- `encoding_decoding`: Enables LEB128, Delta, and RLE tools.
+- `compression`: Enables LZW and other compression utilities.
+- `checksum`: Enables CRC-32.
+- `byte_bit`: Enables bit-level reader/writer and parity tools.
+- `traits`: Enables custom numeric traits (`Signed`, `Unsigned`).
+- `bit_flags`: Enables bit flag utilities.
+- `process`: Enables UNIX-specific process utilities.
 
-#### Delta encoding
-A simple implementation of delta encoding.
+## Usage Examples
 
-#### Run-length encoding
-A simple implementation of run-length encoding.
+### XffValue (Dynamic Types)
 
-## Tools
+```rust
+use athena::{XffValue, Number, Object};
 
-### LEB128
-Gated behind the `encoding_decoding` feature.
-Provides standard LEB128 and XFF v3 specific variations.
+let val = XffValue::from(42.69);
+assert!(val.is_number());
+
+let obj = XffValue::from(Object::from(vec![
+    ("key".to_string(), XffValue::from("value"))
+]));
+```
+
+### LEB128 Encoding
 
 ```rust
 use athena::encoding_and_decoding::{serialize_leb128_unsigned, deserialize_leb128_unsigned};
@@ -57,34 +57,27 @@ let (val, len) = deserialize_leb128_unsigned(&bytes).unwrap();
 assert_eq!(val, 255);
 ```
 
+### Compression (LZW)
+
+```rust
+use athena::compression::lzw_compress;
+
+let data = b"TOBEORNOTTOBEORTOBEORNOT";
+let compressed = lzw_compress(data);
+```
+
 ### Bit Flags
-Gated behind the `bit_flags` feature.
-A simple implementation of bit flags for `u8`, `u16`, and `u32`.
-
-### Parity
-Gated behind the `byte_bit` feature.
-Provides utilities for even parity.
 
 ```rust
-use athena::byte_bit::{ensure_even_parity, is_even_parity};
+use athena::bit_flags::U8Flag;
 
-let marker = 0x01; // 0000 0001 (1 set bit - odd)
-let parity_marker = ensure_even_parity(marker); // 1000 0001 (2 set bits - even)
-assert!(is_even_parity(parity_marker));
+let mut flags = U8Flag::new();
+flags.set(0);
+assert!(flags.read(0));
 ```
 
-### Checksums
+## Naming
+Named after Athena, the Greek goddess of wisdom and handicraft, reflecting the library's role as a "toolbox" for building complex systems.
 
-#### CRC-32
-Gated behind the `checksum` feature.
-A implementation of CRC-32 (ISO-HDLC) used to detect errors in data.
-
-```rust
-use athena::checksum::crc32;
-
-let data = b"Hello World";
-let checksum = crc32(data);
-```
-
-### Bitreader
-A simple function to read bits from a single byte.
+## License
+This project is licensed under the MIT License.

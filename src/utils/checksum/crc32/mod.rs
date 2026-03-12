@@ -1,3 +1,4 @@
+/// A 256-element lookup table for CRC32 calculations
 pub type Crc32Table = [u32; 256];
 
 /// Returns the crc32 checksum for the given data

@@ -3,6 +3,7 @@ use std::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Not, Shl, Shr, Sub},
 };
 
+/// A trait representing signed numeric types
 pub trait Signed:
     Copy
     + Clone
@@ -23,7 +24,9 @@ pub trait Signed:
     + Shl<usize, Output = Self>
     + Shr<usize, Output = Self>
 {
+    /// Returns the zero value for this type
     fn zero() -> Self;
+    /// Returns the one (unit) value for this type
     fn one() -> Self;
 }
 

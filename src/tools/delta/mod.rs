@@ -6,6 +6,14 @@ mod tests;
 ///
 /// # Arguments
 /// * `data` - The data to compress
+///
+/// # Example
+/// ```
+/// # use athena::encoding_and_decoding::delta_encoder;
+/// let data: Vec<u8> = vec![100, 105, 110, 108];
+/// let encoded: Vec<i16> = delta_encoder(&data);
+/// assert_eq!(encoded, vec![100, -5, -5, 2]);
+/// ```
 pub fn delta_encoder<U: Unsigned, S: Signed + From<U>>(data: &[U]) -> Vec<S> {
     if data.is_empty() {
         return Vec::new();
@@ -27,6 +35,15 @@ pub fn delta_encoder<U: Unsigned, S: Signed + From<U>>(data: &[U]) -> Vec<S> {
 ///
 /// # Arguments
 /// * `data` - The data to decompress
+///
+/// # Example
+/// ```
+/// # use athena::encoding_and_decoding::{delta_encoder, delta_decoder};
+/// let data: Vec<u8> = vec![100, 105, 110, 108];
+/// let encoded: Vec<i16> = delta_encoder(&data);
+/// let decoded: Vec<u8> = delta_decoder(&encoded);
+/// assert_eq!(decoded, data);
+/// ```
 pub fn delta_decoder<U: Unsigned + TryFrom<S>, S: Signed>(data: &[S]) -> Vec<U>
 where
     <U as TryFrom<S>>::Error: std::fmt::Debug,

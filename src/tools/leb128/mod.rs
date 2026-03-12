@@ -1,4 +1,6 @@
+/// Bit-chain encoding for version metadata
 pub mod bit_chain;
+/// Custom XFF v3 LEB128 encoding for signed integers
 pub mod signed_v3;
 mod tests;
 

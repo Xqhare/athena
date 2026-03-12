@@ -9,13 +9,21 @@ pub use object::Object;
 pub use table::Table;
 pub use uuid::Uuid;
 
+/// Contains the `Array` type, representing a list of `XffValue`s.
 pub mod array;
+/// Contains the `CommandCharacter` type, used in v0 (deprecated).
 pub mod cmd_char;
+/// Contains the `Data` type, wrapping arbitrary bytes.
 pub mod data;
+/// Contains the `Metadata` type.
 pub mod metadata;
+/// Contains the `Number` type, capable of storing various precisions.
 pub mod num;
+/// Contains the `Object` type, a string-to-XffValue mapping.
 pub mod object;
+/// Contains the `Table` type, a schema-based data structure.
 pub mod table;
+/// Contains the `Uuid` type, a 128-bit unique identifier wrapper.
 pub mod uuid;
 
 mod tests;
