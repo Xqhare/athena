@@ -4,6 +4,7 @@ version = "1.0.0"
 edition = "2024"
 
 [dependencies]
+libc = "0.2.183"
 
 [features]
 encoding_decoding = ["traits"]
@@ -12,6 +13,7 @@ checksum = []
 byte_bit = []
 traits = []
 bit_flags = []
+process = []
 
 [package.metadata.docs.rs]
 all-features = true

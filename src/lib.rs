@@ -6,12 +6,16 @@ mod error;
     feature = "bit_flags"
 ))]
 mod tools;
-#[cfg(any(doc, feature = "compression", feature = "checksum", feature = "traits"))]
+#[cfg(any(doc, feature = "compression", feature = "checksum", feature = "traits", feature = "process"))]
 mod utils;
 mod value;
 
 // Reexports for convenience
 
+#[cfg(any(doc, feature = "process"))]
+pub mod process {
+    pub use crate::utils::process::*;
+}
 #[cfg(any(doc, feature = "compression"))]
 pub mod compression {
     pub use crate::utils::compression::lzw::*;

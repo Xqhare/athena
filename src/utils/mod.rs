@@ -4,3 +4,5 @@ pub mod checksum;
 pub mod compression;
 #[cfg(any(doc, feature = "traits"))]
 pub mod traits;
+#[cfg(any(doc, feature = "process"))]
+pub mod process;
