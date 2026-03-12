@@ -111,3 +111,41 @@ fn into() {
     assert_eq!(val.into_data(), None);
     assert_eq!(val.into_string(), Some("42.69".to_string()));
 }
+
+#[test]
+fn time_interop() {
+    use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+    // DateTime
+    let dt_ms = 1647081600000; // 2022-03-12 10:40:00 UTC
+    let dt_val = XffValue::new_datetime(dt_ms);
+    assert!(dt_val.is_datetime());
+    assert_eq!(dt_val.into_datetime(), Some(dt_ms));
+    assert_eq!(dt_val.into_unix_timestamp(), Some(dt_ms as f64 / 1000.0));
+
+    let dt_from_sec = XffValue::from_unix_timestamp(dt_ms as f64 / 1000.0);
+    assert_eq!(dt_from_sec.into_datetime(), Some(dt_ms));
+
+    // Duration
+    let dur_ms = 5000;
+    let dur_val = XffValue::new_duration(dur_ms);
+    assert!(dur_val.is_duration());
+    assert_eq!(dur_val.into_duration(), Some(dur_ms));
+    assert_eq!(dur_val.into_duration_seconds(), Some(5.0));
+    assert_eq!(
+        dur_val.into_std_duration(),
+        Some(Duration::from_millis(dur_ms))
+    );
+
+    let dur_from_sec = XffValue::from_duration_seconds(5.0);
+    assert_eq!(dur_from_sec.into_duration(), Some(dur_ms));
+
+    // From implementations
+    let std_dur = Duration::from_secs(10);
+    let dur_val_from_std = XffValue::from(std_dur);
+    assert_eq!(dur_val_from_std.into_duration(), Some(10000));
+
+    let std_st = UNIX_EPOCH + Duration::from_secs(dt_ms / 1000);
+    let dt_val_from_st = XffValue::from(std_st);
+    assert_eq!(dt_val_from_st.into_datetime(), Some(dt_ms));
+}

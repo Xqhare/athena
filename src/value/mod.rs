@@ -319,6 +319,76 @@ impl XffValue {
         }
     }
 
+    /// Returns the value as a DateTime (milliseconds since epoch) if it is a `XffValue::DateTime`
+    pub fn into_datetime(&self) -> Option<u64> {
+        match self {
+            XffValue::DateTime(dt) => Some(*dt),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a UNIX timestamp (seconds since epoch) if it is a `XffValue::DateTime`
+    pub fn into_unix_timestamp(&self) -> Option<f64> {
+        match self {
+            XffValue::DateTime(dt) => Some(*dt as f64 / 1000.0),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a Duration (milliseconds) if it is a `XffValue::Duration`
+    pub fn into_duration(&self) -> Option<u64> {
+        match self {
+            XffValue::Duration(d) => Some(*d),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a Duration in seconds if it is a `XffValue::Duration`
+    pub fn into_duration_seconds(&self) -> Option<f64> {
+        match self {
+            XffValue::Duration(d) => Some(*d as f64 / 1000.0),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a `std::time::Duration` if it is a `XffValue::Duration`
+    pub fn into_std_duration(&self) -> Option<std::time::Duration> {
+        match self {
+            XffValue::Duration(d) => Some(std::time::Duration::from_millis(*d)),
+            _ => None,
+        }
+    }
+
+    /// Checks if the value is a DateTime
+    pub fn is_datetime(&self) -> bool {
+        matches!(self, XffValue::DateTime(_))
+    }
+
+    /// Checks if the value is a Duration
+    pub fn is_duration(&self) -> bool {
+        matches!(self, XffValue::Duration(_))
+    }
+
+    /// Creates a new `XffValue::DateTime` from milliseconds since epoch
+    pub fn new_datetime(ms: u64) -> Self {
+        XffValue::DateTime(ms)
+    }
+
+    /// Creates a new `XffValue::DateTime` from a UNIX timestamp (seconds since epoch)
+    pub fn from_unix_timestamp(seconds: f64) -> Self {
+        XffValue::DateTime((seconds * 1000.0) as u64)
+    }
+
+    /// Creates a new `XffValue::Duration` from milliseconds
+    pub fn new_duration(ms: u64) -> Self {
+        XffValue::Duration(ms)
+    }
+
+    /// Creates a new `XffValue::Duration` from seconds
+    pub fn from_duration_seconds(seconds: f64) -> Self {
+        XffValue::Duration((seconds * 1000.0) as u64)
+    }
+
     /// Returns the value as a reference to a metadata object if it is a `XffValue::Metadata`
     pub fn as_metadata(&self) -> Option<&Metadata> {
         match self {
@@ -793,6 +863,21 @@ impl From<u8> for XffValue {
 impl From<i8> for XffValue {
     fn from(c: i8) -> Self {
         XffValue::Number(Number::from(c))
+    }
+}
+
+impl From<std::time::Duration> for XffValue {
+    fn from(c: std::time::Duration) -> Self {
+        XffValue::Duration(c.as_millis() as u64)
+    }
+}
+
+impl From<std::time::SystemTime> for XffValue {
+    fn from(c: std::time::SystemTime) -> Self {
+        match c.duration_since(std::time::UNIX_EPOCH) {
+            Ok(d) => XffValue::DateTime(d.as_millis() as u64),
+            Err(_) => XffValue::DateTime(0),
+        }
     }
 }
 
