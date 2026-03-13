@@ -18,9 +18,11 @@ pub fn set_nice_value(priority: i32) -> AthenaResult<()> {
 
 /// Sets the scheduling policy and its priority for the current process.
 ///
-/// Policies like `Fifo` and `RoundRobin` require the process to have
-/// the `CAP_SYS_NICE` capability (or run as root).
-/// For non-RT policies (`Standard`, `Batch`, `Idle`), the priority should be 0.
+/// For Real-Time policies (`Fifo`, `RoundRobin`), the priority is used as `sched_priority`
+/// and requires the process to have the `CAP_SYS_NICE` capability (or run as root).
+///
+/// For non-RT policies (`Standard`, `Batch`, `Idle`), the `sched_priority` is set to 0
+/// (as required by Linux), and the provided `priority` is applied via `set_nice_value`.
 pub fn set_scheduler(policy: SchedulerPolicy, priority: i32) -> AthenaResult<()> {
     let libc_policy = match policy {
         SchedulerPolicy::Standard => libc::SCHED_OTHER,
@@ -30,8 +32,14 @@ pub fn set_scheduler(policy: SchedulerPolicy, priority: i32) -> AthenaResult<()>
         SchedulerPolicy::RoundRobin => libc::SCHED_RR,
     };
 
+    let is_rt = matches!(
+        policy,
+        SchedulerPolicy::Fifo | SchedulerPolicy::RoundRobin
+    );
+    let sched_priority = if is_rt { priority } else { 0 };
+
     let param = libc::sched_param {
-        sched_priority: priority,
+        sched_priority,
     };
 
     unsafe {
@@ -39,5 +47,10 @@ pub fn set_scheduler(policy: SchedulerPolicy, priority: i32) -> AthenaResult<()>
             return Err(AthenaError::IoError(std::io::Error::last_os_error()));
         }
     }
+
+    if !is_rt {
+        set_nice_value(priority)?;
+    }
+
     Ok(())
 }
