@@ -246,6 +246,11 @@ impl Object {
         self.map.get(key)
     }
 
+    /// Returns a mutable reference to the value associated with the key
+    pub fn get_mut(&mut self, key: &str) -> Option<&mut XffValue> {
+        self.map.get_mut(key)
+    }
+
     /// Returns the number of key-value pairs in the object, also known as its length.
     ///
     /// # Example
@@ -298,6 +303,11 @@ impl Object {
     /// ```
     pub fn iter(&self) -> std::collections::btree_map::Iter<'_, String, XffValue> {
         self.map.iter()
+    }
+
+    /// Returns a mutable key-value pair iterator of the object
+    pub fn iter_mut(&mut self) -> std::collections::btree_map::IterMut<'_, String, XffValue> {
+        self.map.iter_mut()
     }
 }
 

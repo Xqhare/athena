@@ -114,7 +114,7 @@ fn into() {
 
 #[test]
 fn time_interop() {
-    use std::time::{Duration, SystemTime, UNIX_EPOCH};
+    use std::time::{Duration, UNIX_EPOCH};
 
     // DateTime
     let dt_ms = 1647081600000; // 2022-03-12 10:40:00 UTC
@@ -148,4 +148,27 @@ fn time_interop() {
     let std_st = UNIX_EPOCH + Duration::from_secs(dt_ms / 1000);
     let dt_val_from_st = XffValue::from(std_st);
     assert_eq!(dt_val_from_st.into_datetime(), Some(dt_ms));
+}
+
+#[test]
+fn mutation() {
+    let mut array_val = XffValue::from(vec![1, 2, 3]);
+    if let Some(array) = array_val.as_array_mut() {
+        if let Some(val) = array.get_mut(1) {
+            *val = XffValue::from(42);
+        }
+    }
+    assert_eq!(
+        array_val,
+        XffValue::from(vec![XffValue::from(1), XffValue::from(42), XffValue::from(3)])
+    );
+
+    let mut obj_val = XffValue::from(Object::from(vec![("key".to_string(), XffValue::from(1))]));
+    if let Some(obj) = obj_val.as_object_mut() {
+        if let Some(val) = obj.get_mut("key") {
+            *val = XffValue::from("changed");
+        }
+    }
+    let obj = obj_val.into_object().unwrap();
+    assert_eq!(obj.get("key"), Some(&XffValue::from("changed")));
 }

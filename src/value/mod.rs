@@ -429,6 +429,46 @@ impl XffValue {
         }
     }
 
+    /// Returns the value as a mutable reference to an array
+    pub fn as_array_mut(&mut self) -> Option<&mut Array> {
+        match self {
+            XffValue::Array(a) => Some(a),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to an object
+    pub fn as_object_mut(&mut self) -> Option<&mut Object> {
+        match self {
+            XffValue::Object(o) => Some(o),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to an ordered object
+    pub fn as_ordered_object_mut(&mut self) -> Option<&mut Vec<(String, XffValue)>> {
+        match self {
+            XffValue::OrderedObject(o) => Some(o),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to a table
+    pub fn as_table_mut(&mut self) -> Option<&mut Table> {
+        match self {
+            XffValue::Table(t) => Some(t),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to a metadata object
+    pub fn as_metadata_mut(&mut self) -> Option<&mut Metadata> {
+        match self {
+            XffValue::Metadata(m) => Some(m),
+            _ => None,
+        }
+    }
+
     /// Returns null if it is a `XffValue::Null`
     /// Returns `None` for all other variants
     ///

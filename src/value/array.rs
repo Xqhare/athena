@@ -251,6 +251,11 @@ impl Array {
         self.values.get(index)
     }
 
+    /// Gets a mutable reference to a value at a given index
+    pub fn get_mut(&mut self, index: usize) -> Option<&mut XffValue> {
+        self.values.get_mut(index)
+    }
+
     /// Returns `true` if the `Array` contains the supplied value
     ///
     /// # Example
@@ -292,6 +297,11 @@ impl Array {
     /// ```
     pub fn iter(&self) -> std::slice::Iter<'_, XffValue> {
         self.values.iter()
+    }
+
+    /// Returns a mutable iterator over the values in the array
+    pub fn iter_mut(&mut self) -> std::slice::IterMut<'_, XffValue> {
+        self.values.iter_mut()
     }
 }
 
