@@ -75,6 +75,55 @@ impl OrderedObject {
     }
 }
 
+impl IntoIterator for OrderedObject {
+    type Item = (String, XffValue);
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.pairs.into_iter()
+    }
+}
+
+/// An iterator over the key-value pairs of an `OrderedObject`.
+pub struct OrderedObjectIter<'a>(std::slice::Iter<'a, (String, XffValue)>);
+
+impl<'a> Iterator for OrderedObjectIter<'a> {
+    type Item = (&'a String, &'a XffValue);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(|(k, v)| (k, v))
+    }
+}
+
+impl<'a> IntoIterator for &'a OrderedObject {
+    type Item = (&'a String, &'a XffValue);
+    type IntoIter = OrderedObjectIter<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        OrderedObjectIter(self.pairs.iter())
+    }
+}
+
+/// A mutable iterator over the key-value pairs of an `OrderedObject`.
+pub struct OrderedObjectIterMut<'a>(std::slice::IterMut<'a, (String, XffValue)>);
+
+impl<'a> Iterator for OrderedObjectIterMut<'a> {
+    type Item = (&'a String, &'a mut XffValue);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(|(k, v)| (&*k, v))
+    }
+}
+
+impl<'a> IntoIterator for &'a mut OrderedObject {
+    type Item = (&'a String, &'a mut XffValue);
+    type IntoIter = OrderedObjectIterMut<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        OrderedObjectIterMut(self.pairs.iter_mut())
+    }
+}
+
 impl From<Vec<(String, XffValue)>> for OrderedObject {
     fn from(pairs: Vec<(String, XffValue)>) -> Self {
         Self { pairs }

@@ -311,6 +311,33 @@ impl Object {
     }
 }
 
+impl IntoIterator for Object {
+    type Item = (String, XffValue);
+    type IntoIter = std::collections::btree_map::IntoIter<String, XffValue>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.map.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a Object {
+    type Item = (&'a String, &'a XffValue);
+    type IntoIter = std::collections::btree_map::Iter<'a, String, XffValue>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.map.iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a mut Object {
+    type Item = (&'a String, &'a mut XffValue);
+    type IntoIter = std::collections::btree_map::IterMut<'a, String, XffValue>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.map.iter_mut()
+    }
+}
+
 // -----------------------------------------------------------
 //                     Default implementations
 // -----------------------------------------------------------

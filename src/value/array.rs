@@ -357,6 +357,24 @@ impl IntoIterator for Array {
     }
 }
 
+impl<'a> IntoIterator for &'a Array {
+    type Item = &'a XffValue;
+    type IntoIter = std::slice::Iter<'a, XffValue>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.values.iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a mut Array {
+    type Item = &'a mut XffValue;
+    type IntoIter = std::slice::IterMut<'a, XffValue>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.values.iter_mut()
+    }
+}
+
 // -----------------------------------------------------------
 //                     Index implementations
 // -----------------------------------------------------------

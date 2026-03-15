@@ -56,8 +56,90 @@ fn general() {
     assert_eq!(null, None);
 }
 
+use super::OrderedObject;
+
+#[test]
+fn test_into_iter() {
+    let mut obj = OrderedObject::new();
+    obj.push("key1", 1);
+    obj.push("key2", 2);
+
+    // Test IntoIterator for &OrderedObject
+    let mut count = 0;
+    for (k, v) in &obj {
+        count += 1;
+        if count == 1 {
+            assert_eq!(k, "key1");
+            assert_eq!(v, &XffValue::from(1));
+        } else {
+            assert_eq!(k, "key2");
+            assert_eq!(v, &XffValue::from(2));
+        }
+    }
+    assert_eq!(count, 2);
+
+    // Test IntoIterator for &mut OrderedObject
+    for (k, v) in &mut obj {
+        if k == "key1" {
+            *v = XffValue::from(10);
+        }
+    }
+    assert_eq!(obj.get("key1"), Some(&XffValue::from(10)));
+
+    // Test IntoIterator for OrderedObject
+    let mut count = 0;
+    for (k, v) in obj {
+        count += 1;
+        if count == 1 {
+            assert_eq!(k, "key1");
+            assert_eq!(v, XffValue::from(10));
+        } else {
+            assert_eq!(k, "key2");
+            assert_eq!(v, XffValue::from(2));
+        }
+    }
+    assert_eq!(count, 2);
+}
+
+#[test]
+fn test_object_into_iter() {
+    let mut obj = Object::new();
+    obj.insert("key1", 1);
+    obj.insert("key2", 2);
+
+    let mut count = 0;
+    for (k, v) in &obj {
+        count += 1;
+        if k == "key1" {
+            assert_eq!(v, &XffValue::from(1));
+        } else {
+            assert_eq!(v, &XffValue::from(2));
+        }
+    }
+    assert_eq!(count, 2);
+}
+
+#[test]
+fn test_array_into_iter() {
+    let mut arr = Array::new();
+    arr.push(1);
+    arr.push(2);
+
+    let mut count = 0;
+    for v in &arr {
+        count += 1;
+        if count == 1 {
+            assert_eq!(v, &XffValue::from(1));
+        } else {
+            assert_eq!(v, &XffValue::from(2));
+        }
+    }
+    assert_eq!(count, 2);
+}
+
 #[test]
 fn test_v3_variants() {
+
     use crate::value::table::Table;
     use crate::value::uuid::Uuid;
 
