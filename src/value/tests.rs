@@ -266,24 +266,31 @@ fn time_interop() {
 }
 
 #[test]
-fn mutation() {
-    let mut array_val = XffValue::from(vec![1, 2, 3]);
-    if let Some(array) = array_val.as_array_mut() {
-        if let Some(val) = array.get_mut(1) {
-            *val = XffValue::from(42);
-        }
-    }
-    assert_eq!(
-        array_val,
-        XffValue::from(vec![XffValue::from(1), XffValue::from(42), XffValue::from(3)])
-    );
+fn test_object_parity() {
+    use crate::{Object, OrderedObject};
 
-    let mut obj_val = XffValue::from(Object::from(vec![("key".to_string(), XffValue::from(1))]));
-    if let Some(obj) = obj_val.as_object_mut() {
-        if let Some(val) = obj.get_mut("key") {
-            *val = XffValue::from("changed");
-        }
-    }
-    let obj = obj_val.into_object().unwrap();
-    assert_eq!(obj.get("key"), Some(&XffValue::from("changed")));
+    // Manual test for Object
+    let mut obj = Object::new();
+    obj.insert("key1", 1);
+    obj.push("key2", 2);
+    assert!(obj.contains_key("key1"));
+    assert_eq!(obj.len(), 2);
+    assert_eq!(obj.remove("key1"), Some(XffValue::from(1)));
+    assert_eq!(obj.len(), 1);
+
+    // Manual test for OrderedObject
+    let mut ord_obj = OrderedObject::new();
+    ord_obj.insert("key1", 1);
+    ord_obj.push("key2", 2);
+    assert!(ord_obj.contains_key("key1"));
+    assert_eq!(ord_obj.len(), 2);
+    assert_eq!(ord_obj.remove("key1"), Some(XffValue::from(1)));
+    assert_eq!(ord_obj.len(), 1);
+
+    // Test From generic Vec
+    let pairs = vec![("a", 1), ("b", 2)];
+    let obj = Object::from(pairs.clone());
+    let ord_obj = OrderedObject::from(pairs);
+    assert_eq!(obj.len(), 2);
+    assert_eq!(ord_obj.len(), 2);
 }

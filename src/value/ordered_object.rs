@@ -1,3 +1,5 @@
+use std::collections::{BTreeMap, HashMap};
+
 use super::XffValue;
 
 #[derive(Debug, Clone, PartialEq, PartialOrd, Default)]
@@ -31,8 +33,33 @@ impl OrderedObject {
     }
 
     /// Adds a key-value pair to the end of the ordered object.
+    ///
+    /// If you want to replace an existing key while preserving order, use `insert`.
     pub fn push<K: Into<String>, V: Into<XffValue>>(&mut self, key: K, value: V) {
         self.pairs.push((key.into(), value.into()));
+    }
+
+    /// Inserts a key-value pair into the ordered object.
+    ///
+    /// If the key already exists, the value is updated and the position is preserved.
+    /// If the key does not exist, the pair is added to the end.
+    pub fn insert<K: Into<String>, V: Into<XffValue>>(&mut self, key: K, value: V) {
+        let key = key.into();
+        let value = value.into();
+        if let Some(pos) = self.pairs.iter().position(|(k, _)| k == &key) {
+            self.pairs[pos].1 = value;
+        } else {
+            self.pairs.push((key, value));
+        }
+    }
+
+    /// Removes a key-value pair from the ordered object.
+    pub fn remove(&mut self, key: &str) -> Option<XffValue> {
+        if let Some(pos) = self.pairs.iter().position(|(k, _)| k == key) {
+            Some(self.pairs.remove(pos).1)
+        } else {
+            None
+        }
     }
 
     /// Clears the ordered object.
@@ -52,6 +79,11 @@ impl OrderedObject {
     /// Note: This is an O(n) operation.
     pub fn get_mut(&mut self, key: &str) -> Option<&mut XffValue> {
         self.pairs.iter_mut().find(|(k, _)| k == key).map(|(_, v)| v)
+    }
+
+    /// Returns `true` if the ordered object contains the supplied key.
+    pub fn contains_key(&self, key: &str) -> bool {
+        self.pairs.iter().any(|(k, _)| k == key)
     }
 
     /// Returns a reference to the pair at the given index.
@@ -124,9 +156,46 @@ impl<'a> IntoIterator for &'a mut OrderedObject {
     }
 }
 
-impl From<Vec<(String, XffValue)>> for OrderedObject {
-    fn from(pairs: Vec<(String, XffValue)>) -> Self {
-        Self { pairs }
+impl<S, V> From<Vec<(S, V)>> for OrderedObject
+where
+    S: Into<String>,
+    V: Into<XffValue>,
+{
+    fn from(pairs: Vec<(S, V)>) -> Self {
+        Self {
+            pairs: pairs
+                .into_iter()
+                .map(|(k, v)| (k.into(), v.into()))
+                .collect(),
+        }
+    }
+}
+
+impl<S, V> From<HashMap<S, V>> for OrderedObject
+where
+    S: Into<String>,
+    V: Into<XffValue>,
+{
+    fn from(map: HashMap<S, V>) -> Self {
+        let mut out = OrderedObject::new();
+        for (k, v) in map {
+            out.push(k.into(), v.into());
+        }
+        out
+    }
+}
+
+impl<S, V> From<BTreeMap<S, V>> for OrderedObject
+where
+    S: Into<String>,
+    V: Into<XffValue>,
+{
+    fn from(map: BTreeMap<S, V>) -> Self {
+        let mut out = OrderedObject::new();
+        for (k, v) in map {
+            out.push(k.into(), v.into());
+        }
+        out
     }
 }
 
@@ -135,6 +204,7 @@ impl From<OrderedObject> for Vec<(String, XffValue)> {
         obj.pairs
     }
 }
+
 
 impl std::ops::Index<usize> for OrderedObject {
     type Output = (String, XffValue);
@@ -155,6 +225,14 @@ impl std::ops::Index<&str> for OrderedObject {
 
     fn index(&self, index: &str) -> &Self::Output {
         self.get(index).unwrap()
+    }
+}
+
+impl std::ops::Index<String> for OrderedObject {
+    type Output = XffValue;
+
+    fn index(&self, index: String) -> &Self::Output {
+        self.get(&index).unwrap()
     }
 }
 

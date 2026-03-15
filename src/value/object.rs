@@ -205,6 +205,13 @@ impl Object {
         self.map.insert(key.into(), value.into());
     }
 
+    /// Adds a key-value pair to the object.
+    ///
+    /// This is an alias for `insert`.
+    pub fn push<S: Into<String>, V: Into<XffValue>>(&mut self, key: S, value: V) {
+        self.insert(key, value);
+    }
+
     /// Removes a key-value pair from the object
     ///
     /// # Example
