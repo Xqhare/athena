@@ -6,6 +6,7 @@ pub use data::Data;
 pub use metadata::Metadata;
 pub use num::Number;
 pub use object::Object;
+pub use ordered_object::OrderedObject;
 pub use table::Table;
 pub use uuid::Uuid;
 
@@ -21,6 +22,8 @@ pub mod metadata;
 pub mod num;
 /// Contains the `Object` type, a string-to-XffValue mapping.
 pub mod object;
+/// Contains the `OrderedObject` type, a key-value mapping that preserves insertion order.
+pub mod ordered_object;
 /// Contains the `Table` type, a schema-based data structure.
 pub mod table;
 /// Contains the `Uuid` type, a 128-bit unique identifier wrapper.
@@ -106,7 +109,7 @@ pub enum XffValue {
     /// An object of string keys and XffValue values
     Object(Object),
     /// A sequence of Key-Value pairs where order is preserved
-    OrderedObject(Vec<(String, XffValue)>),
+    OrderedObject(OrderedObject),
     /// A schema-based table
     Table(Table),
     /// A metadata object
@@ -238,7 +241,7 @@ impl XffValue {
     }
 
     /// Returns the value as an ordered object if it is a `XffValue::OrderedObject`
-    pub fn into_ordered_object(&self) -> Option<Vec<(String, XffValue)>> {
+    pub fn into_ordered_object(&self) -> Option<OrderedObject> {
         match self {
             XffValue::OrderedObject(o) => Some(o.clone()),
             _ => None,
@@ -405,6 +408,14 @@ impl XffValue {
         }
     }
 
+    /// Returns the value as a reference to a number
+    pub fn as_number(&self) -> Option<&Number> {
+        match self {
+            XffValue::Number(n) => Some(n),
+            _ => None,
+        }
+    }
+
     /// Returns the value as a reference to an array
     pub fn as_array(&self) -> Option<&Array> {
         match self {
@@ -421,10 +432,74 @@ impl XffValue {
         }
     }
 
+    /// Returns the value as a reference to an ordered object
+    pub fn as_ordered_object(&self) -> Option<&OrderedObject> {
+        match self {
+            XffValue::OrderedObject(o) => Some(o),
+            _ => None,
+        }
+    }
+
     /// Returns the value as a reference to a table
     pub fn as_table(&self) -> Option<&Table> {
         match self {
             XffValue::Table(t) => Some(t),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to data
+    pub fn as_data(&self) -> Option<&Data> {
+        match self {
+            XffValue::Data(d) => Some(d),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to a boolean
+    pub fn as_boolean(&self) -> Option<&bool> {
+        match self {
+            XffValue::Boolean(b) => Some(b),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to a datetime
+    pub fn as_datetime(&self) -> Option<&u64> {
+        match self {
+            XffValue::DateTime(dt) => Some(dt),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to a duration
+    pub fn as_duration(&self) -> Option<&u64> {
+        match self {
+            XffValue::Duration(d) => Some(d),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a reference to a UUID
+    pub fn as_uuid(&self) -> Option<&Uuid> {
+        match self {
+            XffValue::Uuid(u) => Some(u),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to a string
+    pub fn as_string_mut(&mut self) -> Option<&mut String> {
+        match self {
+            XffValue::String(s) => Some(s),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to a number
+    pub fn as_number_mut(&mut self) -> Option<&mut Number> {
+        match self {
+            XffValue::Number(n) => Some(n),
             _ => None,
         }
     }
@@ -446,7 +521,7 @@ impl XffValue {
     }
 
     /// Returns the value as a mutable reference to an ordered object
-    pub fn as_ordered_object_mut(&mut self) -> Option<&mut Vec<(String, XffValue)>> {
+    pub fn as_ordered_object_mut(&mut self) -> Option<&mut OrderedObject> {
         match self {
             XffValue::OrderedObject(o) => Some(o),
             _ => None,
@@ -465,6 +540,46 @@ impl XffValue {
     pub fn as_metadata_mut(&mut self) -> Option<&mut Metadata> {
         match self {
             XffValue::Metadata(m) => Some(m),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to data
+    pub fn as_data_mut(&mut self) -> Option<&mut Data> {
+        match self {
+            XffValue::Data(d) => Some(d),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to a boolean
+    pub fn as_boolean_mut(&mut self) -> Option<&mut bool> {
+        match self {
+            XffValue::Boolean(b) => Some(b),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to a datetime
+    pub fn as_datetime_mut(&mut self) -> Option<&mut u64> {
+        match self {
+            XffValue::DateTime(dt) => Some(dt),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to a duration
+    pub fn as_duration_mut(&mut self) -> Option<&mut u64> {
+        match self {
+            XffValue::Duration(d) => Some(d),
+            _ => None,
+        }
+    }
+
+    /// Returns the value as a mutable reference to a UUID
+    pub fn as_uuid_mut(&mut self) -> Option<&mut Uuid> {
+        match self {
+            XffValue::Uuid(u) => Some(u),
             _ => None,
         }
     }
@@ -714,15 +829,27 @@ impl From<Table> for XffValue {
     }
 }
 
+impl From<Uuid> for XffValue {
+    fn from(c: Uuid) -> Self {
+        XffValue::Uuid(c)
+    }
+}
+
 impl From<Metadata> for XffValue {
     fn from(c: Metadata) -> Self {
         XffValue::Metadata(c)
     }
 }
 
+impl From<OrderedObject> for XffValue {
+    fn from(c: OrderedObject) -> Self {
+        XffValue::OrderedObject(c)
+    }
+}
+
 impl From<Vec<(String, XffValue)>> for XffValue {
     fn from(c: Vec<(String, XffValue)>) -> Self {
-        XffValue::OrderedObject(c)
+        XffValue::OrderedObject(OrderedObject::from(c))
     }
 }
 
@@ -756,6 +883,34 @@ impl From<Data> for XffValue {
 impl From<bool> for XffValue {
     fn from(c: bool) -> Self {
         XffValue::Boolean(c)
+    }
+}
+
+// -----------------------------------------------------------
+//                     Index implementations
+// -----------------------------------------------------------
+
+impl std::ops::Index<&str> for XffValue {
+    type Output = XffValue;
+
+    fn index(&self, index: &str) -> &Self::Output {
+        match self {
+            XffValue::Object(o) => &o[index],
+            XffValue::OrderedObject(o) => &o[index],
+            _ => panic!("Cannot index into non-object XffValue"),
+        }
+    }
+}
+
+impl std::ops::Index<usize> for XffValue {
+    type Output = XffValue;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        match self {
+            XffValue::Array(a) => &a[index],
+            XffValue::OrderedObject(o) => &o[index].1,
+            _ => panic!("Cannot index into non-array XffValue"),
+        }
     }
 }
 

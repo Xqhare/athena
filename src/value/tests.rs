@@ -69,9 +69,10 @@ fn test_v3_variants() {
     assert!(uuid_val.is_uuid());
     assert!(uuid_val.into_uuid().is_some());
 
-    let ord_obj_val = XffValue::OrderedObject(vec![("key".to_string(), XffValue::from(1))]);
+    let ord_obj_val = XffValue::from(vec![("key".to_string(), XffValue::from(1))]);
     assert!(ord_obj_val.is_ordered_object());
     assert!(ord_obj_val.into_ordered_object().is_some());
+    assert_eq!(ord_obj_val["key"], XffValue::from(1));
 
     let nan_val = XffValue::NaN;
     assert!(nan_val.is_nan());
@@ -86,6 +87,8 @@ fn test_v3_variants() {
     assert_eq!(format!("{}", ninf_val), "-Infinity");
 
     let dt_val = XffValue::DateTime(123456789);
+    assert!(dt_val.is_datetime());
+    assert_eq!(dt_val.as_datetime(), Some(&123456789));
     assert_eq!(format!("{}", dt_val), "DT(123456789)");
 
     // Test Table::get_row
@@ -101,8 +104,38 @@ fn test_v3_variants() {
     let ordered_data = row_obj.into_ordered_object().unwrap();
     assert_eq!(ordered_data[0].0, "name");
     assert_eq!(ordered_data[0].1, XffValue::from("Alice"));
+    assert_eq!(ordered_data["name"], XffValue::from("Alice"));
     assert_eq!(ordered_data[1].0, "age");
     assert_eq!(ordered_data[1].1, XffValue::from(30));
+}
+
+#[test]
+fn as_mut_tests() {
+    use crate::value::uuid::Uuid;
+
+    let mut val = XffValue::from("hello");
+    if let Some(s) = val.as_string_mut() {
+        s.push_str(" world");
+    }
+    assert_eq!(val.as_string().unwrap(), "hello world");
+
+    let mut val = XffValue::from(true);
+    if let Some(b) = val.as_boolean_mut() {
+        *b = false;
+    }
+    assert_eq!(val.as_boolean(), Some(&false));
+
+    let mut val = XffValue::new_datetime(100);
+    if let Some(dt) = val.as_datetime_mut() {
+        *dt = 200;
+    }
+    assert_eq!(val.as_datetime(), Some(&200));
+
+    let mut val = XffValue::from(Uuid::new([1; 16]));
+    if let Some(u) = val.as_uuid_mut() {
+        u.bytes[0] = 0xFF;
+    }
+    assert_eq!(val.as_uuid().unwrap().bytes[0], 0xFF);
 }
 
 #[test]
