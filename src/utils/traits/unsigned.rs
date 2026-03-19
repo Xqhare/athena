@@ -62,6 +62,14 @@ impl Unsigned for u64 {
         1
     }
 }
+impl Unsigned for u128 {
+    fn zero() -> Self {
+        0
+    }
+    fn one() -> Self {
+        1
+    }
+}
 impl Unsigned for usize {
     fn zero() -> Self {
         0

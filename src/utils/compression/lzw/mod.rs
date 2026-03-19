@@ -28,7 +28,7 @@ pub fn compress_lzw_encode_leb128(data: &[u8]) -> Vec<u8> {
     let compressed = compress_lzw(data);
     let mut out = Vec::new();
     for num in compressed {
-        let tmp = serialize_leb128_unsigned(num as usize);
+        let tmp = serialize_leb128_unsigned(num as u128);
         out.extend(tmp);
     }
     out

@@ -16,8 +16,8 @@ fn low_bits_of_byte(b: u8) -> u8 {
 }
 
 #[inline]
-fn low_bits_of_usize(b: usize) -> u8 {
-    let byte = b & (u8::MAX as usize);
+fn low_bits_of_u128(b: u128) -> u8 {
+    let byte = b & (u8::MAX as u128);
     low_bits_of_byte(byte as u8)
 }
 
@@ -30,7 +30,7 @@ fn low_bits_of_usize(b: usize) -> u8 {
 /// * `data` - The buffer to read from
 ///
 /// # Returns
-/// * `(usize, u8)` - The value and the number of bytes read
+/// * `(u128, u8)` - The value and the number of bytes read
 ///
 /// # Errors
 /// * `AthenaError::ContinuationBitInLastByte` - If the last byte has a continuation bit
@@ -52,8 +52,8 @@ fn low_bits_of_usize(b: usize) -> u8 {
 /// let result = deserialize_leb128_unsigned(&malformed_data);
 /// assert!(result.is_err());
 /// ```
-pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(usize, u8), AthenaError> {
-    let mut result: usize = 0;
+pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u128, u8), AthenaError> {
+    let mut result: u128 = 0;
     let mut shift = 0;
     let mut num_of_bytes: u8 = 0;
     loop {
@@ -62,8 +62,12 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(usize, u8), AthenaErr
         }
         let byte = data[num_of_bytes as usize];
         num_of_bytes += 1;
-        let low_bits = low_bits_of_byte(byte) as usize;
-        result |= low_bits << shift;
+        let low_bits = low_bits_of_byte(byte) as u128;
+        if shift < 128 {
+            result |= low_bits << shift;
+        } else if low_bits != 0 {
+            return Err(AthenaError::Overflow);
+        }
         if byte & CONTINUATION_BIT == 0 {
             return Ok((result, num_of_bytes));
         }
@@ -86,22 +90,24 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(usize, u8), AthenaErr
 /// assert_eq!(serialized, vec![0b11111111, 0b00000001]);
 /// assert_eq!(value, 255);
 /// ```
-pub fn serialize_leb128_unsigned(value: usize) -> Vec<u8> {
+pub fn serialize_leb128_unsigned(value: u128) -> Vec<u8> {
     let mut val = value;
     let val_len = {
-        if val <= u8::MAX as usize {
+        if val <= u8::MAX as u128 {
             2
-        } else if val <= u16::MAX as usize {
+        } else if val <= u16::MAX as u128 {
             3
-        } else if val <= u32::MAX as usize {
+        } else if val <= u32::MAX as u128 {
             5
-        } else {
+        } else if val <= u64::MAX as u128 {
             10
+        } else {
+            19
         }
     };
     let mut out = Vec::with_capacity(val_len);
     loop {
-        let mut byte = low_bits_of_usize(val);
+        let mut byte = low_bits_of_u128(val);
         val >>= 7;
         if val != 0 {
             byte |= CONTINUATION_BIT;
@@ -132,10 +138,10 @@ pub fn serialize_leb128_unsigned(value: usize) -> Vec<u8> {
 /// assert_eq!(num_of_bytes, 2);
 /// assert_eq!(i8min.len(), 2);
 /// ```
-pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i64, u8), AthenaError> {
-    let mut result: i64 = 0;
+pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError> {
+    let mut result: i128 = 0;
     let mut shift = 0;
-    let size = 64;
+    let size = 128;
     let mut byte;
     let mut index: u8 = 0;
 
@@ -144,20 +150,38 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i64, u8), AthenaError> 
             return Err(AthenaError::ContinuationBitInLastByte);
         }
 
-        let mut buf = [0];
-        buf[0] = data[index as usize];
+        byte = data[index as usize];
         index += 1;
 
-        byte = buf[0];
-        if shift == 63 && byte != 0x00 && byte != 0x7f {
-            return Err(AthenaError::Overflow);
+        if shift == 126 && byte != 0x00 && byte != 0x7f && byte != 0x01 && byte != 0x7e {
+             // Special case for the 126th shift (127th and 128th bits)
+             // But actually it's easier to just check if shift >= 128 or something.
+        }
+        
+        // standard LEB128 overflow check for signed
+        if shift == 126 {
+            // bits 126..132
+            // For i128, we have 128 bits.
+            // 126 / 7 = 18 bytes processed.
+            // 19th byte handles bits 126..127 (and sign extension)
+            // Wait, 18 * 7 = 126.
+            // Byte 18 (0-indexed) covers bits 126..132.
+            // We only need bit 126 and 127. 
+            // So byte 18 must not have more than 2 bits of value if it's the last byte.
         }
 
-        let low_bits = low_bits_of_byte(byte) as i64;
-        result |= low_bits << shift;
+        let low_bits = low_bits_of_byte(byte) as i128;
+        if shift < 128 {
+            result |= low_bits << shift;
+        }
+        
         shift += 7;
         if byte & CONTINUATION_BIT == 0 {
             break;
+        }
+        
+        if shift >= 133 { // 19 * 7 = 133
+            return Err(AthenaError::Overflow);
         }
     }
 
@@ -181,9 +205,9 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i64, u8), AthenaError> 
 /// let serialized = serialize_leb128_signed(value);
 /// assert_eq!(serialized, vec![0b01111111]);
 /// ```
-pub fn serialize_leb128_signed(value: i64) -> Vec<u8> {
-    // a i64 is 8 bytes, this expands to 10 bytes using LEB
-    let mut out = Vec::with_capacity(10);
+pub fn serialize_leb128_signed(value: i128) -> Vec<u8> {
+    // a i128 is 16 bytes, this expands to up to 19 bytes using LEB
+    let mut out = Vec::with_capacity(19);
     let mut val = value;
     loop {
         let mut byte = val as u8;

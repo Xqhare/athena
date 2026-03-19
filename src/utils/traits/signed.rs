@@ -62,6 +62,14 @@ impl Signed for i64 {
         1
     }
 }
+impl Signed for i128 {
+    fn zero() -> Self {
+        0
+    }
+    fn one() -> Self {
+        1
+    }
+}
 impl Signed for isize {
     fn zero() -> Self {
         0
