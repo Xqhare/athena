@@ -2,7 +2,7 @@
 pub mod checksum;
 #[cfg(any(doc, feature = "compression"))]
 pub mod compression;
-#[cfg(any(doc, feature = "traits"))]
-pub mod traits;
 #[cfg(any(doc, feature = "process"))]
 pub mod process;
+#[cfg(any(doc, feature = "traits"))]
+pub mod traits;

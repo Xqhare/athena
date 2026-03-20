@@ -5,6 +5,8 @@ pub enum AthenaError {
     InvalidData,
     InsufficientBuffer,
     IoError(std::io::Error),
+    ParseErrorInt(std::num::ParseIntError),
+    ParseErrorUtf8(std::string::FromUtf8Error),
     ContinuationBitInLastByte,
     Overflow,
     ParityError,
@@ -26,5 +28,17 @@ impl std::error::Error for AthenaError {}
 impl From<std::io::Error> for AthenaError {
     fn from(e: std::io::Error) -> Self {
         AthenaError::IoError(e)
+    }
+}
+
+impl From<std::num::ParseIntError> for AthenaError {
+    fn from(e: std::num::ParseIntError) -> Self {
+        AthenaError::ParseErrorInt(e)
+    }
+}
+
+impl From<std::string::FromUtf8Error> for AthenaError {
+    fn from(e: std::string::FromUtf8Error) -> Self {
+        AthenaError::ParseErrorUtf8(e)
     }
 }

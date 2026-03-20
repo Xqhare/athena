@@ -76,6 +76,18 @@ flags.set(0);
 assert!(flags.read(0));
 ```
 
+## Testing
+
+When using the `process` feature, some tests modify process-wide state (such as CPU and I/O scheduling priorities). Since Rust's default test runner executes tests in parallel threads within the same process, these tests may interfere with each other.
+
+To ensure consistent results, it is recommended to run these tests serially:
+
+```bash
+cargo test --all-features -- --test-threads=1
+```
+
+Note: Some process priority tests (like `RealTime` priority) may fail or be skipped if the test runner does not have sufficient privileges (e.g., `CAP_SYS_NICE` or root access).
+
 ## Naming
 Named after Athena, the Greek goddess of wisdom and handicraft, reflecting the library's role as a "toolbox" for building complex systems.
 

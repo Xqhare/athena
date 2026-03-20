@@ -22,6 +22,19 @@ pub enum SchedulerPolicy {
     RoundRobin,
 }
 
+/// Represents the available Linux/Unix "I/O nice" classes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum IoNiceClass {
+    /// Real-time class. For I/O tasks that need to be executed as soon as possible.
+    RealTime,
+    /// Best-effort class. For I/O tasks that don't need to be executed as soon as possible.
+    BestEffort,
+    /// Idle class. For I/O tasks that don't need to be executed if any other I/O task is running.
+    Idle,
+    /// The default class (none).
+    None,
+}
+
 #[cfg(not(unix))]
 pub fn set_nice_value(_priority: i32) -> AthenaResult<()> {
     Err(AthenaError::UnsupportedPlatform)
@@ -29,5 +42,10 @@ pub fn set_nice_value(_priority: i32) -> AthenaResult<()> {
 
 #[cfg(not(unix))]
 pub fn set_scheduler(_policy: SchedulerPolicy, _priority: i32) -> AthenaResult<()> {
+    Err(AthenaError::UnsupportedPlatform)
+}
+
+#[cfg(not(unix))]
+pub fn set_ionice_value(_class: IoNiceClass, _class_data: u32) -> AthenaResult<()> {
     Err(AthenaError::UnsupportedPlatform)
 }
