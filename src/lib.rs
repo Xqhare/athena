@@ -83,7 +83,7 @@ pub mod bit_flags {
 /// Sorting algorythms
 #[cfg(any(doc, feature = "sorting"))]
 pub mod sorting {
-    pub use crate::utils::sorting::topological_sort::kahns;
+    pub use crate::utils::sorting::topological_sort::kahns::*;
 }
 
 pub use crate::value::*;

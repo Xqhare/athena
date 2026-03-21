@@ -1,5 +1,6 @@
 use std::collections::{BTreeMap, BinaryHeap, HashSet};
 
+/// A node in the graph
 #[derive(Debug)]
 struct Library<'a> {
     children: Vec<&'a str>,
@@ -15,16 +16,67 @@ impl<'a> Library<'a> {
     }
 }
 
+/// Kahn's algorithm
+///
+/// Use this function if you don't want to manage the memory yourself.
+/// Consider using `kahns` if you do.
+///
+/// This algorithm is used to sort a list of nodes in a topological order
+///
+/// Please note, this implementation requires that all nodes are unique.
+/// It has inbuild cycle detection and will error if a cycle is detected.
+///
+/// # Arguments
+/// * `input` - a list of tuples of the form `(name, children)`
+///
+/// # Returns
+/// A list of topologically sorted nodes
+///
+/// # Errors
+/// Returns an error if a cycle is detected, if a parent is not found, or if a duplicate node is found
+pub fn kahns_managed(input: &[(String, Vec<String>)]) -> Result<Vec<String>, String> {
+    let input: Vec<(&str, Vec<&str>)> = input
+        .iter()
+        .map(|(k, v)| (k.as_str(), v.iter().map(|s| s.as_str()).collect()))
+        .collect();
+    Ok(kahns(&input)?.into_iter().map(|s| s.to_string()).collect())
+}
+
+/// Kahn's algorithm
+///
+/// Use this function if you want to manage the memory yourself.
+/// Consider using `kahns_managed` if you don't.
+///
+/// This algorithm is used to sort a list of nodes in a topological order
+///
+/// Please note, this implementation requires that all nodes are unique.
+/// It has inbuild cycle detection and will error if a cycle is detected.
+///
+/// # Arguments
+/// * `input` - a list of tuples of the form `(name, children)`
+///
+/// # Returns
+/// A list of topologically sorted nodes
+///
+/// # Errors
+/// Returns an error if a cycle is detected, if a parent is not found, or if a duplicate node is found
 pub fn kahns<'a>(input: &[(&'a str, Vec<&'a str>)]) -> Result<Vec<&'a str>, String> {
-    let libraries = build_libraries(input);
+    let libraries = build_libraries(input)?;
     topological_sort(libraries)
 }
 
-fn build_libraries<'a>(input: &[(&'a str, Vec<&'a str>)]) -> BTreeMap<&'a str, Library<'a>> {
+fn build_libraries<'a>(
+    input: &[(&'a str, Vec<&'a str>)],
+) -> Result<BTreeMap<&'a str, Library<'a>>, String> {
     let mut libraries: BTreeMap<&'a str, Library<'a>> = BTreeMap::new();
+    let mut defined_nodes: HashSet<&'a str> = HashSet::new();
 
-    // Ensure all mentioned nodes exist
+    // Ensure all mentioned nodes exist and that there are no duplicate definitions
     for (name, children) in input {
+        if !defined_nodes.insert(name) {
+            return Err(format!("Duplicate node definition: {}", name));
+        }
+        
         libraries.entry(name).or_insert_with(Library::new);
         for &parent in children {
             libraries.entry(parent).or_insert_with(Library::new);
@@ -34,16 +86,22 @@ fn build_libraries<'a>(input: &[(&'a str, Vec<&'a str>)]) -> BTreeMap<&'a str, L
     // Build the graph
     for (name, children) in input {
         let mut num_parents: usize = 0;
-        for parent in children.iter() {
-            if parent == name {
+        for &parent in children {
+            if parent == *name {
                 continue;
             }
-            libraries.get_mut(parent).unwrap().children.push(name);
+            libraries
+                .get_mut(parent)
+                .ok_or_else(|| format!("Parent node {} not found", parent))?
+                .children
+                .push(name);
             num_parents += 1;
         }
-        libraries.get_mut(name).unwrap().num_parents = num_parents;
+        if let Some(lib) = libraries.get_mut(name) {
+            lib.num_parents = num_parents;
+        }
     }
-    libraries
+    Ok(libraries)
 }
 
 fn topological_sort<'a>(
@@ -62,9 +120,15 @@ fn topological_sort<'a>(
 
     let mut sorted: Vec<&str> = Vec::new();
     while let Some(std::cmp::Reverse(cur)) = options.pop() {
-        let children = libraries.get(cur).unwrap().children.clone();
+        let children = libraries
+            .get(cur)
+            .expect("Node missing after heap pop")
+            .children
+            .clone();
         for child_name in children {
-            let child = libraries.get_mut(child_name).unwrap();
+            let child = libraries
+                .get_mut(child_name)
+                .ok_or_else(|| format!("Child node {} not found in map", child_name))?;
             child.num_parents -= 1;
             if child.num_parents == 0 {
                 options.push(std::cmp::Reverse(child_name));
@@ -119,6 +183,7 @@ mod tests {
             .collect();
 
         let result = kahns(&input);
+        println!("{result:?}");
         assert!(result.is_ok());
         let result = result.unwrap();
         assert_eq!(
