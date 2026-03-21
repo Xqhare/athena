@@ -4,5 +4,7 @@ pub mod checksum;
 pub mod compression;
 #[cfg(any(doc, feature = "process"))]
 pub mod process;
+#[cfg(any(doc, feature = "sorting"))]
+pub mod sorting;
 #[cfg(any(doc, feature = "traits"))]
 pub mod traits;

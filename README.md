@@ -9,6 +9,7 @@ Athena is a collection of low-level utilities and tools developed by Xqhare. It 
 - **Encoding:** LEB128 (unsigned, signed v2, signed v3) and Bit-Chain encoding.
 - **Bit Manipulation:** Bit-level reader/writer, bit flags (`u8`, `u16`, `u32`), and Even Parity utilities.
 - **Checksums:** CRC-32 (ISO 3309) implementation.
+- **Sorting:** Deterministic Kahn's Topological Sort.
 - **Minimal Dependencies:** Built primarily using the Rust standard library.
 
 ## Installation
@@ -31,6 +32,7 @@ Athena uses feature gates to keep the footprint small:
 - `traits`: Enables custom numeric traits (`Signed`, `Unsigned`).
 - `bit_flags`: Enables bit flag utilities.
 - `process`: Enables UNIX-specific process utilities.
+- `sorting`: Enables sorting algorithms (e.g., Kahn's Topological Sort).
 
 ## Usage Examples
 

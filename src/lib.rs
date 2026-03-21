@@ -28,7 +28,8 @@ mod tools;
     feature = "compression",
     feature = "checksum",
     feature = "traits",
-    feature = "process"
+    feature = "process",
+    feature = "sorting"
 ))]
 mod utils;
 mod value;
@@ -78,6 +79,11 @@ pub mod traits {
 #[cfg(any(doc, feature = "bit_flags"))]
 pub mod bit_flags {
     pub use crate::tools::bit_flags::{BitFlag, U8Flag, U16Flag, U32Flag};
+}
+/// Sorting algorythms
+#[cfg(any(doc, feature = "sorting"))]
+pub mod sorting {
+    pub use crate::utils::sorting::topological_sort::kahns;
 }
 
 pub use crate::value::*;
