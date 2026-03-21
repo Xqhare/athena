@@ -50,8 +50,8 @@ fn topological_sort<'a>(
     mut libraries: BTreeMap<&'a str, Library<'a>>,
 ) -> Result<Vec<&'a str>, String> {
     let total_nodes = libraries.len();
-    
-    // BinaryHeap is a max-heap. To get lexicographical smallest, 
+
+    // BinaryHeap is a max-heap. To get lexicographical smallest,
     // we use Reverse or just Reverse the comparison.
     // For simplicity, we want 'std' etc to come first if they have 0 parents.
     let mut options: BinaryHeap<std::cmp::Reverse<&str>> = libraries
