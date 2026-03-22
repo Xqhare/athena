@@ -82,7 +82,9 @@ pub fn set_ionice_value(class: IoNiceClass, class_data: u32) -> AthenaResult<()>
         .arg("-c")
         .arg(format!("{}", libc_class))
         .arg("-p")
-        .arg(format!("{}", pid));
+        .arg(format!("{}", pid))
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null());
 
     if libc_class != 0 && libc_class != 3 {
         if class_data > 7 {
@@ -116,11 +118,10 @@ pub fn get_ionice_value() -> AthenaResult<(IoNiceClass, u32)> {
         .arg("-p")
         .arg(format!("{}", pid))
         .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::null())
         .spawn()
         .map_err(AthenaError::IoError)?;
-    let output = proc
-        .wait_with_output()
-        .map_err(AthenaError::IoError)?;
+    let output = proc.wait_with_output().map_err(AthenaError::IoError)?;
     let stdout = String::from_utf8(output.stdout).map_err(AthenaError::ParseErrorUtf8)?;
     let stdout = stdout.trim();
 
@@ -156,8 +157,9 @@ pub fn get_ionice_value() -> AthenaResult<(IoNiceClass, u32)> {
     Ok((io_class, prio))
 }
 
+#[cfg(test)]
 mod tests {
-    use super::{get_ionice_value, IoNiceClass, SchedulerPolicy, set_ionice_value, set_scheduler};
+    use super::{IoNiceClass, SchedulerPolicy, get_ionice_value, set_ionice_value, set_scheduler};
 
     #[test]
     fn set_cpu_scheduler() {
@@ -188,6 +190,7 @@ mod tests {
     }
 
     #[test]
+    //tends to require several runs for all to succeed, use 1 thread: cargo test -- --test-threads=1
     fn ionice_with_readback() {
         assert!(set_ionice_value(IoNiceClass::None, 0).is_ok());
         assert_eq!(get_ionice_value().unwrap(), (IoNiceClass::None, 0));
