@@ -1,5 +1,5 @@
 {
-  "requires": [],
+  "all": true,
   "test": {
     "args": ["--all-features", "--", "--test-threads=1"]
   },
