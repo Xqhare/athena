@@ -1,0 +1,15 @@
+{
+  "requires": [],
+  "test": {
+    "args": ["--all-features", "--", "--test-threads=1"]
+  },
+  "clippy": {
+    "args": ["--all-features"]
+  },
+  "doc": {
+    "args": ["--all-features"]
+  },
+  "doc-test": {
+    "args": ["--all-features"]
+  }
+}

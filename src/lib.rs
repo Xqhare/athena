@@ -4,6 +4,8 @@
 //! It focuses on efficiency, minimal dependencies, and providing building blocks for other projects in the ecosystem.
 
 #![warn(missing_docs)]
+#![warn(clippy::pedantic)]
+#![warn(clippy::all)]
 
 #[cfg(any(
     doc,
