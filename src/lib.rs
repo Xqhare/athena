@@ -88,4 +88,9 @@ pub mod sorting {
     pub use crate::utils::sorting::topological_sort::kahns::*;
 }
 
-pub use crate::value::*;
+// Reexports
+pub use aequa::value::*;
+
+pub mod hp_float {
+    pub use aequa::hp_float::*;
+}
