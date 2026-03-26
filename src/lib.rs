@@ -34,7 +34,6 @@ mod tools;
     feature = "sorting"
 ))]
 mod utils;
-mod value;
 
 // Reexports for convenience
 
