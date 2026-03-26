@@ -1,5 +1,6 @@
 {
   "all": true,
+  "requires": ["aequa"],
   "test": {
     "args": ["--all-features", "--", "--test-threads=1"]
   },
