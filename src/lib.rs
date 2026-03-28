@@ -89,7 +89,3 @@ pub mod sorting {
 
 // Reexports
 pub use aequa::value::*;
-
-pub mod hp_float {
-    pub use aequa::hp_float::*;
-}
