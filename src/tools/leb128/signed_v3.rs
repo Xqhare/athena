@@ -7,6 +7,7 @@ const SIGN_BIT_V3: u8 = 0b01000000; // Bit 6 of the first byte
 ///
 /// First Byte: [Continuation (1bit)] [Sign (1bit)] [Value (6bits)]
 /// Subsequent Bytes: [Continuation (1bit)] [Value (7bits)]
+#[must_use] 
 pub fn serialize_leb128_signed_v3(value: i64) -> Vec<u8> {
     let mut out = Vec::new();
     let is_negative = value < 0;
@@ -46,7 +47,7 @@ pub fn deserialize_leb128_signed_v3(data: &[u8]) -> Result<(i64, u8), AthenaErro
 
     let first_byte = data[0];
     let is_negative = (first_byte & SIGN_BIT_V3) != 0;
-    let mut result = (first_byte & 0x3F) as u64;
+    let mut result = u64::from(first_byte & 0x3F);
     let mut num_of_bytes = 1;
 
     if (first_byte & CONTINUATION_BIT) != 0 {
@@ -58,7 +59,7 @@ pub fn deserialize_leb128_signed_v3(data: &[u8]) -> Result<(i64, u8), AthenaErro
             let byte = data[num_of_bytes];
             num_of_bytes += 1;
 
-            result |= ((byte & 0x7F) as u64) << shift;
+            result |= u64::from(byte & 0x7F) << shift;
             shift += 7;
 
             if (byte & CONTINUATION_BIT) == 0 {
@@ -71,7 +72,7 @@ pub fn deserialize_leb128_signed_v3(data: &[u8]) -> Result<(i64, u8), AthenaErro
     }
 
     let final_val = if is_negative {
-        (-(result as i128)) as i64
+        (-i128::from(result)) as i64
     } else {
         result as i64
     };

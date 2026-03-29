@@ -6,7 +6,7 @@ use crate::error::{AthenaError, AthenaResult};
 /// Common values:
 /// - `19`: Lowest priority (most polite)
 /// - `0`: Default priority
-/// - `-20`: Highest priority (requires root/CAP_SYS_NICE)
+/// - `-20`: Highest priority (requires `root/CAP_SYS_NICE`)
 pub fn set_nice_value(priority: i32) -> AthenaResult<()> {
     unsafe {
         if libc::setpriority(libc::PRIO_PROCESS, 0, priority) == -1 {
@@ -38,7 +38,7 @@ pub fn set_scheduler(policy: SchedulerPolicy, priority: i32) -> AthenaResult<()>
     let param = libc::sched_param { sched_priority };
 
     unsafe {
-        if libc::sched_setscheduler(0, libc_policy, &param) == -1 {
+        if libc::sched_setscheduler(0, libc_policy, &raw const param) == -1 {
             return Err(AthenaError::IoError(std::io::Error::last_os_error()));
         }
     }
@@ -80,9 +80,9 @@ pub fn set_ionice_value(class: IoNiceClass, class_data: u32) -> AthenaResult<()>
     let mut command = std::process::Command::new("ionice");
     command
         .arg("-c")
-        .arg(format!("{}", libc_class))
+        .arg(format!("{libc_class}"))
         .arg("-p")
-        .arg(format!("{}", pid))
+        .arg(format!("{pid}"))
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null());
 
@@ -90,15 +90,14 @@ pub fn set_ionice_value(class: IoNiceClass, class_data: u32) -> AthenaResult<()>
         if class_data > 7 {
             return Err(AthenaError::InvalidInput);
         }
-        command.arg("-n").arg(format!("{}", class_data));
+        command.arg("-n").arg(format!("{class_data}"));
     }
 
     let mut proc = command.spawn().map_err(AthenaError::IoError)?;
     let status = proc.wait().map_err(AthenaError::IoError)?;
 
     if !status.success() {
-        return Err(AthenaError::IoError(std::io::Error::new(
-            std::io::ErrorKind::Other,
+        return Err(AthenaError::IoError(std::io::Error::other(
             "ionice command failed",
         )));
     }
@@ -116,7 +115,7 @@ pub fn get_ionice_value() -> AthenaResult<(IoNiceClass, u32)> {
     let pid = std::process::id() as i32;
     let proc = std::process::Command::new("ionice")
         .arg("-p")
-        .arg(format!("{}", pid))
+        .arg(format!("{pid}"))
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::null())
         .spawn()

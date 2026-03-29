@@ -7,7 +7,7 @@ struct Library<'a> {
     num_parents: usize,
 }
 
-impl<'a> Library<'a> {
+impl Library<'_> {
     const fn new() -> Self {
         Self {
             children: Vec::new(),
@@ -37,9 +37,9 @@ impl<'a> Library<'a> {
 pub fn kahns_managed(input: &[(String, Vec<String>)]) -> Result<Vec<String>, String> {
     let input: Vec<(&str, Vec<&str>)> = input
         .iter()
-        .map(|(k, v)| (k.as_str(), v.iter().map(|s| s.as_str()).collect()))
+        .map(|(k, v)| (k.as_str(), v.iter().map(std::string::String::as_str).collect()))
         .collect();
-    Ok(kahns(&input)?.into_iter().map(|s| s.to_string()).collect())
+    Ok(kahns(&input)?.into_iter().map(std::string::ToString::to_string).collect())
 }
 
 /// Kahn's algorithm
@@ -74,7 +74,7 @@ fn build_libraries<'a>(
     // Ensure all mentioned nodes exist and that there are no duplicate definitions
     for (name, children) in input {
         if !defined_nodes.insert(name) {
-            return Err(format!("Duplicate node definition: {}", name));
+            return Err(format!("Duplicate node definition: {name}"));
         }
         
         libraries.entry(name).or_insert_with(Library::new);
@@ -92,7 +92,7 @@ fn build_libraries<'a>(
             }
             libraries
                 .get_mut(parent)
-                .ok_or_else(|| format!("Parent node {} not found", parent))?
+                .ok_or_else(|| format!("Parent node {parent} not found"))?
                 .children
                 .push(name);
             num_parents += 1;
@@ -128,7 +128,7 @@ fn topological_sort<'a>(
         for child_name in children {
             let child = libraries
                 .get_mut(child_name)
-                .ok_or_else(|| format!("Child node {} not found in map", child_name))?;
+                .ok_or_else(|| format!("Child node {child_name} not found in map"))?;
             child.num_parents -= 1;
             if child.num_parents == 0 {
                 options.push(std::cmp::Reverse(child_name));

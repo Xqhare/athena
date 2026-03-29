@@ -19,7 +19,7 @@ pub type AthenaResult<T> = Result<T, AthenaError>;
 
 impl std::fmt::Display for AthenaError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self)
+        write!(f, "{self:?}")
     }
 }
 

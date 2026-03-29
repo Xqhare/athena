@@ -17,7 +17,7 @@ fn low_bits_of_byte(b: u8) -> u8 {
 
 #[inline]
 fn low_bits_of_u128(b: u128) -> u8 {
-    let byte = b & (u8::MAX as u128);
+    let byte = b & u128::from(u8::MAX);
     low_bits_of_byte(byte as u8)
 }
 
@@ -62,7 +62,7 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u128, u8), AthenaErro
         }
         let byte = data[num_of_bytes as usize];
         num_of_bytes += 1;
-        let low_bits = low_bits_of_byte(byte) as u128;
+        let low_bits = u128::from(low_bits_of_byte(byte));
         if shift < 128 {
             result |= low_bits << shift;
         } else if low_bits != 0 {
@@ -90,16 +90,17 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u128, u8), AthenaErro
 /// assert_eq!(serialized, vec![0b11111111, 0b00000001]);
 /// assert_eq!(value, 255);
 /// ```
+#[must_use] 
 pub fn serialize_leb128_unsigned(value: u128) -> Vec<u8> {
     let mut val = value;
     let val_len = {
-        if val <= u8::MAX as u128 {
+        if val <= u128::from(u8::MAX) {
             2
-        } else if val <= u16::MAX as u128 {
+        } else if val <= u128::from(u16::MAX) {
             3
-        } else if val <= u32::MAX as u128 {
+        } else if val <= u128::from(u32::MAX) {
             5
-        } else if val <= u64::MAX as u128 {
+        } else if val <= u128::from(u64::MAX) {
             10
         } else {
             19
@@ -170,7 +171,7 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError>
             // So byte 18 must not have more than 2 bits of value if it's the last byte.
         }
 
-        let low_bits = low_bits_of_byte(byte) as i128;
+        let low_bits = i128::from(low_bits_of_byte(byte));
         if shift < 128 {
             result |= low_bits << shift;
         }
@@ -205,6 +206,7 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError>
 /// let serialized = serialize_leb128_signed(value);
 /// assert_eq!(serialized, vec![0b01111111]);
 /// ```
+#[must_use] 
 pub fn serialize_leb128_signed(value: i128) -> Vec<u8> {
     // a i128 is 16 bytes, this expands to up to 19 bytes using LEB
     let mut out = Vec::with_capacity(19);

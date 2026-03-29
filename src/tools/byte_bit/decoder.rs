@@ -8,7 +8,7 @@ pub fn byte_bit_decoder<T: Unsigned>(value: T) -> Vec<u8> {
     let mut out: Vec<u8> = Vec::with_capacity(size);
     for i in 0..size {
         let bit = (value >> i) & T::one();
-        out.push(if bit != T::zero() { 1 } else { 0 });
+        out.push(u8::from(bit != T::zero()));
     }
     out
 }

@@ -2,7 +2,7 @@ use crate::error::AthenaError;
 
 use super::decoder::byte_bit_decoder;
 
-/// Reads the bits from a io::Reader
+/// Reads the bits from a `io::Reader`
 ///
 /// The bits will be in the order of least significant bit to most significant bit
 ///

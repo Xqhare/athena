@@ -10,15 +10,15 @@ pub use unix::*;
 /// Represents the available Linux/Unix scheduling policies.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SchedulerPolicy {
-    /// The default interactive policy (SCHED_OTHER).
+    /// The default interactive policy (`SCHED_OTHER`).
     Standard,
-    /// For CPU-intensive background tasks (SCHED_BATCH).
+    /// For CPU-intensive background tasks (`SCHED_BATCH`).
     Batch,
-    /// Very low priority, only runs when system is idle (SCHED_IDLE).
+    /// Very low priority, only runs when system is idle (`SCHED_IDLE`).
     Idle,
-    /// Real-time First-In-First-Out (SCHED_FIFO). Requires special privileges.
+    /// Real-time First-In-First-Out (`SCHED_FIFO`). Requires special privileges.
     Fifo,
-    /// Real-time Round-Robin (SCHED_RR). Requires special privileges.
+    /// Real-time Round-Robin (`SCHED_RR`). Requires special privileges.
     RoundRobin,
 }
 

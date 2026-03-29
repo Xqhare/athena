@@ -2,7 +2,7 @@ use crate::error::AthenaError;
 
 use super::encoder::byte_bit_encoder;
 
-/// Writes bits to a io::Writer
+/// Writes bits to a `io::Writer`
 ///
 /// The bits will be in the order of least significant bit to most significant bit
 ///

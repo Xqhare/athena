@@ -8,8 +8,9 @@
 /// assert!(is_even_parity(0b00000011)); // 2 ones
 /// assert!(!is_even_parity(0b00000001)); // 1 one
 /// ```
+#[must_use] 
 pub fn is_even_parity(byte: u8) -> bool {
-    (byte.count_ones() % 2) == 0
+    byte.count_ones().is_multiple_of(2)
 }
 
 /// Ensures a byte has even parity by toggling the most significant bit (MSB) if necessary.
@@ -28,9 +29,10 @@ pub fn is_even_parity(byte: u8) -> bool {
 /// // 0x01 | 0x80 = 0x81 (1000 0001) which has 2 ones.
 /// assert_eq!(ensure_even_parity(0x01), 0x81);
 /// ```
+#[must_use] 
 pub fn ensure_even_parity(byte: u8) -> u8 {
     let low_bits = byte & 0x7F;
-    if (low_bits.count_ones() % 2) == 0 {
+    if low_bits.count_ones().is_multiple_of(2) {
         low_bits // MSB should be 0
     } else {
         low_bits | 0x80 // MSB should be 1
