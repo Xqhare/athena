@@ -37,9 +37,17 @@ impl Library<'_> {
 pub fn kahns_managed(input: &[(String, Vec<String>)]) -> Result<Vec<String>, String> {
     let input: Vec<(&str, Vec<&str>)> = input
         .iter()
-        .map(|(k, v)| (k.as_str(), v.iter().map(std::string::String::as_str).collect()))
+        .map(|(k, v)| {
+            (
+                k.as_str(),
+                v.iter().map(std::string::String::as_str).collect(),
+            )
+        })
         .collect();
-    Ok(kahns(&input)?.into_iter().map(std::string::ToString::to_string).collect())
+    Ok(kahns(&input)?
+        .into_iter()
+        .map(std::string::ToString::to_string)
+        .collect())
 }
 
 /// Kahn's algorithm
@@ -76,7 +84,7 @@ fn build_libraries<'a>(
         if !defined_nodes.insert(name) {
             return Err(format!("Duplicate node definition: {name}"));
         }
-        
+
         libraries.entry(name).or_insert_with(Library::new);
         for &parent in children {
             libraries.entry(parent).or_insert_with(Library::new);

@@ -24,7 +24,7 @@ mod tests;
 /// assert_eq!(compressed.len(), 43);
 /// assert_eq!(data.len(), 43);
 /// ```
-#[must_use] 
+#[must_use]
 pub fn compress_lzw_encode_leb128(data: &[u8]) -> Vec<u8> {
     let compressed = compress_lzw(data);
     let mut out = Vec::new();
@@ -83,7 +83,7 @@ pub fn decompress_lzw_decode_leb128(data: &[u8]) -> Result<Vec<u8>, AthenaError>
 /// assert_eq!(compressed.len(), 42);
 /// assert_eq!(data.len(), 43);
 /// ```
-#[must_use] 
+#[must_use]
 pub fn compress_lzw(data: &[u8]) -> Vec<u32> {
     let mut dict: HashMap<Vec<u8>, u32> = (0u32..=255).map(|i| (vec![i as u8], i)).collect();
     let mut tmp = Vec::new();
@@ -125,7 +125,7 @@ pub fn compress_lzw(data: &[u8]) -> Vec<u32> {
 /// let decompressed = decompress_lzw(&compressed);
 /// assert_eq!(String::from_utf8(decompressed).unwrap(), "The quick brown fox jumps over the lazy dog".to_string());
 /// ```
-#[must_use] 
+#[must_use]
 pub fn decompress_lzw(mut data: &[u32]) -> Vec<u8> {
     let mut dict: HashMap<u32, Vec<u8>> = (0u32..=255).map(|i| (i, vec![i as u8])).collect();
     let mut tmp = dict[&data[0]].clone();

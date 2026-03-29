@@ -128,7 +128,7 @@ mod signed {
         let (deserialized, len) = deserialize_leb128_signed(&serialized).unwrap();
         assert_eq!(val, deserialized);
         assert_eq!(serialized.len(), len as usize);
-        
+
         let val2: i128 = i128::MAX;
         let serialized2 = serialize_leb128_signed(val2);
         let (deserialized2, len2) = deserialize_leb128_signed(&serialized2).unwrap();

@@ -15,7 +15,7 @@ const CONTINUATION_BIT: u8 = 0b10000000;
 /// assert_eq!(serialize_version_bit_chain(3), vec![0x07]); // 3 ones: 0000 0111
 /// assert_eq!(serialize_version_bit_chain(8), vec![0xFF, 0x01]); // 7 ones + 1 one
 /// ```
-#[must_use] 
+#[must_use]
 pub fn serialize_version_bit_chain(version: usize) -> Vec<u8> {
     if version == 0 {
         return vec![0];

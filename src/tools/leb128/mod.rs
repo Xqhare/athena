@@ -90,7 +90,7 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u128, u8), AthenaErro
 /// assert_eq!(serialized, vec![0b11111111, 0b00000001]);
 /// assert_eq!(value, 255);
 /// ```
-#[must_use] 
+#[must_use]
 pub fn serialize_leb128_unsigned(value: u128) -> Vec<u8> {
     let mut val = value;
     let val_len = {
@@ -155,10 +155,10 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError>
         index += 1;
 
         if shift == 126 && byte != 0x00 && byte != 0x7f && byte != 0x01 && byte != 0x7e {
-             // Special case for the 126th shift (127th and 128th bits)
-             // But actually it's easier to just check if shift >= 128 or something.
+            // Special case for the 126th shift (127th and 128th bits)
+            // But actually it's easier to just check if shift >= 128 or something.
         }
-        
+
         // standard LEB128 overflow check for signed
         if shift == 126 {
             // bits 126..132
@@ -167,7 +167,7 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError>
             // 19th byte handles bits 126..127 (and sign extension)
             // Wait, 18 * 7 = 126.
             // Byte 18 (0-indexed) covers bits 126..132.
-            // We only need bit 126 and 127. 
+            // We only need bit 126 and 127.
             // So byte 18 must not have more than 2 bits of value if it's the last byte.
         }
 
@@ -175,13 +175,14 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError>
         if shift < 128 {
             result |= low_bits << shift;
         }
-        
+
         shift += 7;
         if byte & CONTINUATION_BIT == 0 {
             break;
         }
-        
-        if shift >= 133 { // 19 * 7 = 133
+
+        if shift >= 133 {
+            // 19 * 7 = 133
             return Err(AthenaError::Overflow);
         }
     }
@@ -206,7 +207,7 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError>
 /// let serialized = serialize_leb128_signed(value);
 /// assert_eq!(serialized, vec![0b01111111]);
 /// ```
-#[must_use] 
+#[must_use]
 pub fn serialize_leb128_signed(value: i128) -> Vec<u8> {
     // a i128 is 16 bytes, this expands to up to 19 bytes using LEB
     let mut out = Vec::with_capacity(19);

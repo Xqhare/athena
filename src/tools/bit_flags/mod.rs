@@ -29,7 +29,7 @@ impl<T: Unsigned> BitFlag<T> {
     /// Creates a new `BitFlag`
     ///
     /// All flags are set to `false`
-    #[must_use] 
+    #[must_use]
     pub fn new() -> Self {
         Self { flag: T::zero() }
     }

@@ -7,7 +7,7 @@ const SIGN_BIT_V3: u8 = 0b01000000; // Bit 6 of the first byte
 ///
 /// First Byte: [Continuation (1bit)] [Sign (1bit)] [Value (6bits)]
 /// Subsequent Bytes: [Continuation (1bit)] [Value (7bits)]
-#[must_use] 
+#[must_use]
 pub fn serialize_leb128_signed_v3(value: i64) -> Vec<u8> {
     let mut out = Vec::new();
     let is_negative = value < 0;
