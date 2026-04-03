@@ -9,7 +9,7 @@ Athena acts as the "computational layer" of the ecosystem, sitting between the l
 - **Purpose**: A "rusty toolbox" featuring compression, bit manipulation, checksums, and other low-level utilities.
 - **Core Technology**: Built with Rust (Edition 2024), maintaining a strict "no external dependencies" rule (standard library and libc only).
 - **Naming**: Named after the Greek goddess of wisdom and handicraft, reflecting its role as a versatile set of tools for building complex systems.
-- **Architecture**: Modularized into `tools` (bit-level operations and encodings) and `utils` (higher-level algorithms like compression and sorting).
+- **Architecture**: Modularized into `tools` (lower level code, like bit-level operations and encodings) and `utils` (higher-level code, like algorithms like compression and sorting).
 
 ## Key Features
 
@@ -42,6 +42,7 @@ Low-level system interactions and fundamental algorithms.
 - **Topological Sort**: A deterministic implementation of Kahn's algorithm for dependency resolution.
 - **Process Utilities**: UNIX-specific tools for system monitoring and process priority management (e.g., CPU and I/O scheduling).
 - **Generic Traits**: Custom `Signed` and `Unsigned` traits to facilitate generic numeric operations across different bit-widths.
+- **RngApi**: A unified interface for random number generation, for implementations like [fortuna](https://github.com/xqhare/fortuna) and [tyche](https://github.com/xqhare/tyche.
 
 ### 4. Ecosystem Integration (via `Aequa`)
 
