@@ -27,7 +27,8 @@ mod tools;
     feature = "checksum",
     feature = "traits",
     feature = "process",
-    feature = "sorting"
+    feature = "sorting",
+    feature = "rng_api",
 ))]
 mod utils;
 
@@ -89,6 +90,12 @@ pub mod bit_flags {
 #[cfg(any(doc, feature = "sorting"))]
 pub mod sorting {
     pub use crate::utils::sorting::topological_sort::kahns::*;
+}
+
+/// Random Number Generator API
+#[cfg(any(doc, feature = "rng_api"))]
+pub mod rng_api {
+    pub use crate::utils::rng_api::*;
 }
 
 // Ecosystem Reexports
