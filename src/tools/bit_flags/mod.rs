@@ -1,8 +1,14 @@
+//! Ergonomic bit flag management for fixed-width unsigned integers.
+//!
+//! This module provides the `BitFlag` struct and type aliases for common bit-widths
+//! (`u8`, `u16`, `u32`), allowing for safe and readable manipulation of individual bits
+//! as boolean flags.
+
 use crate::utils::traits::unsigned::Unsigned;
 
-/// A generic bit flag
+/// A generic bit flag container.
 ///
-/// Flags are counted from the least significant bit to the most significant bit
+/// Flags are indexed from the least significant bit (0) to the most significant bit.
 ///
 /// # Example
 ///
@@ -26,47 +32,45 @@ pub struct BitFlag<T: Unsigned> {
 }
 
 impl<T: Unsigned> BitFlag<T> {
-    /// Creates a new `BitFlag`
-    ///
-    /// All flags are set to `false`
+    /// Creates a new `BitFlag` with all bits initialized to `false` (zero).
     #[must_use]
     pub fn new() -> Self {
         Self { flag: T::zero() }
     }
 
-    /// Sets a flag
+    /// Sets the bit at the specified index to `true`.
     ///
     /// # Arguments
-    ///
-    /// * `index` - The index of the flag
+    /// * `index` - The zero-based index of the bit to set.
     pub fn set(&mut self, index: usize) {
         self.flag = self.flag | (T::one() << index);
     }
 
-    /// Clears a flag
+    /// Clears the bit at the specified index (sets it to `false`).
     ///
     /// # Arguments
-    ///
-    /// * `index` - The index of the flag
+    /// * `index` - The zero-based index of the bit to clear.
     pub fn clear(&mut self, index: usize) {
         self.flag = self.flag & !(T::one() << index);
     }
 
-    /// Reads a flag
+    /// Reads the state of the bit at the specified index.
     ///
     /// # Arguments
+    /// * `index` - The zero-based index of the bit to read.
     ///
-    /// * `index` - The index of the flag
+    /// # Returns
+    /// * `true` if the bit is set, `false` otherwise.
     pub fn read(&self, index: usize) -> bool {
         (self.flag & (T::one() << index)) != T::zero()
     }
 }
 
-/// An 8-bit bit flag
+/// An 8-bit bit flag container.
 pub type U8Flag = BitFlag<u8>;
-/// A 16-bit bit flag
+/// A 16-bit bit flag container.
 pub type U16Flag = BitFlag<u16>;
-/// A 32-bit bit flag
+/// A 32-bit bit flag container.
 pub type U32Flag = BitFlag<u32>;
 
 #[cfg(test)]

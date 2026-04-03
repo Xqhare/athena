@@ -1,3 +1,11 @@
+//! LEB128 (Little Endian Base 128) variable-length integer encoding.
+//!
+//! This module provides several variants of the LEB128 encoding:
+//! - **Unsigned**: Standard DWARF/LEB128 for unsigned integers.
+//! - **Signed (v2)**: Standard signed LEB128.
+//! - **Signed (v3)**: Custom XFF v3 encoding where the sign bit is stored in the first byte.
+//! - **Bit-Chain**: A custom unary bit-chain encoding for metadata.
+
 /// Bit-chain encoding for version metadata
 pub mod bit_chain;
 /// Custom XFF v3 LEB128 encoding for signed integers

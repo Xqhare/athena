@@ -1,3 +1,8 @@
+//! UNIX-specific process and system monitoring utilities.
+//!
+//! This module provides tools for managing process priorities, CPU scheduling, 
+//! and I/O scheduling on UNIX-like systems.
+
 #[cfg(not(unix))]
 use crate::error::{AthenaError, AthenaResult};
 
@@ -36,16 +41,19 @@ pub enum IoNiceClass {
 }
 
 #[cfg(not(unix))]
+/// Set the "nice" value of the current process (unsupported on this platform).
 pub fn set_nice_value(_priority: i32) -> AthenaResult<()> {
     Err(AthenaError::UnsupportedPlatform)
 }
 
 #[cfg(not(unix))]
+/// Set the scheduler policy and priority (unsupported on this platform).
 pub fn set_scheduler(_policy: SchedulerPolicy, _priority: i32) -> AthenaResult<()> {
     Err(AthenaError::UnsupportedPlatform)
 }
 
 #[cfg(not(unix))]
+/// Set the I/O priority class and data (unsupported on this platform).
 pub fn set_ionice_value(_class: IoNiceClass, _class_data: u32) -> AthenaResult<()> {
     Err(AthenaError::UnsupportedPlatform)
 }

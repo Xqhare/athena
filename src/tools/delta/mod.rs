@@ -1,11 +1,23 @@
+//! Delta encoding and decoding for numerical sequences.
+//!
+//! Delta encoding stores the difference between consecutive values rather than the
+//! values themselves. This is highly effective for data that changes slowly or
+//! follows a predictable pattern.
+
 use crate::utils::traits::{signed::Signed, unsigned::Unsigned};
 
 mod tests;
 
-/// Returns the delta compressed version of the given data
+/// Returns the delta compressed version of the given data.
+///
+/// Each element in the output (except the first) is the difference between the 
+/// previous element and the current element in the input.
 ///
 /// # Arguments
-/// * `data` - The data to compress
+/// * `data` - The slice of unsigned integers to compress.
+///
+/// # Returns
+/// * `Vec<S>` - A vector of signed integers representing the deltas.
 ///
 /// # Example
 /// ```
@@ -31,10 +43,15 @@ pub fn delta_encoder<U: Unsigned, S: Signed + From<U>>(data: &[U]) -> Vec<S> {
     out
 }
 
-/// Returns the delta decompressed version of the given data
+/// Returns the delta decompressed version of the given data.
+///
+/// Reconstructs the original sequence from the first value and subsequent deltas.
 ///
 /// # Arguments
-/// * `data` - The data to decompress
+/// * `data` - The slice of signed deltas to decompress.
+///
+/// # Returns
+/// * `Vec<U>` - The original sequence of unsigned integers.
 ///
 /// # Example
 /// ```
