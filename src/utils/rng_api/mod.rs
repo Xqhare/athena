@@ -1,6 +1,8 @@
+/// Result type for Random Number Generator operations
 pub type RngResult<T> = Result<T, RngError>;
 
 /// Error Type for Random Number Generator
+#[derive(Debug)]
 pub enum RngError {
     /// I/O Error
     Io(std::io::Error),
@@ -14,6 +16,7 @@ impl From<std::io::Error> for RngError {
     }
 }
 
+/// Unified API for Random Number Generators
 pub trait RngApi {
     /// Generate a random `u8`
     ///

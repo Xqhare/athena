@@ -1,6 +1,6 @@
 //! Error handling for the Athena crate.
 //!
-//! Defines a unified error type `AthenaError` and a result alias `AthenaResult` 
+//! Defines a unified error type `AthenaError` and a result alias `AthenaResult`
 //! used throughout the library for consistent error reporting.
 
 /// The primary error type for all Athena operations.
@@ -43,7 +43,16 @@ impl std::fmt::Display for AthenaError {
     }
 }
 
-impl std::error::Error for AthenaError {}
+impl std::error::Error for AthenaError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            AthenaError::IoError(e) => Some(e),
+            AthenaError::ParseErrorInt(e) => Some(e),
+            AthenaError::ParseErrorUtf8(e) => Some(e),
+            _ => None,
+        }
+    }
+}
 
 impl From<std::io::Error> for AthenaError {
     fn from(e: std::io::Error) -> Self {
