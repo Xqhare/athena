@@ -80,6 +80,83 @@ pub fn deserialize_leb128_signed_v3(data: &[u8]) -> Result<(i64, u8), AthenaErro
     Ok((final_val, num_of_bytes as u8))
 }
 
+/// Serializes a signed i128 integer using the XFF v3 custom LEB128 encoding.
+///
+/// First Byte: [Continuation (1bit)] [Sign (1bit)] [Value (6bits)]
+/// Subsequent Bytes: [Continuation (1bit)] [Value (7bits)]
+#[must_use]
+pub fn serialize_leb128_signed_i128(value: i128) -> Vec<u8> {
+    let mut out = Vec::new();
+    let is_negative = value < 0;
+    let mut abs_value = value.unsigned_abs();
+
+    // Process first byte (6 bits of value)
+    let mut first_byte = (abs_value & 0x3F) as u8;
+    abs_value >>= 6;
+
+    if is_negative {
+        first_byte |= SIGN_BIT_V3;
+    }
+
+    if abs_value > 0 {
+        first_byte |= CONTINUATION_BIT;
+    }
+    out.push(first_byte);
+
+    // Process subsequent bytes (7 bits of value)
+    while abs_value > 0 {
+        let mut byte = (abs_value & 0x7F) as u8;
+        abs_value >>= 7;
+        if abs_value > 0 {
+            byte |= CONTINUATION_BIT;
+        }
+        out.push(byte);
+    }
+
+    out
+}
+
+/// Deserializes a signed i128 integer using the XFF v3 custom LEB128 encoding.
+pub fn deserialize_leb128_signed_i128(data: &[u8]) -> Result<(i128, u8), AthenaError> {
+    if data.is_empty() {
+        return Err(AthenaError::ContinuationBitInLastByte);
+    }
+
+    let first_byte = data[0];
+    let is_negative = (first_byte & SIGN_BIT_V3) != 0;
+    let mut result = u128::from(first_byte & 0x3F);
+    let mut num_of_bytes = 1;
+
+    if (first_byte & CONTINUATION_BIT) != 0 {
+        let mut shift = 6;
+        loop {
+            if num_of_bytes >= data.len() {
+                return Err(AthenaError::ContinuationBitInLastByte);
+            }
+            let byte = data[num_of_bytes];
+            num_of_bytes += 1;
+
+            result |= u128::from(byte & 0x7F) << shift;
+            shift += 7;
+
+            if (byte & CONTINUATION_BIT) == 0 {
+                break;
+            }
+            if shift >= 128 {
+                return Err(AthenaError::Overflow);
+            }
+        }
+    }
+
+    let final_val = if is_negative {
+        -(result as i128)
+    } else {
+        result as i128
+    };
+
+    Ok((final_val, num_of_bytes as u8))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
