@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 libc = "0.2.183"
-aequa = { git = "https://github.com/argos-ci/aequa" }
+aequa = { path = "../aequa" }
 
 [features]
 encoding_decoding = ["traits"]

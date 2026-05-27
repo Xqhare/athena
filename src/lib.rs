@@ -1,4 +1,19 @@
-#![doc = include_str!("../README.md")]
+#![cfg_attr(
+    all(
+        feature = "encoding_decoding",
+        feature = "compression",
+        feature = "bit_flags"
+    ),
+    doc = include_str!("../README.md")
+)]
+#![cfg_attr(
+    not(all(
+        feature = "encoding_decoding",
+        feature = "compression",
+        feature = "bit_flags"
+    )),
+    doc = "Athena is a collection of low-level utilities and tools that serve as building blocks for the Xqhare ecosystem."
+)]
 #![warn(missing_docs)]
 #![warn(clippy::pedantic)]
 #![warn(clippy::all)]
