@@ -1,19 +1,4 @@
-#![cfg_attr(
-    all(
-        feature = "encoding_decoding",
-        feature = "compression",
-        feature = "bit_flags"
-    ),
-    doc = include_str!("../README.md")
-)]
-#![cfg_attr(
-    not(all(
-        feature = "encoding_decoding",
-        feature = "compression",
-        feature = "bit_flags"
-    )),
-    doc = "Athena is a collection of low-level utilities and tools that serve as building blocks for the Xqhare ecosystem."
-)]
+#![doc = include_str!("../README.md")]
 #![warn(missing_docs)]
 #![warn(clippy::pedantic)]
 #![warn(clippy::all)]
@@ -31,6 +16,8 @@
 mod error;
 #[cfg(any(
     doc,
+    feature = "system",
+    feature = "process",
     feature = "encoding_decoding",
     feature = "byte_bit",
     feature = "bit_flags"
@@ -41,7 +28,6 @@ mod tools;
     feature = "compression",
     feature = "checksum",
     feature = "traits",
-    feature = "process",
     feature = "sorting",
     feature = "rng_api",
 ))]
@@ -52,7 +38,13 @@ mod utils;
 /// Process utilities for UNIX systems, including priority and scheduling management.
 #[cfg(any(doc, feature = "process"))]
 pub mod process {
-    pub use crate::utils::process::*;
+    pub use crate::tools::process::*;
+}
+
+/// System utilites for UNIX systems, like terminal size getting.
+#[cfg(any(doc, feature = "system"))]
+pub mod system {
+    pub use crate::tools::system::*;
 }
 
 /// Compression utilities including LZW and combined LEB128 implementations.

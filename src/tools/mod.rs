@@ -12,7 +12,11 @@ pub mod byte_bit;
 pub mod delta;
 #[cfg(any(doc, feature = "encoding_decoding"))]
 pub mod leb128;
+#[cfg(any(doc, feature = "process"))]
+pub mod process;
 #[cfg(any(doc, feature = "encoding_decoding"))]
 pub mod run_length;
+#[cfg(any(doc, feature = "system"))]
+pub mod system;
 
 pub mod bit_flags;

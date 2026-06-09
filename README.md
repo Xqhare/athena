@@ -9,7 +9,9 @@ Athena acts as the "computational layer" of the ecosystem, sitting between the l
 - **Purpose**: A "rusty toolbox" featuring compression, bit manipulation, checksums, and other low-level utilities.
 - **Core Technology**: Built with Rust (Edition 2024), maintaining a strict "no external dependencies" rule (standard library and libc only).
 - **Naming**: Named after the Greek goddess of wisdom and handicraft, reflecting its role as a versatile set of tools for building complex systems.
-- **Architecture**: Modularized into `tools` (lower level code, like bit-level operations and encodings) and `utils` (higher-level code, like algorithms like compression and sorting).
+- **Architecture**:
+    - *Tools*: Lower level code, like bit-level operations and encodings.
+    - *Utils*: Higher-level code, like algorithms like compression and sorting.
 
 ## Key Features
 

@@ -12,8 +12,6 @@
 pub mod checksum;
 #[cfg(any(doc, feature = "compression"))]
 pub mod compression;
-#[cfg(any(doc, feature = "process"))]
-pub mod process;
 #[cfg(any(doc, feature = "rng_api"))]
 pub mod rng_api;
 #[cfg(any(doc, feature = "sorting"))]
