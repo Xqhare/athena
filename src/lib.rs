@@ -33,6 +33,7 @@ mod tools;
     feature = "traits",
     feature = "sorting",
     feature = "rng_api",
+    feature = "bit_flags"
 ))]
 mod utils;
 
