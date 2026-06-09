@@ -11,7 +11,10 @@
     feature = "compression",
     feature = "checksum",
     feature = "traits",
-    feature = "process"
+    feature = "process",
+    feature = "system",
+    feature = "rng_api",
+    feature = "sorting"
 ))]
 mod error;
 #[cfg(any(
