@@ -17,6 +17,7 @@
     feature = "sorting"
 ))]
 mod error;
+
 #[cfg(any(
     doc,
     feature = "system",
@@ -26,6 +27,7 @@ mod error;
     feature = "bit_flags"
 ))]
 mod tools;
+
 #[cfg(any(
     doc,
     feature = "compression",
