@@ -54,6 +54,16 @@ impl std::error::Error for AthenaError {
     }
 }
 
+impl TryInto<std::io::Error> for AthenaError {
+    type Error = AthenaError;
+    fn try_into(self) -> Result<std::io::Error, Self::Error> {
+        match self {
+            AthenaError::IoError(e) => Ok(e),
+            _ => Err(self),
+        }
+    }
+}
+
 impl From<std::io::Error> for AthenaError {
     fn from(e: std::io::Error) -> Self {
         AthenaError::IoError(e)
