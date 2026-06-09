@@ -6,6 +6,8 @@
 //! - Data-specific encodings like Delta and Run-Length Encoding (RLE)
 //! - Ergonomic bit flag management (`bit_flags`)
 
+#[cfg(any(doc, feature = "bit_flags"))]
+pub mod bit_flags;
 #[cfg(any(doc, feature = "byte_bit"))]
 pub mod byte_bit;
 #[cfg(any(doc, feature = "encoding_decoding"))]
@@ -18,5 +20,3 @@ pub mod process;
 pub mod run_length;
 #[cfg(any(doc, feature = "system"))]
 pub mod system;
-
-pub mod bit_flags;
