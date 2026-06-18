@@ -1,4 +1,4 @@
-use crate::error::AthenaError;
+use crate::error::{AthenaError, AthenaResult};
 
 const CONTINUATION_BIT: u8 = 0b10000000;
 
@@ -50,13 +50,13 @@ pub fn serialize_version_bit_chain(version: usize) -> Vec<u8> {
 /// assert_eq!(version, 8);
 /// assert_eq!(bytes_read, 2);
 /// ```
-pub fn deserialize_version_bit_chain(data: &[u8]) -> Result<(usize, u8), AthenaError> {
+pub fn deserialize_version_bit_chain(data: &[u8]) -> AthenaResult<(usize, u8)> {
     let mut version = 0;
     let mut num_of_bytes = 0;
 
     loop {
         if num_of_bytes >= data.len() {
-            return Err(AthenaError::ContinuationBitInLastByte);
+            return Err(AthenaError::ContinuationBitInLastByte.into());
         }
         let byte = data[num_of_bytes];
         num_of_bytes += 1;

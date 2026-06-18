@@ -76,7 +76,7 @@ mod unsigned {
 
 mod signed {
     use crate::{
-        error::AthenaError,
+        error::{AthenaError, AthenaResult},
         tools::leb128::{deserialize_leb128_signed, serialize_leb128_signed},
     };
 

@@ -1,4 +1,4 @@
-use crate::error::AthenaError;
+use crate::error::{AthenaError, AthenaResult};
 
 const CONTINUATION_BIT: u8 = 0b10000000;
 const SIGN_BIT_V3: u8 = 0b01000000; // Bit 6 of the first byte
@@ -40,9 +40,9 @@ pub fn serialize_leb128_signed_v3(value: i64) -> Vec<u8> {
 }
 
 /// Deserializes a signed integer using the XFF v3 custom LEB128 encoding.
-pub fn deserialize_leb128_signed_v3(data: &[u8]) -> Result<(i64, u8), AthenaError> {
+pub fn deserialize_leb128_signed_v3(data: &[u8]) -> AthenaResult<(i64, u8)> {
     if data.is_empty() {
-        return Err(AthenaError::ContinuationBitInLastByte);
+        return Err(AthenaError::ContinuationBitInLastByte.into());
     }
 
     let first_byte = data[0];
@@ -54,7 +54,7 @@ pub fn deserialize_leb128_signed_v3(data: &[u8]) -> Result<(i64, u8), AthenaErro
         let mut shift = 6;
         loop {
             if num_of_bytes >= data.len() {
-                return Err(AthenaError::ContinuationBitInLastByte);
+                return Err(AthenaError::ContinuationBitInLastByte.into());
             }
             let byte = data[num_of_bytes];
             num_of_bytes += 1;
@@ -66,7 +66,7 @@ pub fn deserialize_leb128_signed_v3(data: &[u8]) -> Result<(i64, u8), AthenaErro
                 break;
             }
             if shift >= 64 {
-                return Err(AthenaError::Overflow);
+                return Err(AthenaError::Overflow.into());
             }
         }
     }
@@ -117,9 +117,9 @@ pub fn serialize_leb128_signed_i128(value: i128) -> Vec<u8> {
 }
 
 /// Deserializes a signed i128 integer using the XFF v3 custom LEB128 encoding.
-pub fn deserialize_leb128_signed_i128(data: &[u8]) -> Result<(i128, u8), AthenaError> {
+pub fn deserialize_leb128_signed_i128(data: &[u8]) -> AthenaResult<(i128, u8)> {
     if data.is_empty() {
-        return Err(AthenaError::ContinuationBitInLastByte);
+        return Err(AthenaError::ContinuationBitInLastByte.into());
     }
 
     let first_byte = data[0];
@@ -131,7 +131,7 @@ pub fn deserialize_leb128_signed_i128(data: &[u8]) -> Result<(i128, u8), AthenaE
         let mut shift = 6;
         loop {
             if num_of_bytes >= data.len() {
-                return Err(AthenaError::ContinuationBitInLastByte);
+                return Err(AthenaError::ContinuationBitInLastByte.into());
             }
             let byte = data[num_of_bytes];
             num_of_bytes += 1;
@@ -143,7 +143,7 @@ pub fn deserialize_leb128_signed_i128(data: &[u8]) -> Result<(i128, u8), AthenaE
                 break;
             }
             if shift >= 128 {
-                return Err(AthenaError::Overflow);
+                return Err(AthenaError::Overflow.into());
             }
         }
     }

@@ -12,7 +12,7 @@ pub mod bit_chain;
 pub mod signed_v3;
 mod tests;
 
-use crate::error::AthenaError;
+use crate::error::{AthenaError, AthenaResult};
 
 const CONTINUATION_BIT: u8 = 0b10000000;
 
@@ -60,13 +60,13 @@ fn low_bits_of_u128(b: u128) -> u8 {
 /// let result = deserialize_leb128_unsigned(&malformed_data);
 /// assert!(result.is_err());
 /// ```
-pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u128, u8), AthenaError> {
+pub fn deserialize_leb128_unsigned(data: &[u8]) -> AthenaResult<(u128, u8)> {
     let mut result: u128 = 0;
     let mut shift = 0;
     let mut num_of_bytes: u8 = 0;
     loop {
         if num_of_bytes as usize >= data.len() {
-            return Err(AthenaError::ContinuationBitInLastByte);
+            return Err(AthenaError::ContinuationBitInLastByte.into());
         }
         let byte = data[num_of_bytes as usize];
         num_of_bytes += 1;
@@ -74,7 +74,7 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> Result<(u128, u8), AthenaErro
         if shift < 128 {
             result |= low_bits << shift;
         } else if low_bits != 0 {
-            return Err(AthenaError::Overflow);
+            return Err(AthenaError::Overflow.into());
         }
         if byte & CONTINUATION_BIT == 0 {
             return Ok((result, num_of_bytes));
@@ -147,7 +147,7 @@ pub fn serialize_leb128_unsigned(value: u128) -> Vec<u8> {
 /// assert_eq!(num_of_bytes, 2);
 /// assert_eq!(i8min.len(), 2);
 /// ```
-pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError> {
+pub fn deserialize_leb128_signed(data: &[u8]) -> AthenaResult<(i128, u8)> {
     let mut result: i128 = 0;
     let mut shift = 0;
     let size = 128;
@@ -156,7 +156,7 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError>
 
     loop {
         if index as usize >= data.len() {
-            return Err(AthenaError::ContinuationBitInLastByte);
+            return Err(AthenaError::ContinuationBitInLastByte.into());
         }
 
         byte = data[index as usize];
@@ -191,7 +191,7 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> Result<(i128, u8), AthenaError>
 
         if shift >= 133 {
             // 19 * 7 = 133
-            return Err(AthenaError::Overflow);
+            return Err(AthenaError::Overflow.into());
         }
     }
 
