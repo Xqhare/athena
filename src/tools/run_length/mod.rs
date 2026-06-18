@@ -1,7 +1,7 @@
 //! Run-Length Encoding (RLE) and decoding.
 //!
-//! RLE is a simple form of data compression in which runs of data (sequences in 
-//! which the same data value occurs in many consecutive data elements) are stored 
+//! RLE is a simple form of data compression in which runs of data (sequences in
+//! which the same data value occurs in many consecutive data elements) are stored
 //! as a single data value and count.
 
 use crate::utils::traits::unsigned::Unsigned;

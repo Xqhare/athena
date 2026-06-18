@@ -14,10 +14,7 @@ use super::encoder::byte_bit_encoder;
 /// byte_bit_writer(&mut writer, bytes).unwrap();
 /// assert_eq!(writer, vec![0b11110000, 0b00001111]);
 /// ```
-pub fn byte_bit_writer<W: std::io::Write>(
-    writer: &mut W,
-    bytes: Vec<[u8; 8]>,
-) -> AthenaResult<()> {
+pub fn byte_bit_writer<W: std::io::Write>(writer: &mut W, bytes: Vec<[u8; 8]>) -> AthenaResult<()> {
     for byte in bytes {
         writer
             .write_all(&[byte_bit_encoder(&byte)])

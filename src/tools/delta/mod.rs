@@ -10,7 +10,7 @@ mod tests;
 
 /// Returns the delta compressed version of the given data.
 ///
-/// Each element in the output (except the first) is the difference between the 
+/// Each element in the output (except the first) is the difference between the
 /// previous element and the current element in the input.
 ///
 /// # Arguments

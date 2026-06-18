@@ -2,7 +2,7 @@ use std::{mem::zeroed, os::fd::RawFd};
 
 use libc::{TIOCGWINSZ, ioctl, winsize};
 
-use crate::error::AthenaResult;
+use crate::error::{AthenaError, AthenaResult};
 
 /// Get the terminal size in cells from the linux kernel
 ///
@@ -25,7 +25,7 @@ pub fn terminal_size(fd_stdout: RawFd) -> AthenaResult<(u16, u16)> {
     unsafe {
         let mut winsize: winsize = zeroed();
         if ioctl(fd_stdout, TIOCGWINSZ, &mut winsize) != 0 {
-            return Err(std::io::Error::last_os_error().into());
+            return Err(AthenaError::from(std::io::Error::last_os_error()).into());
         }
         Ok((winsize.ws_row, winsize.ws_col))
     }

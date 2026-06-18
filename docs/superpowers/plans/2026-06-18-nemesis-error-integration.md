@@ -72,7 +72,7 @@
 - Modify: `src/tools/byte_bit/reader.rs`
 - Modify: `src/tools/byte_bit/writer.rs`
 
-- [ ] **Step 1: Modify `src/tools/byte_bit/reader.rs`**
+- [x] **Step 1: Modify `src/tools/byte_bit/reader.rs`**
   Update the imports to include `AthenaResult` and change the return type of `byte_bit_reader` to `AthenaResult<Vec<Vec<u8>>>`, and update direct `Err(AthenaError)` instantiation to call `.into()`.
 
   ```rust
@@ -90,7 +90,7 @@
   }
   ```
 
-- [ ] **Step 2: Modify `src/tools/byte_bit/writer.rs`**
+- [x] **Step 2: Modify `src/tools/byte_bit/writer.rs`**
   Update the imports to include `AthenaResult` and update the return signature of `byte_bit_writer` to `AthenaResult<()>`.
 
   ```rust
@@ -109,11 +109,11 @@
   }
   ```
 
-- [ ] **Step 3: Verify the changes by building the `byte_bit` tests**
+- [x] **Step 3: Verify the changes by building the `byte_bit` tests**
   Run: `cargo test --lib tools::byte_bit`
   Expected: PASS
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   Run:
   ```bash
   git add src/tools/byte_bit/reader.rs src/tools/byte_bit/writer.rs
@@ -130,7 +130,7 @@
 - Modify: `src/tools/leb128/signed_v3.rs`
 - Modify: `src/tools/leb128/tests.rs`
 
-- [ ] **Step 1: Modify `src/tools/leb128/bit_chain.rs`**
+- [x] **Step 1: Modify `src/tools/leb128/bit_chain.rs`**
   Update `deserialize_version_bit_chain` return type to `AthenaResult<(usize, u8)>` and update direct return error statement to use `.into()`.
 
   ```rust
@@ -147,7 +147,7 @@
           // ...
   ```
 
-- [ ] **Step 2: Modify `src/tools/leb128/mod.rs`**
+- [x] **Step 2: Modify `src/tools/leb128/mod.rs`**
   Update the signatures for `deserialize_leb128_unsigned` and `deserialize_leb128_signed` to use `AthenaResult`, and append `.into()` to the explicit error returns.
 
   ```rust
@@ -199,7 +199,7 @@
       // ...
   ```
 
-- [ ] **Step 3: Modify `src/tools/leb128/signed_v3.rs`**
+- [x] **Step 3: Modify `src/tools/leb128/signed_v3.rs`**
   Update signatures for `deserialize_leb128_signed_v3` and `deserialize_leb128_signed_i128` to return `AthenaResult`, and append `.into()` to the explicit error returns.
 
   ```rust
@@ -246,7 +246,7 @@
   }
   ```
 
-- [ ] **Step 4: Modify `src/tools/leb128/tests.rs`**
+- [x] **Step 4: Modify `src/tools/leb128/tests.rs`**
   Update imports to use `AthenaResult` if needed.
   ```rust
   // Modify imports at line 78-81:
@@ -256,11 +256,11 @@
   };
   ```
 
-- [ ] **Step 5: Run tests for `leb128`**
+- [x] **Step 5: Run tests for `leb128`**
   Run: `cargo test --lib tools::leb128`
   Expected: PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
   Run:
   ```bash
   git add src/tools/leb128/bit_chain.rs src/tools/leb128/mod.rs src/tools/leb128/signed_v3.rs src/tools/leb128/tests.rs
@@ -276,7 +276,7 @@
 - Modify: `src/tools/process/unix.rs`
 - Modify: `src/tools/system/mod.rs`
 
-- [ ] **Step 1: Modify `src/tools/process/mod.rs`**
+- [x] **Step 1: Modify `src/tools/process/mod.rs`**
   No logic changes needed since return types are already `AthenaResult`, but we must update signature direct error returns in the mock `not(unix)` functions:
 
   ```rust
@@ -299,7 +299,7 @@
   }
   ```
 
-- [ ] **Step 2: Modify `src/tools/process/unix.rs`**
+- [x] **Step 2: Modify `src/tools/process/unix.rs`**
   Update explicit `Err` returns to use `.into()` to convert `AthenaError` to `NemesisError`.
 
   ```rust
@@ -361,7 +361,7 @@
   }
   ```
 
-- [ ] **Step 3: Modify `src/tools/system/mod.rs`**
+- [x] **Step 3: Modify `src/tools/system/mod.rs`**
   Update direct returns to use `AthenaError::from(...).into()` (or `AthenaError::IoError(...).into()`) since `std::io::Error` does not automatically convert to `NemesisError`.
 
   ```rust
@@ -378,11 +378,11 @@
   }
   ```
 
-- [ ] **Step 4: Run process/system tests**
+- [x] **Step 4: Run process/system tests**
   Run: `cargo test --lib tools::process --lib tools::system`
   Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   Run:
   ```bash
   git add src/tools/process/mod.rs src/tools/process/unix.rs src/tools/system/mod.rs

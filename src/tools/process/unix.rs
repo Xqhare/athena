@@ -10,7 +10,7 @@ use crate::error::{AthenaError, AthenaResult};
 pub fn set_nice_value(priority: i32) -> AthenaResult<()> {
     unsafe {
         if libc::setpriority(libc::PRIO_PROCESS, 0, priority) == -1 {
-            return Err(AthenaError::IoError(std::io::Error::last_os_error()));
+            return Err(AthenaError::IoError(std::io::Error::last_os_error()).into());
         }
     }
     Ok(())
@@ -39,7 +39,7 @@ pub fn set_scheduler(policy: SchedulerPolicy, priority: i32) -> AthenaResult<()>
 
     unsafe {
         if libc::sched_setscheduler(0, libc_policy, &raw const param) == -1 {
-            return Err(AthenaError::IoError(std::io::Error::last_os_error()));
+            return Err(AthenaError::IoError(std::io::Error::last_os_error()).into());
         }
     }
 
@@ -88,7 +88,7 @@ pub fn set_ionice_value(class: IoNiceClass, class_data: u32) -> AthenaResult<()>
 
     if libc_class != 0 && libc_class != 3 {
         if class_data > 7 {
-            return Err(AthenaError::InvalidInput);
+            return Err(AthenaError::InvalidInput.into());
         }
         command.arg("-n").arg(format!("{class_data}"));
     }
@@ -97,9 +97,7 @@ pub fn set_ionice_value(class: IoNiceClass, class_data: u32) -> AthenaResult<()>
     let status = proc.wait().map_err(AthenaError::IoError)?;
 
     if !status.success() {
-        return Err(AthenaError::IoError(std::io::Error::other(
-            "ionice command failed",
-        )));
+        return Err(AthenaError::IoError(std::io::Error::other("ionice command failed")).into());
     }
 
     Ok(())
@@ -125,7 +123,7 @@ pub fn get_ionice_value() -> AthenaResult<(IoNiceClass, u32)> {
     let stdout = stdout.trim();
 
     if stdout.is_empty() {
-        return Err(AthenaError::InvalidOutput);
+        return Err(AthenaError::InvalidOutput.into());
     }
 
     if stdout == "idle" {
@@ -150,7 +148,7 @@ pub fn get_ionice_value() -> AthenaResult<(IoNiceClass, u32)> {
     } else if class_str.contains("idle") {
         IoNiceClass::Idle
     } else {
-        return Err(AthenaError::InvalidOutput);
+        return Err(AthenaError::InvalidOutput.into());
     };
 
     Ok((io_class, prio))
