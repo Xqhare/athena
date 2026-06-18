@@ -35,7 +35,7 @@ pub enum AthenaError {
 }
 
 /// A specialized `Result` type for Athena operations.
-pub type AthenaResult<T> = Result<T, AthenaError>;
+pub type AthenaResult<T> = Result<T, nemesis::NemesisError>;
 
 impl std::fmt::Display for AthenaError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -79,5 +79,26 @@ impl From<std::num::ParseIntError> for AthenaError {
 impl From<std::string::FromUtf8Error> for AthenaError {
     fn from(e: std::string::FromUtf8Error) -> Self {
         AthenaError::ParseErrorUtf8(e)
+    }
+}
+
+impl From<AthenaError> for nemesis::NemesisError {
+    fn from(err: AthenaError) -> Self {
+        nemesis::NemesisError::new("Athena", err)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_nemesis_error_conversion() {
+        let err = AthenaError::ParityError;
+        let nemesis_err: nemesis::NemesisError = err.into();
+        assert_eq!(nemesis_err.source_name(), "Athena");
+        let downcasted = nemesis_err.downcast_ref::<AthenaError>();
+        assert!(downcasted.is_some());
+        assert!(matches!(downcasted.unwrap(), AthenaError::ParityError));
     }
 }
