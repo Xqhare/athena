@@ -1,4 +1,4 @@
-use crate::error::AthenaError;
+use crate::error::{AthenaError, AthenaResult};
 
 use super::encoder::byte_bit_encoder;
 
@@ -17,7 +17,7 @@ use super::encoder::byte_bit_encoder;
 pub fn byte_bit_writer<W: std::io::Write>(
     writer: &mut W,
     bytes: Vec<[u8; 8]>,
-) -> Result<(), AthenaError> {
+) -> AthenaResult<()> {
     for byte in bytes {
         writer
             .write_all(&[byte_bit_encoder(&byte)])

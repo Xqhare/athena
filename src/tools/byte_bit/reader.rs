@@ -1,4 +1,4 @@
-use crate::error::AthenaError;
+use crate::error::{AthenaError, AthenaResult};
 
 use super::decoder::byte_bit_decoder;
 
@@ -14,13 +14,13 @@ use super::decoder::byte_bit_decoder;
 /// let expected: Vec<[u8; 8]> = vec![[0, 0, 0, 0, 1, 1, 1, 1], [1, 1, 1, 1, 0, 0, 0, 0]];
 /// assert_eq!(bits.to_vec(), expected);
 /// ```
-pub fn byte_bit_reader<R: std::io::Read>(reader: R) -> Result<Vec<Vec<u8>>, AthenaError> {
+pub fn byte_bit_reader<R: std::io::Read>(reader: R) -> AthenaResult<Vec<Vec<u8>>> {
     // min size 16 would only be enough for 2 bytes
     let mut out: Vec<Vec<u8>> = Vec::with_capacity(64);
     for byte in reader.bytes() {
         match byte {
             Ok(byte) => out.push(byte_bit_decoder(byte)),
-            Err(e) => return Err(AthenaError::IoError(e)),
+            Err(e) => return Err(AthenaError::IoError(e).into()),
         }
     }
     Ok(out)
