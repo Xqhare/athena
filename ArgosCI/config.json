@@ -1,6 +1,6 @@
 {
   "all": true,
-  "requires": ["aequa"],
+  "requires": ["aequa", "nemesis"],
   "test": {
     "args": ["--all-features", "--", "--test-threads=1"]
   },

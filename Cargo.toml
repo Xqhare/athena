@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 libc = "0.2.183"
 aequa = { git = "https://github.com/xqhare/aequa" }
+nemesis = { git = "https://github.com/xqhare/nemesis" }
 
 [features]
 encoding_decoding = ["traits"]
