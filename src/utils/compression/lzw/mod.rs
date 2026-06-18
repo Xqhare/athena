@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     encoding_and_decoding::{deserialize_leb128_unsigned, serialize_leb128_unsigned},
-    error::AthenaError,
+    error::AthenaResult,
 };
 
 mod tests;
@@ -52,7 +52,7 @@ pub fn compress_lzw_encode_leb128(data: &[u8]) -> Vec<u8> {
 /// let decompressed = decompress_lzw_decode_leb128(&compressed).unwrap();
 /// assert_eq!(String::from_utf8(decompressed).unwrap(), data);
 /// ```
-pub fn decompress_lzw_decode_leb128(data: &[u8]) -> Result<Vec<u8>, AthenaError> {
+pub fn decompress_lzw_decode_leb128(data: &[u8]) -> AthenaResult<Vec<u8>> {
     let compressed = {
         let mut out = Vec::new();
         let mut index = 0;
