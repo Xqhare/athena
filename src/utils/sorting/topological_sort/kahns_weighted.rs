@@ -1,0 +1,146 @@
+use std::collections::{BTreeMap, BinaryHeap, HashSet};
+
+/// A node in the graph
+#[derive(Debug)]
+struct Library<'a> {
+    children: Vec<&'a str>,
+    num_parents: usize,
+    priority: i32, // Added priority tracking
+}
+
+impl Library<'_> {
+    const fn new(priority: i32) -> Self {
+        Self {
+            children: Vec::new(),
+            num_parents: 0,
+            priority,
+        }
+    }
+}
+#[derive(Eq, PartialEq)]
+struct HeapElement<'a> {
+    /// Priority, smaller is higher
+    priority: i32,
+    name: &'a str,
+}
+
+// Custom ordering logic for the Max-Heap
+impl<'a> Ord for HeapElement<'a> {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        // First compare by priority (Highest priority comes first)
+        self.priority
+            .cmp(&other.priority)
+            // If priorities match, fall back to alphabetical order (A before Z)
+            .then_with(|| other.name.cmp(&self.name))
+    }
+}
+
+impl<'a> PartialOrd for HeapElement<'a> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+/// Kahn's algorithm with support for weighted dependencies
+///
+/// Use this function if you want to manage the memory yourself.
+///
+/// This algorithm is used to sort a list of nodes in a topological order.
+///
+/// The nodes are then sorted by the supplied `i32` priority. Smaller values are higher priority.
+pub fn kahns_weighted<'a>(input: &[(&'a str, i32, Vec<&'a str>)]) -> Result<Vec<&'a str>, String> {
+    let libraries = build_libraries(input)?;
+    topological_sort(libraries)
+}
+
+fn build_libraries<'a>(
+    input: &[(&'a str, i32, Vec<&'a str>)],
+) -> Result<BTreeMap<&'a str, Library<'a>>, String> {
+    let mut libraries: BTreeMap<&'a str, Library<'a>> = BTreeMap::new();
+    let mut defined_nodes: HashSet<&'a str> = HashSet::new();
+
+    // 1. Ensure all mentioned nodes exist with default priorities
+    for (name, priority, _) in input {
+        if !defined_nodes.insert(name) {
+            return Err(format!("Duplicate node definition: {name}"));
+        }
+        libraries.insert(name, Library::new(*priority));
+    }
+
+    // Fill in missing child references with a default priority of 0 if not defined explicitly
+    for (_, _, children) in input {
+        for &parent in children {
+            libraries.entry(parent).or_insert_with(|| Library::new(0));
+        }
+    }
+
+    // 2. Build the graph edges
+    for (name, _, children) in input {
+        let mut num_parents: usize = 0;
+        for &parent in children {
+            if parent == *name {
+                continue;
+            }
+            libraries
+                .get_mut(parent)
+                .ok_or_else(|| format!("Parent node {parent} not found"))?
+                .children
+                .push(name);
+            num_parents += 1;
+        }
+        if let Some(lib) = libraries.get_mut(name) {
+            lib.num_parents = num_parents;
+        }
+    }
+    Ok(libraries)
+}
+fn topological_sort<'a>(
+    mut libraries: BTreeMap<&'a str, Library<'a>>,
+) -> Result<Vec<&'a str>, String> {
+    let total_nodes = libraries.len();
+
+    // The heap now organizes items dynamically based on our custom HeapElement rules
+    let mut options: BinaryHeap<HeapElement> = libraries
+        .iter()
+        .filter(|(_, v)| v.num_parents == 0)
+        .map(|(k, v)| HeapElement {
+            priority: v.priority,
+            name: *k,
+        })
+        .collect();
+
+    let mut sorted: Vec<&str> = Vec::new();
+    while let Some(HeapElement { name: cur, .. }) = options.pop() {
+        let children = libraries
+            .get(cur)
+            .expect("Node missing after heap pop")
+            .children
+            .clone();
+
+        for child_name in children {
+            let child = libraries
+                .get_mut(child_name)
+                .ok_or_else(|| format!("Child node {child_name} not found in map"))?;
+            child.num_parents -= 1;
+            if child.num_parents == 0 {
+                options.push(HeapElement {
+                    priority: child.priority,
+                    name: child_name,
+                });
+            }
+        }
+        sorted.push(cur);
+    }
+
+    if sorted.len() == total_nodes {
+        Ok(sorted)
+    } else {
+        let mut remaining = HashSet::new();
+        for (name, lib) in libraries {
+            if lib.num_parents > 0 {
+                remaining.insert(name);
+            }
+        }
+        Err(format!("Cycle detected among {remaining:?}"))
+    }
+}
