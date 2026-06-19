@@ -1,3 +1,7 @@
+//! Largely a copy of `kahns.rs`, but with the important addition of `priority` tracking
+//! Also it has the larger test coverage of the two. So if an issue is found here, check over there
+//! too please.
+
 use std::collections::{BTreeMap, BinaryHeap, HashSet};
 
 /// A node in the graph
@@ -5,11 +9,11 @@ use std::collections::{BTreeMap, BinaryHeap, HashSet};
 struct Library<'a> {
     children: Vec<&'a str>,
     num_parents: usize,
-    priority: i32, // Added priority tracking
+    priority: u8, // Added priority tracking
 }
 
 impl Library<'_> {
-    const fn new(priority: i32) -> Self {
+    const fn new(priority: u8) -> Self {
         Self {
             children: Vec::new(),
             num_parents: 0,
@@ -20,7 +24,7 @@ impl Library<'_> {
 #[derive(Eq, PartialEq)]
 struct HeapElement<'a> {
     /// Priority, smaller is higher
-    priority: i32,
+    priority: u8,
     name: &'a str,
 }
 
@@ -48,14 +52,14 @@ impl<'a> PartialOrd for HeapElement<'a> {
 ///
 /// This algorithm is used to sort a list of nodes in a topological order.
 ///
-/// The nodes are then sorted by the supplied `i32` priority. Smaller values are higher priority.
-pub fn kahns_weighted<'a>(input: &[(&'a str, i32, Vec<&'a str>)]) -> Result<Vec<&'a str>, String> {
+/// The nodes are then sorted by the supplied `u8` priority. Smaller values are higher priority.
+pub fn kahns_weighted<'a>(input: &[(&'a str, u8, Vec<&'a str>)]) -> Result<Vec<&'a str>, String> {
     let libraries = build_libraries(input)?;
     topological_sort(libraries)
 }
 
 fn build_libraries<'a>(
-    input: &[(&'a str, i32, Vec<&'a str>)],
+    input: &[(&'a str, u8, Vec<&'a str>)],
 ) -> Result<BTreeMap<&'a str, Library<'a>>, String> {
     let mut libraries: BTreeMap<&'a str, Library<'a>> = BTreeMap::new();
     let mut defined_nodes: HashSet<&'a str> = HashSet::new();
@@ -190,10 +194,7 @@ mod tests {
     #[test]
     fn test_cycle_detection() {
         // A depends on B, B depends on A
-        let input = vec![
-            ("A", 0, vec!["B"]),
-            ("B", 0, vec!["A"]),
-        ];
+        let input = vec![("A", 0, vec!["B"]), ("B", 0, vec!["A"])];
         let result = kahns_weighted(&input);
         assert!(result.is_err());
         assert!(result.unwrap_err().contains("Cycle detected"));
@@ -201,10 +202,7 @@ mod tests {
 
     #[test]
     fn test_duplicate_node_definition() {
-        let input = vec![
-            ("A", 0, vec![]),
-            ("A", 1, vec![]),
-        ];
+        let input = vec![("A", 0, vec![]), ("A", 1, vec![])];
         let result = kahns_weighted(&input);
         assert!(result.is_err());
         assert!(result.unwrap_err().contains("Duplicate node definition"));
@@ -215,9 +213,7 @@ mod tests {
         // A depends on B. B is not explicitly defined in the input.
         // B should be filled in with a default priority of 0.
         // Since B has no dependencies, it runs first.
-        let input = vec![
-            ("A", 1, vec!["B"]),
-        ];
+        let input = vec![("A", 1, vec!["B"])];
         let result = kahns_weighted(&input);
         assert_eq!(result, Ok(vec!["B", "A"]));
     }
