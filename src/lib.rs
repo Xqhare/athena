@@ -102,6 +102,7 @@ pub mod bit_flags {
 #[cfg(any(doc, feature = "sorting"))]
 pub mod sorting {
     pub use crate::utils::sorting::topological_sort::kahns::*;
+    pub use crate::utils::sorting::topological_sort::kahns_weighted::*;
 }
 
 /// Random Number Generator API
