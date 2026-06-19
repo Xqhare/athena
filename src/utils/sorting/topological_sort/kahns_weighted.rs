@@ -27,9 +27,10 @@ struct HeapElement<'a> {
 // Custom ordering logic for the Max-Heap
 impl<'a> Ord for HeapElement<'a> {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        // First compare by priority (Highest priority comes first)
-        self.priority
-            .cmp(&other.priority)
+        // First compare by priority (Highest priority comes first, i.e. smaller priority value is higher)
+        other
+            .priority
+            .cmp(&self.priority)
             // If priorities match, fall back to alphabetical order (A before Z)
             .then_with(|| other.name.cmp(&self.name))
     }
@@ -142,5 +143,47 @@ fn topological_sort<'a>(
             }
         }
         Err(format!("Cycle detected among {remaining:?}"))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_basic_sort() {
+        // Simple chain: A depends on B, B depends on C
+        let input = vec![("A", 0, vec!["B"]), ("B", 0, vec!["C"]), ("C", 0, vec![])];
+        let result = kahns_weighted(&input);
+        assert_eq!(result, Ok(vec!["C", "B", "A"]));
+    }
+
+    #[test]
+    fn test_priority_ordering() {
+        // No dependencies. A (priority 2), B (priority 1), C (priority 3).
+        // Since smaller priority value is higher priority:
+        // Priority order: B (1), A (2), C (3)
+        let input = vec![("A", 2, vec![]), ("B", 1, vec![]), ("C", 3, vec![])];
+        let result = kahns_weighted(&input);
+        assert_eq!(result, Ok(vec!["B", "A", "C"]));
+    }
+
+    #[test]
+    fn test_alphabetical_tie_breaking() {
+        // No dependencies. Same priority (0).
+        // A, B, C should sort alphabetically (A before Z)
+        let input = vec![("C", 0, vec![]), ("A", 0, vec![]), ("B", 0, vec![])];
+        let result = kahns_weighted(&input);
+        assert_eq!(result, Ok(vec!["A", "B", "C"]));
+    }
+
+    #[test]
+    fn test_priority_and_alphabetical_mix() {
+        // A (priority 2), B (priority 1), C (priority 1).
+        // B and C have same priority, so alphabetical tie-breaker: B before C.
+        // A has lower priority (2), so it comes after.
+        let input = vec![("A", 2, vec![]), ("C", 1, vec![]), ("B", 1, vec![])];
+        let result = kahns_weighted(&input);
+        assert_eq!(result, Ok(vec!["B", "C", "A"]));
     }
 }
