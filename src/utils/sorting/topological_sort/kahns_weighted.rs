@@ -186,4 +186,39 @@ mod tests {
         let result = kahns_weighted(&input);
         assert_eq!(result, Ok(vec!["B", "C", "A"]));
     }
+
+    #[test]
+    fn test_cycle_detection() {
+        // A depends on B, B depends on A
+        let input = vec![
+            ("A", 0, vec!["B"]),
+            ("B", 0, vec!["A"]),
+        ];
+        let result = kahns_weighted(&input);
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("Cycle detected"));
+    }
+
+    #[test]
+    fn test_duplicate_node_definition() {
+        let input = vec![
+            ("A", 0, vec![]),
+            ("A", 1, vec![]),
+        ];
+        let result = kahns_weighted(&input);
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("Duplicate node definition"));
+    }
+
+    #[test]
+    fn test_missing_child_filled_with_default_priority() {
+        // A depends on B. B is not explicitly defined in the input.
+        // B should be filled in with a default priority of 0.
+        // Since B has no dependencies, it runs first.
+        let input = vec![
+            ("A", 1, vec!["B"]),
+        ];
+        let result = kahns_weighted(&input);
+        assert_eq!(result, Ok(vec!["B", "A"]));
+    }
 }
