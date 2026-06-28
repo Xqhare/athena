@@ -1,4 +1,4 @@
-#![doc = include_str!("../README.md")]
+![doc = include_str!("../README.md")]
 #![warn(missing_docs)]
 #![warn(clippy::pedantic)]
 #![warn(clippy::all)]
@@ -113,6 +113,7 @@ pub mod rng_api {
 
 // Ecosystem Reexports
 pub use aequa::value::*;
+pub use aequa::{xff, tvec_to_xff_value};
 
 /// Reexports High Precision Float from the aequa crate
 pub mod float {
