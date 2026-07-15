@@ -72,6 +72,18 @@ mod unsigned {
         assert_eq!(serialized.len(), len as usize);
         assert_eq!(len, 19);
     }
+
+    #[test]
+    fn test_leb_unsigned_buf() {
+        use crate::tools::leb128::serialize_leb128_unsigned_buf;
+        let mut buf = [0u8; 19];
+        
+        let len = serialize_leb128_unsigned_buf(255, &mut buf).unwrap();
+        assert_eq!(&buf[..len], &[0b11111111, 0b00000001]);
+        
+        let too_small = serialize_leb128_unsigned_buf(255, &mut buf[..1]);
+        assert!(too_small.is_none());
+    }
 }
 
 mod signed {
@@ -157,5 +169,17 @@ mod signed {
             assert_eq!(result, i as i128);
             assert!(len <= 3);
         }
+    }
+
+    #[test]
+    fn test_leb_signed_buf() {
+        use crate::tools::leb128::serialize_leb128_signed_buf;
+        let mut buf = [0u8; 19];
+        
+        let len = serialize_leb128_signed_buf(-128, &mut buf).unwrap();
+        assert_eq!(&buf[..len], &[0x80, 0x7F]);
+        
+        let too_small = serialize_leb128_signed_buf(-128, &mut buf[..1]);
+        assert!(too_small.is_none());
     }
 }

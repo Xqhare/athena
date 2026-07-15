@@ -61,6 +61,14 @@ fn low_bits_of_u128(b: u128) -> u8 {
 /// assert!(result.is_err());
 /// ```
 pub fn deserialize_leb128_unsigned(data: &[u8]) -> AthenaResult<(u128, u8)> {
+    if data.is_empty() {
+        return Err(AthenaError::ContinuationBitInLastByte.into());
+    }
+    let first = data[0];
+    if first & CONTINUATION_BIT == 0 {
+        return Ok((u128::from(first), 1));
+    }
+
     let mut result: u128 = 0;
     let mut shift = 0;
     let mut num_of_bytes: u8 = 0;
@@ -83,6 +91,33 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> AthenaResult<(u128, u8)> {
     }
 }
 
+/// Serializes an unsigned integer to a LEB128 encoded byte array inside the provided buffer.
+///
+/// Returns the number of bytes written to the buffer, or `None` if the buffer is too small.
+///
+/// # Arguments
+/// * `value` - The value to serialize
+/// * `buf` - The buffer to write the serialized bytes to
+pub fn serialize_leb128_unsigned_buf(value: u128, buf: &mut [u8]) -> Option<usize> {
+    let mut val = value;
+    let mut write_idx = 0;
+    loop {
+        let mut byte = low_bits_of_u128(val);
+        val >>= 7;
+        if val != 0 {
+            byte |= CONTINUATION_BIT;
+        }
+        if write_idx >= buf.len() {
+            return None;
+        }
+        buf[write_idx] = byte;
+        write_idx += 1;
+        if val == 0 {
+            return Some(write_idx);
+        }
+    }
+}
+
 /// Serializes a unsigned integer to a LEB128 encoded byte array
 ///
 /// Does not mutate the input
@@ -100,32 +135,9 @@ pub fn deserialize_leb128_unsigned(data: &[u8]) -> AthenaResult<(u128, u8)> {
 /// ```
 #[must_use]
 pub fn serialize_leb128_unsigned(value: u128) -> Vec<u8> {
-    let mut val = value;
-    let val_len = {
-        if val <= u128::from(u8::MAX) {
-            2
-        } else if val <= u128::from(u16::MAX) {
-            3
-        } else if val <= u128::from(u32::MAX) {
-            5
-        } else if val <= u128::from(u64::MAX) {
-            10
-        } else {
-            19
-        }
-    };
-    let mut out = Vec::with_capacity(val_len);
-    loop {
-        let mut byte = low_bits_of_u128(val);
-        val >>= 7;
-        if val != 0 {
-            byte |= CONTINUATION_BIT;
-        }
-        out.push(byte);
-        if val == 0 {
-            return out;
-        }
-    }
+    let mut buf = [0u8; 19];
+    let len = serialize_leb128_unsigned_buf(value, &mut buf).unwrap();
+    buf[..len].to_vec()
 }
 
 /// Deserializes a signed integer from a LEB128 encoded byte array
@@ -148,6 +160,18 @@ pub fn serialize_leb128_unsigned(value: u128) -> Vec<u8> {
 /// assert_eq!(i8min.len(), 2);
 /// ```
 pub fn deserialize_leb128_signed(data: &[u8]) -> AthenaResult<(i128, u8)> {
+    if data.is_empty() {
+        return Err(AthenaError::ContinuationBitInLastByte.into());
+    }
+    let first = data[0];
+    if first & CONTINUATION_BIT == 0 {
+        let mut result = i128::from(first);
+        if (first & SIGN_BIT) == SIGN_BIT {
+            result |= !0i128 << 7;
+        }
+        return Ok((result, 1));
+    }
+
     let mut result: i128 = 0;
     let mut shift = 0;
     let size = 128;
@@ -201,6 +225,37 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> AthenaResult<(i128, u8)> {
     Ok((result, index))
 }
 
+/// Serializes a signed integer to a LEB128 encoded byte array inside the provided buffer.
+///
+/// Returns the number of bytes written to the buffer, or `None` if the buffer is too small.
+///
+/// # Arguments
+/// * `value` - The value to serialize
+/// * `buf` - The buffer to write the serialized bytes to
+pub fn serialize_leb128_signed_buf(value: i128, buf: &mut [u8]) -> Option<usize> {
+    let mut val = value;
+    let mut write_idx = 0;
+    loop {
+        let mut byte = val as u8;
+        val >>= 6;
+        let done = val == 0 || val == -1;
+        if done {
+            byte &= !CONTINUATION_BIT;
+        } else {
+            val >>= 1;
+            byte |= CONTINUATION_BIT;
+        }
+        if write_idx >= buf.len() {
+            return None;
+        }
+        buf[write_idx] = byte;
+        write_idx += 1;
+        if done {
+            return Some(write_idx);
+        }
+    }
+}
+
 /// Serializes a signed integer to a LEB128 encoded byte array
 ///
 /// Does not mutate the input
@@ -217,22 +272,7 @@ pub fn deserialize_leb128_signed(data: &[u8]) -> AthenaResult<(i128, u8)> {
 /// ```
 #[must_use]
 pub fn serialize_leb128_signed(value: i128) -> Vec<u8> {
-    // a i128 is 16 bytes, this expands to up to 19 bytes using LEB
-    let mut out = Vec::with_capacity(19);
-    let mut val = value;
-    loop {
-        let mut byte = val as u8;
-        val >>= 6;
-        let done = val == 0 || val == -1;
-        if done {
-            byte &= !CONTINUATION_BIT;
-        } else {
-            val >>= 1;
-            byte |= CONTINUATION_BIT;
-        }
-        out.push(byte);
-        if done {
-            return out;
-        }
-    }
+    let mut buf = [0u8; 19];
+    let len = serialize_leb128_signed_buf(value, &mut buf).unwrap();
+    buf[..len].to_vec()
 }
