@@ -87,7 +87,7 @@ Athena uses feature gates to keep the library lean. Only the utilities you need 
 ## Usage Examples
 
 ### LEB128 Encoding
-```rust
+```rust, ignore
 use athena::encoding_and_decoding::{serialize_leb128_unsigned, deserialize_leb128_unsigned};
 
 let bytes = serialize_leb128_unsigned(255);
@@ -96,7 +96,7 @@ assert_eq!(val, 255);
 ```
 
 ### LZW Compression
-```rust
+```rust, ignore
 use athena::compression::compress_lzw_encode_leb128;
 
 let data = b"TOBEORNOTTOBEORTOBEORNOT";
@@ -104,7 +104,7 @@ let compressed = compress_lzw_encode_leb128(data);
 ```
 
 ### Bit Flags
-```rust
+```rust, ignore
 use athena::bit_flags::U8Flag;
 
 let mut flags = U8Flag::new();
@@ -116,7 +116,7 @@ assert!(flags.read(0));
 
 Athena maintains a rigorous testing suite. Because some process utilities modify system-wide state, it is recommended to run tests serially.
 
-- **Run all tests**: `cargo test --all-features -- --test-threads=1`
+- **Run all tests**: `cargo test --all-features -- --include-ignored --test-threads=1`
 - **Doc tests**: `cargo test --doc`
 
 Note: Certain `process` tests (like real-time priority) may require elevated privileges (`CAP_SYS_NICE` or root) to pass.

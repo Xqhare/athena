@@ -1,3 +1,5 @@
+use nemesis::NemesisError;
+
 /// Result type for Random Number Generator operations
 pub type RngResult<T> = Result<T, RngError>;
 
@@ -8,6 +10,23 @@ pub enum RngError {
     Io(std::io::Error),
     /// Used for other errors
     Generic(String),
+    Nemesis(NemesisError),
+}
+
+impl RngError {
+    pub fn to_nemesis_error(self) -> NemesisError {
+        match self {
+            RngError::Io(e) => NemesisError::new("IO Error", e),
+            RngError::Generic(e) => NemesisError::new("Generic Error", e),
+            RngError::Nemesis(e) => e,
+        }
+    }
+}
+
+impl From<NemesisError> for RngError {
+    fn from(e: NemesisError) -> Self {
+        RngError::Nemesis(e)
+    }
 }
 
 impl From<std::io::Error> for RngError {

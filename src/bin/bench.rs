@@ -1,7 +1,8 @@
+#![cfg(any(doc, feature = "encoding_decoding", feature = "checksum"))]
 use athena::checksum::crc32;
 use athena::encoding_and_decoding::{
-    serialize_leb128_unsigned, deserialize_leb128_unsigned,
-    serialize_leb128_signed_v3, deserialize_leb128_signed_v3
+    deserialize_leb128_signed_v3, deserialize_leb128_unsigned, serialize_leb128_signed_v3,
+    serialize_leb128_unsigned,
 };
 use std::time::Instant;
 
@@ -28,7 +29,10 @@ fn main() {
         accum ^= val;
     }
     let duration = start.elapsed();
-    println!("LEB128 Unsigned single-byte deserialize (1M iterations) took: {:?}", duration);
+    println!(
+        "LEB128 Unsigned single-byte deserialize (1M iterations) took: {:?}",
+        duration
+    );
     println!("Accum value: {}", accum);
 
     // 3. LEB128 Signed v3 multi-byte
@@ -40,6 +44,9 @@ fn main() {
         accum_v3 ^= val;
     }
     let duration = start.elapsed();
-    println!("LEB128 Signed V3 multi-byte deserialize (1M iterations) took: {:?}", duration);
+    println!(
+        "LEB128 Signed V3 multi-byte deserialize (1M iterations) took: {:?}",
+        duration
+    );
     println!("Accum V3 value: {}", accum_v3);
 }
