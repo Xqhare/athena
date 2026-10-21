@@ -5,19 +5,16 @@
 //! - Integrity verification tools (`checksum`)
 //! - System and process management utilities (`process`)
 //! - Dependency resolution and sorting algorithms (`sorting`)
-//! - Generic numeric traits (`traits`)
-//! - Random number generator API (`rng_api`)
+//! - Unified numeric and RNG traits (`traits`)
 //! - Generational arena / slot map (`slot_map`)
 
 #[cfg(any(doc, feature = "checksum"))]
 pub mod checksum;
 #[cfg(any(doc, feature = "compression"))]
 pub mod compression;
-#[cfg(any(doc, feature = "rng_api"))]
-pub mod rng_api;
 #[cfg(any(doc, feature = "slot_map"))]
 pub mod slot_map;
 #[cfg(any(doc, feature = "sorting"))]
 pub mod sorting;
-#[cfg(any(doc, feature = "traits"))]
+#[cfg(any(doc, feature = "traits", feature = "numeric_traits", feature = "rng_api"))]
 pub mod traits;

@@ -10,10 +10,13 @@ pub enum RngError {
     Io(std::io::Error),
     /// Used for other errors
     Generic(String),
+    /// Wrapped `NemesisError`
     Nemesis(NemesisError),
 }
 
 impl RngError {
+    /// Converts this `RngError` into a [`NemesisError`].
+    #[must_use]
     pub fn to_nemesis_error(self) -> NemesisError {
         match self {
             RngError::Io(e) => NemesisError::new("IO Error", e),

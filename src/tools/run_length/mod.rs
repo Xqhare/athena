@@ -4,7 +4,7 @@
 //! which the same data value occurs in many consecutive data elements) are stored
 //! as a single data value and count.
 
-use crate::utils::traits::unsigned::Unsigned;
+use crate::utils::traits::numeric::unsigned::Unsigned;
 
 mod tests;
 

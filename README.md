@@ -83,7 +83,9 @@ Athena uses feature gates to keep the library lean. Only the utilities you need 
 - `compression`: Enables LZW and other compression utilities.
 - `checksum`: Enables CRC-32.
 - `byte_bit`: Enables bit-level reader/writer and parity tools.
-- `traits`: Enables custom numeric traits.
+- `numeric_traits`: Enables custom numeric traits (`Signed`, `Unsigned`).
+- `rng_api`: Enables the unified `RngApi` trait.
+- `traits`: Enables all traits (`numeric_traits` and `rng_api`).
 - `bit_flags`: Enables bit flag utilities.
 - `process`: Enables UNIX-specific process utilities.
 - `sorting`: Enables sorting algorithms (e.g., Kahn's Topological Sort).

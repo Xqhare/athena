@@ -1,12 +1,9 @@
-//! Generic numeric traits for type-safe arithmetic operations.
-//!
-//! These traits facilitate writing generic code that can operate on various
-//! integer widths while maintaining type safety and clarity.
+//! Unified traits for numeric operations and random number generation.
 
-/// Traits for signed integer types.
-pub mod signed;
-/// Traits for unsigned integer types.
-pub mod unsigned;
+/// Generic numeric traits (`Signed`, `Unsigned`) for type-safe arithmetic operations.
+#[cfg(any(doc, feature = "numeric_traits"))]
+pub mod numeric;
 
-#[cfg(test)]
-mod tests;
+/// Unified API trait for Random Number Generators (`RngApi`).
+#[cfg(any(doc, feature = "rng_api"))]
+pub mod rng_api;

@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use crate::utils::traits::signed::Signed;
-    use crate::utils::traits::unsigned::Unsigned;
+    use crate::utils::traits::numeric::signed::Signed;
+    use crate::utils::traits::numeric::unsigned::Unsigned;
 
     fn add_unsigned<T: Unsigned>(a: T, b: T) -> T {
         a + b

@@ -1,4 +1,4 @@
-use crate::utils::traits::unsigned::Unsigned;
+use crate::utils::traits::numeric::unsigned::Unsigned;
 
 /// Encodes bits into a value
 ///

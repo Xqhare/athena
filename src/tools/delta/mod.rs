@@ -4,7 +4,7 @@
 //! values themselves. This is highly effective for data that changes slowly or
 //! follows a predictable pattern.
 
-use crate::utils::traits::{signed::Signed, unsigned::Unsigned};
+use crate::utils::traits::numeric::{signed::Signed, unsigned::Unsigned};
 
 mod tests;
 

@@ -4,7 +4,7 @@
 //! (`u8`, `u16`, `u32`), allowing for safe and readable manipulation of individual bits
 //! as boolean flags.
 
-use crate::utils::traits::unsigned::Unsigned;
+use crate::utils::traits::numeric::unsigned::Unsigned;
 
 /// A generic bit flag container.
 ///

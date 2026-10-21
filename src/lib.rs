@@ -7,14 +7,9 @@
     doc,
     feature = "encoding_decoding",
     feature = "byte_bit",
-    feature = "bit_flags",
     feature = "compression",
-    feature = "checksum",
-    feature = "traits",
     feature = "process",
     feature = "system",
-    feature = "rng_api",
-    feature = "sorting"
 ))]
 mod error;
 
@@ -33,6 +28,7 @@ mod tools;
     feature = "compression",
     feature = "checksum",
     feature = "traits",
+    feature = "numeric_traits",
     feature = "sorting",
     feature = "rng_api",
     feature = "slot_map",
@@ -86,11 +82,13 @@ pub mod byte_bit {
     pub use crate::tools::byte_bit::writer::*;
 }
 
-/// Generic numeric traits for signed and unsigned types.
-#[cfg(any(doc, feature = "traits"))]
+/// Unified traits for generic numeric types (`Signed`, `Unsigned`) and random number generation (`RngApi`).
+#[cfg(any(doc, feature = "traits", feature = "numeric_traits", feature = "rng_api"))]
 pub mod traits {
-    pub use crate::utils::traits::signed::Signed;
-    pub use crate::utils::traits::unsigned::Unsigned;
+    #[cfg(any(doc, feature = "numeric_traits"))]
+    pub use crate::utils::traits::numeric::{signed::Signed, unsigned::Unsigned};
+    #[cfg(any(doc, feature = "rng_api"))]
+    pub use crate::utils::traits::rng_api::*;
 }
 
 /// Bit flag utilities for ergonomic management of u8, u16, and u32 flags.
@@ -104,12 +102,6 @@ pub mod bit_flags {
 pub mod sorting {
     pub use crate::utils::sorting::topological_sort::kahns::*;
     pub use crate::utils::sorting::topological_sort::kahns_weighted::*;
-}
-
-/// Random Number Generator API
-#[cfg(any(doc, feature = "rng_api"))]
-pub mod rng_api {
-    pub use crate::utils::rng_api::*;
 }
 
 /// Generational arena / slot map data structure.
