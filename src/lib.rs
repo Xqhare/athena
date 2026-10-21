@@ -35,6 +35,7 @@ mod tools;
     feature = "traits",
     feature = "sorting",
     feature = "rng_api",
+    feature = "slot_map",
 ))]
 mod utils;
 
@@ -109,6 +110,12 @@ pub mod sorting {
 #[cfg(any(doc, feature = "rng_api"))]
 pub mod rng_api {
     pub use crate::utils::rng_api::*;
+}
+
+/// Generational arena / slot map data structure.
+#[cfg(any(doc, feature = "slot_map"))]
+pub mod slot_map {
+    pub use crate::utils::slot_map::*;
 }
 
 // Ecosystem Reexports

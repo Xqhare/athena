@@ -1,24 +1,7 @@
 [package]
 name = "athena"
-version = "2.1.0"
+version = "2.2.0"
 edition = "2024"
-
-[dependencies]
-libc = "0.2.183"
-aequa = { git = "https://github.com/xqhare/aequa" }
-nemesis = { git = "https://github.com/xqhare/nemesis" }
-
-[features]
-encoding_decoding = ["traits"]
-compression = ["encoding_decoding"]
-checksum = []
-byte_bit = []
-traits = []
-bit_flags = ["traits"]
-process = []
-sorting = []
-rng_api = []
-system = []
 
 [package.metadata.docs.rs]
 all-features = true
@@ -26,3 +9,21 @@ all-features = true
 [[bin]]
 name = "bench"
 path = "src/bin/bench.rs"
+
+[dependencies]
+aequa = { git = "https://github.com/xqhare/aequa" }
+libc = "0.2.183"
+nemesis = { git = "https://github.com/xqhare/nemesis" }
+
+[features]
+bit_flags = ["traits"]
+byte_bit = []
+checksum = []
+compression = ["encoding_decoding"]
+encoding_decoding = ["traits"]
+process = []
+rng_api = []
+slot_map = []
+sorting = []
+system = []
+traits = []
