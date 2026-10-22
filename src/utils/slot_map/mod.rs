@@ -1,5 +1,7 @@
 //! Generational arena (`SlotMap`) providing stable, versioned keys and $O(1)$ operations.
 
+mod xff_serde;
+
 use std::ops::{Index, IndexMut};
 
 /// A versioned key into a [`SlotMap`].
@@ -66,6 +68,11 @@ struct Slot<T> {
 /// As it is vector based, it uses the default vector growth strategy: Double the capacity when full.
 /// It is advisable, as with any vector, to use [`with_capacity`] when the amount of elements can
 /// be estimated.
+///
+/// The entire `SlotMap` along with each `SlotMapIndex` can be persisted and restored from / to disk.
+/// To do so, make sure each element implements the [`XffSerde`] trait found in my `Aequa` library.
+///
+/// The capacity of the `SlotMap` is also persisted and restored.
 #[derive(Debug, Clone)]
 pub struct SlotMap<T> {
     slots: Vec<Slot<T>>,

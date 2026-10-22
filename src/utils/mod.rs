@@ -12,9 +12,14 @@
 pub mod checksum;
 #[cfg(any(doc, feature = "compression"))]
 pub mod compression;
-#[cfg(any(doc, feature = "slot_map"))]
+//#[cfg(any(doc, feature = "slot_map"))]
 pub mod slot_map;
 #[cfg(any(doc, feature = "sorting"))]
 pub mod sorting;
-#[cfg(any(doc, feature = "traits", feature = "numeric_traits", feature = "rng_api"))]
+#[cfg(any(
+    doc,
+    feature = "traits",
+    feature = "numeric_traits",
+    feature = "rng_api"
+))]
 pub mod traits;

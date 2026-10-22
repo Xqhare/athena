@@ -23,16 +23,16 @@ mod error;
 ))]
 mod tools;
 
-#[cfg(any(
-    doc,
-    feature = "compression",
-    feature = "checksum",
-    feature = "traits",
-    feature = "numeric_traits",
-    feature = "sorting",
-    feature = "rng_api",
-    feature = "slot_map",
-))]
+// #[cfg(any(
+//     doc,
+//     feature = "compression",
+//     feature = "checksum",
+//     feature = "traits",
+//     feature = "numeric_traits",
+//     feature = "sorting",
+//     feature = "rng_api",
+//     feature = "slot_map",
+// ))]
 mod utils;
 
 // Reexports for convenience
@@ -83,7 +83,12 @@ pub mod byte_bit {
 }
 
 /// Unified traits for generic numeric types (`Signed`, `Unsigned`) and random number generation (`RngApi`).
-#[cfg(any(doc, feature = "traits", feature = "numeric_traits", feature = "rng_api"))]
+#[cfg(any(
+    doc,
+    feature = "traits",
+    feature = "numeric_traits",
+    feature = "rng_api"
+))]
 pub mod traits {
     #[cfg(any(doc, feature = "numeric_traits"))]
     pub use crate::utils::traits::numeric::{signed::Signed, unsigned::Unsigned};
