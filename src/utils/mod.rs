@@ -12,7 +12,7 @@
 pub mod checksum;
 #[cfg(any(doc, feature = "compression"))]
 pub mod compression;
-//#[cfg(any(doc, feature = "slot_map"))]
+#[cfg(any(doc, feature = "slot_map"))]
 pub mod slot_map;
 #[cfg(any(doc, feature = "sorting"))]
 pub mod sorting;

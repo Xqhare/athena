@@ -23,6 +23,24 @@ use std::ops::{Index, IndexMut};
 pub struct SlotMapIndex {
     index: usize,
     version: u32,
+    is_dummy: bool,
+}
+
+impl SlotMapIndex {
+    /// Creates a dummy key.
+    ///
+    /// This key is invalid and cannot be used to index a [`SlotMap`].
+    ///
+    /// Using it will not do anything and be silently ignored.
+    ///
+    /// Actual [`SlotMapIndex`]es are created by [`SlotMap::insert`].
+    pub fn new_dummy() -> Self {
+        Self {
+            index: 0,
+            version: 0,
+            is_dummy: true,
+        }
+    }
 }
 
 impl Ord for SlotMapIndex {
@@ -52,6 +70,12 @@ impl SlotMapIndex {
     #[must_use]
     pub const fn version(self) -> u32 {
         self.version
+    }
+
+    /// Returns `true` if this key is a dummy key.
+    #[must_use]
+    pub const fn is_dummy(self) -> bool {
+        self.is_dummy
     }
 }
 
@@ -135,6 +159,9 @@ impl<T> SlotMap<T> {
     /// Returns `true` if the map contains a value for the specified `index`.
     #[must_use]
     pub fn contains_key(&self, index: SlotMapIndex) -> bool {
+        if index.is_dummy() {
+            return false;
+        }
         self.get(index).is_some()
     }
 
@@ -142,6 +169,9 @@ impl<T> SlotMap<T> {
     /// or `None` if the slot is vacant or the version does not match.
     #[must_use]
     pub fn get(&self, index: SlotMapIndex) -> Option<&T> {
+        if index.is_dummy() {
+            return None;
+        }
         self.slots
             .get(index.index)
             .filter(|slot| slot.version == index.version)
@@ -152,6 +182,9 @@ impl<T> SlotMap<T> {
     /// or `None` if the slot is vacant or the version does not match.
     #[must_use]
     pub fn get_mut(&mut self, index: SlotMapIndex) -> Option<&mut T> {
+        if index.is_dummy() {
+            return None;
+        }
         self.slots
             .get_mut(index.index)
             .filter(|slot| slot.version == index.version)
@@ -167,6 +200,7 @@ impl<T> SlotMap<T> {
             SlotMapIndex {
                 index: free_index,
                 version: slot.version,
+                is_dummy: false,
             }
         } else {
             let index = self.slots.len();
@@ -174,13 +208,20 @@ impl<T> SlotMap<T> {
                 value: Some(value),
                 version: 0,
             });
-            SlotMapIndex { index, version: 0 }
+            SlotMapIndex {
+                index,
+                version: 0,
+                is_dummy: false,
+            }
         }
     }
 
     /// Removes the value associated with `index` and returns it, or `None`
     /// if the key is stale or out of bounds.
     pub fn remove(&mut self, index: SlotMapIndex) -> Option<T> {
+        if index.is_dummy {
+            return None;
+        }
         let slot = self.slots.get_mut(index.index)?;
         if slot.version != index.version {
             return None;
@@ -221,6 +262,7 @@ impl<T> SlotMap<T> {
                     SlotMapIndex {
                         index,
                         version: slot.version,
+                        is_dummy: false,
                     },
                     val,
                 )
@@ -235,9 +277,16 @@ impl<T> SlotMap<T> {
             .enumerate()
             .filter_map(|(index, slot)| {
                 let version = slot.version;
-                slot.value
-                    .as_mut()
-                    .map(|val| (SlotMapIndex { index, version }, val))
+                slot.value.as_mut().map(|val| {
+                    (
+                        SlotMapIndex {
+                            index,
+                            version,
+                            is_dummy: false,
+                        },
+                        val,
+                    )
+                })
             })
     }
 

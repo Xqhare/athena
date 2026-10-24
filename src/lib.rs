@@ -23,16 +23,16 @@ mod error;
 ))]
 mod tools;
 
-// #[cfg(any(
-//     doc,
-//     feature = "compression",
-//     feature = "checksum",
-//     feature = "traits",
-//     feature = "numeric_traits",
-//     feature = "sorting",
-//     feature = "rng_api",
-//     feature = "slot_map",
-// ))]
+#[cfg(any(
+    doc,
+    feature = "compression",
+    feature = "checksum",
+    feature = "traits",
+    feature = "numeric_traits",
+    feature = "sorting",
+    feature = "rng_api",
+    feature = "slot_map",
+))]
 mod utils;
 
 // Reexports for convenience

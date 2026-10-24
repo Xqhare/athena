@@ -127,6 +127,7 @@ impl XffSerde for SlotMapIndex {
         let mut obj = Object::new();
         obj.insert("index", self.index);
         obj.insert("version", self.version);
+        obj.insert("is_dummy", self.is_dummy);
         xff!(obj)
     }
     fn from_xff(xff: &XffValue) -> Result<Self, NemesisError>
@@ -140,9 +141,14 @@ impl XffSerde for SlotMapIndex {
                 && let Some(version) = obj.get("version")
                 && let Some(version) = version.as_number()
                 && let Some(version) = version.into_usize()
+                && let Some(is_dummy) = obj.get("is_dummy")
+                && let Some(is_dummy) = is_dummy.as_boolean()
             {
-                let version = version as u32;
-                Ok(SlotMapIndex { index, version })
+                Ok(SlotMapIndex {
+                    index,
+                    version: version as u32,
+                    is_dummy: *is_dummy,
+                })
             } else {
                 Err(NemesisError::new(
                     "SlotMapIndex loading from XffValue",
