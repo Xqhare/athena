@@ -221,6 +221,18 @@ pub trait RngApi {
     /// May error if the random number generator fails
     fn random_bool(&mut self) -> Result<bool, RngError>;
 
+    /// Generate a random boolean using custom weights.
+    ///
+    /// # Return
+    ///
+    /// `Result<bool, RngError>`
+    ///
+    /// # Errors
+    ///
+    /// May error if the random number generator fails
+    fn random_weighted_bool(&mut self, true_weight: u8, false_weight: u8)
+    -> Result<bool, RngError>;
+
     /// Generate a random number in the range `min` to `max` inclusive on both ends
     ///
     /// # Arguments
